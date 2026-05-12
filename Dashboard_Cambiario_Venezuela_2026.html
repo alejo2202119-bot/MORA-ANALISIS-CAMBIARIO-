@@ -3,438 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Cambiario Venezuela — 12 Mayo 2026</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<title>Dashboard Cambiario Venezuela 2026</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Inter',sans-serif;background:#07090f;color:#e2e8f0;min-height:100vh;}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',system-ui,sans-serif;background:#07090f;color:#e2e8f0;min-height:100vh;}
 
-  /* HEADER */
-  .header{
-    background:linear-gradient(135deg,#0d1117 0%,#161b27 40%,#0d1b2a 100%);
-    border-bottom:1px solid #1e3a5f;
-    padding:24px 36px;
-    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
-  }
-  .header-left h1{font-size:24px;font-weight:900;background:linear-gradient(90deg,#60a5fa,#34d399,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;}
-  .header-left p{font-size:12px;color:#94a3b8;margin-top:5px;}
-  .header-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
-  .live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.35);color:#34d399;padding:5px 14px;border-radius:999px;font-size:12px;font-weight:700;}
-  .live-dot{width:7px;height:7px;background:#34d399;border-radius:50%;animation:pulse 1.5s infinite;}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(1.5);}}
-  .date-tag{font-size:11px;color:#475569;}
+.header{background:linear-gradient(135deg,#0d1117,#161b27,#0d1b2a);border-bottom:1px solid #1e3a5f;padding:22px 36px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+.header h1{font-size:22px;font-weight:900;background:linear-gradient(90deg,#60a5fa,#34d399,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.header p{font-size:12px;color:#64748b;margin-top:4px;}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:#34d399;padding:5px 13px;border-radius:999px;font-size:11px;font-weight:700;}
+.dot{width:7px;height:7px;background:#34d399;border-radius:50%;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(1.6);}}
+.datetag{font-size:11px;color:#334155;margin-top:4px;}
 
-  /* CONTAINER */
-  .container{max-width:1440px;margin:0 auto;padding:28px 36px;}
+.wrap{max-width:1400px;margin:0 auto;padding:26px 36px;}
 
-  /* SECTION TITLE */
-  .section-title{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:#334155;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
-  .section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#1e293b,transparent);}
+.sec{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:#2d3f55;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#1e293b,transparent);}
 
-  /* ALERT */
-  .alert{background:linear-gradient(90deg,rgba(239,68,68,.07),rgba(251,191,36,.04));border:1px solid rgba(239,68,68,.22);border-radius:14px;padding:14px 20px;margin-bottom:28px;font-size:13px;color:#94a3b8;display:flex;align-items:flex-start;gap:12px;line-height:1.6;}
-  .alert-icon{font-size:20px;margin-top:1px;}
+.alert{background:linear-gradient(90deg,rgba(239,68,68,.07),rgba(251,191,36,.04));border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:14px 20px;margin-bottom:26px;font-size:12.5px;color:#94a3b8;display:flex;gap:12px;line-height:1.65;}
 
-  /* KPI GRID */
-  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:14px;margin-bottom:32px;}
-  .kpi{background:#0d1117;border:1px solid #1a2535;border-radius:18px;padding:20px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s;}
-  .kpi:hover{transform:translateY(-3px);border-color:#2d4263;box-shadow:0 8px 32px rgba(0,0,0,.4);}
-  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:18px 18px 0 0;}
-  .kpi.blue::before{background:linear-gradient(90deg,#2563eb,#60a5fa);}
-  .kpi.green::before{background:linear-gradient(90deg,#059669,#34d399);}
-  .kpi.amber::before{background:linear-gradient(90deg,#d97706,#fbbf24);}
-  .kpi.red::before{background:linear-gradient(90deg,#dc2626,#f87171);}
-  .kpi.purple::before{background:linear-gradient(90deg,#7c3aed,#a78bfa);}
-  .kpi.cyan::before{background:linear-gradient(90deg,#0891b2,#22d3ee);}
-  .kpi-icon{font-size:22px;margin-bottom:10px;display:block;}
-  .kpi-label{font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;}
-  .kpi-value{font-size:30px;font-weight:900;line-height:1;margin-bottom:7px;}
-  .kpi-value.blue{color:#60a5fa;} .kpi-value.green{color:#34d399;} .kpi-value.amber{color:#fbbf24;} .kpi-value.red{color:#f87171;} .kpi-value.purple{color:#a78bfa;} .kpi-value.cyan{color:#22d3ee;}
-  .kpi-sub{font-size:11px;color:#475569;display:flex;align-items:center;gap:4px;}
-  .up{color:#f87171;font-weight:700;} .dn{color:#34d399;font-weight:700;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:28px;}
+.kpi{background:#0d1117;border:1px solid #1a2535;border-radius:16px;padding:20px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.5);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0;}
+.kpi.b::before{background:linear-gradient(90deg,#2563eb,#60a5fa);}
+.kpi.p::before{background:linear-gradient(90deg,#7c3aed,#a78bfa);}
+.kpi.a::before{background:linear-gradient(90deg,#d97706,#fbbf24);}
+.kpi.r::before{background:linear-gradient(90deg,#dc2626,#f87171);}
+.kpi.g::before{background:linear-gradient(90deg,#059669,#34d399);}
+.kpi.c::before{background:linear-gradient(90deg,#0891b2,#22d3ee);}
+.kpi-ico{font-size:20px;margin-bottom:10px;display:block;}
+.kpi-lbl{font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.kpi-val{font-size:28px;font-weight:900;line-height:1;margin-bottom:6px;}
+.kpi-val.b{color:#60a5fa;}.kpi-val.p{color:#a78bfa;}.kpi-val.a{color:#fbbf24;}.kpi-val.r{color:#f87171;}.kpi-val.g{color:#34d399;}.kpi-val.c{color:#22d3ee;}
+.kpi-sub{font-size:11px;color:#475569;}
+.up{color:#f87171;font-weight:700;} .dn{color:#34d399;font-weight:700;}
 
-  /* CHARTS */
-  .chart-grid-main{display:grid;grid-template-columns:1fr;gap:20px;margin-bottom:24px;}
-  .chart-grid-2{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:24px;}
-  .chart-grid-3{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
-  .chart-card{background:#0d1117;border:1px solid #1a2535;border-radius:18px;padding:24px;}
-  .chart-card h3{font-size:14px;font-weight:700;color:#cbd5e1;margin-bottom:3px;}
-  .chart-sub{font-size:11px;color:#334155;margin-bottom:18px;line-height:1.5;}
-  .chart-wrap{position:relative;}
+.card{background:#0d1117;border:1px solid #1a2535;border-radius:16px;padding:22px;margin-bottom:22px;}
+.card h3{font-size:13.5px;font-weight:700;color:#cbd5e1;margin-bottom:3px;}
+.card .sub{font-size:11px;color:#334155;margin-bottom:16px;line-height:1.5;}
+canvas{display:block;width:100% !important;}
 
-  /* TABLE */
-  .tbl-card{background:#0d1117;border:1px solid #1a2535;border-radius:18px;padding:24px;margin-bottom:24px;overflow-x:auto;}
-  .tbl-card h3{font-size:14px;font-weight:700;color:#cbd5e1;margin-bottom:3px;}
-  table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:700px;}
-  thead th{background:#070a10;color:#334155;font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;padding:11px 14px;text-align:left;border-bottom:1px solid #1a2535;}
-  tbody tr{border-bottom:1px solid #0f1520;transition:background .15s;}
-  tbody tr:hover{background:#111827;}
-  tbody td{padding:11px 14px;color:#94a3b8;vertical-align:middle;}
-  tbody td:first-child{color:#cbd5e1;font-weight:600;}
-  .tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700;}
-  .tag-r{background:rgba(248,113,113,.12);color:#f87171;}
-  .tag-g{background:rgba(52,211,153,.12);color:#34d399;}
-  .tag-y{background:rgba(251,191,36,.12);color:#fbbf24;}
-  .tag-p{background:rgba(167,139,250,.12);color:#a78bfa;}
+.g2{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:22px;}
+.g2c{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px;}
 
-  /* TIMELINE */
-  .timeline{background:#0d1117;border:1px solid #1a2535;border-radius:18px;padding:24px;margin-bottom:24px;}
-  .timeline h3{font-size:14px;font-weight:700;color:#cbd5e1;margin-bottom:3px;}
-  .tl-list{list-style:none;}
-  .tl-item{display:flex;gap:16px;padding-bottom:22px;position:relative;}
-  .tl-item:last-child{padding-bottom:0;}
-  .tl-item:not(:last-child)::before{content:'';position:absolute;left:15px;top:34px;bottom:0;width:1px;background:#1a2535;}
-  .tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
-  .tl-content{flex:1;}
-  .tl-date{font-size:10px;color:#334155;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;}
-  .tl-title{font-size:13px;font-weight:700;color:#cbd5e1;margin-bottom:5px;}
-  .tl-desc{font-size:11.5px;color:#475569;line-height:1.65;}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;min-width:650px;}
+.tbl thead th{background:#070a10;color:#2d3f55;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:10px 13px;text-align:left;border-bottom:1px solid #1a2535;}
+.tbl tbody tr{border-bottom:1px solid #0f1520;transition:background .1s;}
+.tbl tbody tr:hover{background:#111827;}
+.tbl tbody td{padding:10px 13px;color:#94a3b8;vertical-align:middle;}
+.tbl tbody td:first-child{color:#cbd5e1;font-weight:600;}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;}
+.tr{background:rgba(248,113,113,.12);color:#f87171;}
+.tg{background:rgba(52,211,153,.12);color:#34d399;}
+.ty{background:rgba(251,191,36,.12);color:#fbbf24;}
 
-  /* CONTEXT */
-  .ctx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-bottom:24px;}
-  .ctx-card{background:#0d1117;border:1px solid #1a2535;border-radius:18px;padding:20px;}
-  .ctx-card h4{font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-  .ctx-card ul{list-style:none;}
-  .ctx-card ul li{font-size:11.5px;color:#475569;padding:6px 0;border-bottom:1px solid #0f1520;display:flex;justify-content:space-between;align-items:center;}
-  .ctx-card ul li:last-child{border-bottom:none;}
-  .ctx-card ul li .v{font-weight:700;color:#94a3b8;}
+.tl{background:#0d1117;border:1px solid #1a2535;border-radius:16px;padding:22px;margin-bottom:22px;}
+.tl h3{font-size:13.5px;font-weight:700;color:#cbd5e1;margin-bottom:3px;}
+.tl-list{list-style:none;margin-top:16px;}
+.tl-item{display:flex;gap:14px;padding-bottom:20px;position:relative;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-item:not(:last-child)::before{content:'';position:absolute;left:15px;top:33px;bottom:0;width:1px;background:#1a2535;}
+.tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.tl-date{font-size:10px;color:#334155;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;}
+.tl-title{font-size:13px;font-weight:700;color:#cbd5e1;margin-bottom:4px;}
+.tl-desc{font-size:11.5px;color:#475569;line-height:1.65;}
 
-  /* FOOTER */
-  .footer{background:#070a10;border-top:1px solid #1a2535;padding:20px 36px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;}
-  .footer p{font-size:10.5px;color:#1e293b;line-height:1.7;}
-  .sources{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
-  .sources a{font-size:10.5px;color:#1d4ed8;text-decoration:none;opacity:.7;transition:opacity .2s;}
-  .sources a:hover{opacity:1;}
+.ctx{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:22px;}
+.ctx-card{background:#0d1117;border:1px solid #1a2535;border-radius:16px;padding:18px;}
+.ctx-card h4{font-size:12px;font-weight:700;color:#cbd5e1;margin-bottom:12px;}
+.ctx-card ul{list-style:none;}
+.ctx-card li{font-size:11.5px;color:#475569;padding:5px 0;border-bottom:1px solid #0f1520;display:flex;justify-content:space-between;}
+.ctx-card li:last-child{border-bottom:none;}
+.ctx-card .v{font-weight:700;color:#94a3b8;}
 
-  @media(max-width:900px){
-    .chart-grid-2,.chart-grid-3{grid-template-columns:1fr;}
-    .container{padding:16px;}
-    .header{padding:16px;}
-    .kpi-value{font-size:26px;}
-  }
+.footer{background:#070a10;border-top:1px solid #1a2535;padding:18px 36px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center;}
+.footer p{font-size:10px;color:#1e293b;line-height:1.7;}
+.srcs{display:flex;gap:12px;flex-wrap:wrap;}
+.srcs a{font-size:10px;color:#1d4ed8;text-decoration:none;opacity:.6;}
+.srcs a:hover{opacity:1;}
+.over{overflow-x:auto;}
+@media(max-width:900px){.g2,.g2c{grid-template-columns:1fr;}.wrap{padding:14px;}.header{padding:14px;}}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-left">
+  <div>
     <h1>📊 Dashboard Cambiario — Venezuela 2026</h1>
-    <p>Análisis integral · BCV oficial · USDT/Binance P2P · Brecha cambiaria · Contexto macroeconómico</p>
+    <p>BCV Oficial · USDT Binance P2P · Brecha cambiaria · Análisis macroeconómico</p>
   </div>
-  <div class="header-right">
-    <div class="live-badge"><span class="live-dot"></span> Datos actualizados</div>
-    <span class="date-tag">Martes 12 de mayo de 2026 · Fuentes: BCV · Binance P2P · Confirmado · TCambio · Finanzas Digital · DolarToday</span>
+  <div style="text-align:right">
+    <div class="badge"><span class="dot"></span> Datos actualizados</div>
+    <div class="datetag">Martes 12 de mayo de 2026 · BCV · Binance P2P · Confirmado · TCambio · Finanzas Digital</div>
   </div>
 </div>
 
-<div class="container">
+<div class="wrap">
 
   <div class="alert">
-    <span class="alert-icon">⚠️</span>
+    <span style="font-size:20px;margin-top:1px;">⚠️</span>
     <span>
       <strong style="color:#fbbf24">Hito histórico — 11 mayo 2026:</strong>
-      El dólar BCV superó por primera vez la barrera de los <strong style="color:#f87171">500 Bs/USD</strong>, cerrando hoy en <strong style="color:#60a5fa">504,91 Bs</strong>.
-      Acumula una devaluación del <strong style="color:#f87171">+67,8%</strong> en lo que va de 2026 (desde 298,14 Bs el 1-ene-2026).
-      El USDT en Binance P2P cotiza a <strong style="color:#a78bfa">654,68 Bs</strong>, con una brecha del <strong style="color:#fbbf24">29,7%</strong> sobre la tasa oficial.
-      El salario mínimo equivale a apenas <strong style="color:#f87171">~$0,26 USD</strong>.
+      El dólar BCV superó por primera vez los <strong style="color:#f87171">500 Bs/USD</strong>, cerrando hoy en <strong style="color:#60a5fa">504,91 Bs</strong>.
+      Devaluación acumulada 2026: <strong style="color:#f87171">+67,8%</strong> (desde 298,14 Bs el 1-ene-2026).
+      USDT Binance P2P: <strong style="color:#a78bfa">654,68 Bs</strong> · Brecha: <strong style="color:#fbbf24">29,7%</strong> · Salario mínimo: <strong style="color:#f87171">~$0,26 USD</strong>.
     </span>
   </div>
 
-  <!-- KPIs -->
-  <div class="section-title">Indicadores al cierre del 12 de mayo de 2026</div>
+  <div class="sec">Indicadores al 12 de mayo de 2026</div>
   <div class="kpi-grid">
-    <div class="kpi blue">
-      <span class="kpi-icon">🏦</span>
-      <div class="kpi-label">Dólar BCV Oficial</div>
-      <div class="kpi-value blue">504,91</div>
-      <div class="kpi-sub"><span class="up">▲ +0,89%</span>&nbsp;hoy · Bs/USD</div>
-    </div>
-    <div class="kpi purple">
-      <span class="kpi-icon">💜</span>
-      <div class="kpi-label">USDT · Binance P2P</div>
-      <div class="kpi-value purple">654,68</div>
-      <div class="kpi-sub"><span class="up">▲ +0,69%</span>&nbsp;24h · Bs/USDT</div>
-    </div>
-    <div class="kpi amber">
-      <span class="kpi-icon">📐</span>
-      <div class="kpi-label">Brecha Cambiaria</div>
-      <div class="kpi-value amber">29,7%</div>
-      <div class="kpi-sub">USDT vs BCV · diferencial actual</div>
-    </div>
-    <div class="kpi red">
-      <span class="kpi-icon">📉</span>
-      <div class="kpi-label">Devaluación 2026</div>
-      <div class="kpi-value red">+67,8%</div>
-      <div class="kpi-sub">Desde 298,14 Bs · 1 ene 2026</div>
-    </div>
-    <div class="kpi green">
-      <span class="kpi-icon">🔴</span>
-      <div class="kpi-label">Pico USDT 2026</div>
-      <div class="kpi-value green">780</div>
-      <div class="kpi-sub">8 ene 2026 · brecha llegó a 140%</div>
-    </div>
-    <div class="kpi cyan">
-      <span class="kpi-icon">🔥</span>
-      <div class="kpi-label">Devaluación 2025</div>
-      <div class="kpi-value cyan">+474%</div>
-      <div class="kpi-sub">De 51,93 → 298,14 Bs en 2025</div>
-    </div>
+    <div class="kpi b"><span class="kpi-ico">🏦</span><div class="kpi-lbl">Dólar BCV Oficial</div><div class="kpi-val b">504,91</div><div class="kpi-sub"><span class="up">▲ +0,89%</span> hoy · Bs/USD</div></div>
+    <div class="kpi p"><span class="kpi-ico">💜</span><div class="kpi-lbl">USDT Binance P2P</div><div class="kpi-val p">654,68</div><div class="kpi-sub"><span class="up">▲ +0,69%</span> 24h · Bs/USDT</div></div>
+    <div class="kpi a"><span class="kpi-ico">📐</span><div class="kpi-lbl">Brecha Cambiaria</div><div class="kpi-val a">29,7%</div><div class="kpi-sub">USDT vs BCV · diferencial</div></div>
+    <div class="kpi r"><span class="kpi-ico">📉</span><div class="kpi-lbl">Devaluación 2026</div><div class="kpi-val r">+67,8%</div><div class="kpi-sub">Desde 298,14 Bs · 1-ene-26</div></div>
+    <div class="kpi g"><span class="kpi-ico">🔴</span><div class="kpi-lbl">Pico USDT 2026</div><div class="kpi-val g">780 Bs</div><div class="kpi-sub">8 ene 2026 · brecha 140%</div></div>
+    <div class="kpi c"><span class="kpi-ico">🔥</span><div class="kpi-lbl">Devaluación 2025</div><div class="kpi-val c">+474%</div><div class="kpi-sub">51,93 → 298,14 Bs en 2025</div></div>
   </div>
 
-  <!-- GRAFICO HISTORICO PRINCIPAL -->
-  <div class="section-title">Evolución histórica del tipo de cambio 2022 – 2026</div>
-  <div class="chart-card chart-grid-main" style="margin-bottom:24px;">
-    <h3>Dólar BCV Oficial vs. USDT Paralelo — Serie histórica mensual</h3>
-    <p class="chart-sub">Datos en bolívares (Bs/USD) verificados · BCV oficial + fuentes de mercado P2P (Binance, Bybit) · Reconversión Oct-2021: eliminación de 6 ceros</p>
-    <div class="chart-wrap" style="height:360px;">
-      <canvas id="cHistorico"></canvas>
-    </div>
+  <!-- GRAFICO HISTORICO -->
+  <div class="sec">Evolución histórica 2022 – 2026</div>
+  <div class="card">
+    <h3>Dólar BCV Oficial vs. USDT Paralelo — Serie histórica mensual (Bs/USD)</h3>
+    <p class="sub">Datos verificados · BCV oficial + Binance/Bybit P2P · Reconversión Oct-2021: eliminación de 6 ceros al bolívar</p>
+    <canvas id="cH" style="height:340px;"></canvas>
   </div>
 
   <!-- BCV vs USDT 2026 y BRECHA -->
-  <div class="chart-grid-2">
-    <div class="chart-card">
+  <div class="g2">
+    <div class="card" style="margin-bottom:0;">
       <h3>BCV Oficial vs. USDT — Evolución mensual 2026</h3>
-      <p class="chart-sub">Cotizaciones de cierre mensual confirmadas · Enero–Mayo 2026 · Fuente: BCV + Confirmado.com.ve + Finanzas Digital</p>
-      <div class="chart-wrap" style="height:290px;">
-        <canvas id="c2026"></canvas>
-      </div>
+      <p class="sub">Cotizaciones de cierre mensual · Enero–Mayo 2026 · Fuente: BCV + Confirmado + Finanzas Digital</p>
+      <canvas id="c26" style="height:280px;"></canvas>
     </div>
-    <div class="chart-card">
+    <div class="card" style="margin-bottom:0;">
       <h3>Brecha Cambiaria (%) — Hitos 2024–2026</h3>
-      <p class="chart-sub">Diferencial % entre USDT/Paralelo y BCV oficial · Puntos de datos confirmados</p>
-      <div class="chart-wrap" style="height:290px;">
-        <canvas id="cBrecha"></canvas>
-      </div>
+      <p class="sub">Diferencial % USDT vs BCV · Puntos de datos confirmados</p>
+      <canvas id="cBr" style="height:280px;"></canvas>
     </div>
   </div>
 
   <!-- DEVALUACION ANUAL y MENSUAL -->
-  <div class="chart-grid-3">
-    <div class="chart-card">
+  <div class="g2c">
+    <div class="card" style="margin-bottom:0;">
       <h3>Devaluación Anual del Bolívar — BCV Oficial</h3>
-      <p class="chart-sub">Incremento porcentual acumulado del dólar oficial por año · 2022–2026*</p>
-      <div class="chart-wrap" style="height:250px;">
-        <canvas id="cAnual"></canvas>
-      </div>
+      <p class="sub">Incremento porcentual acumulado del dólar oficial por año · 2022–2026*</p>
+      <canvas id="cAn" style="height:250px;"></canvas>
     </div>
-    <div class="chart-card">
+    <div class="card" style="margin-bottom:0;">
       <h3>Variación Mensual BCV — 2026</h3>
-      <p class="chart-sub">Porcentaje de depreciación mes a mes · Bolívar digital vs dólar oficial · 2026*</p>
-      <div class="chart-wrap" style="height:250px;">
-        <canvas id="cMensual"></canvas>
-      </div>
+      <p class="sub">Porcentaje de depreciación mes a mes · *Mayo: parcial al 12-may</p>
+      <canvas id="cMn" style="height:250px;"></canvas>
     </div>
   </div>
 
   <!-- TABLA 2026 -->
-  <div class="section-title">Cuadro consolidado mensual 2026</div>
-  <div class="tbl-card">
+  <div class="sec" style="margin-top:6px;">Cuadro consolidado 2026</div>
+  <div class="card"><div class="over">
     <h3>Cotizaciones Mensuales — Enero a Mayo 2026</h3>
-    <p class="chart-sub" style="margin-bottom:18px;">Datos confirmados · BCV · Confirmado.com.ve · Finanzas Digital · TCambio · análisis de archivos propios · * Mayo: datos parciales al 12-may-2026</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Mes</th><th>Apertura BCV</th><th>Cierre BCV</th><th>Var. Mensual</th>
-          <th>USDT Ref.</th><th>Brecha</th><th>Evento clave</th>
-        </tr>
-      </thead>
+    <p class="sub">Datos confirmados · BCV · Confirmado.com.ve · Finanzas Digital · TCambio · * Mayo: parcial al 12-may-2026</p>
+    <table class="tbl">
+      <thead><tr><th>Mes</th><th>Apertura BCV</th><th>Cierre BCV</th><th>Var. Mensual</th><th>USDT Ref.</th><th>Brecha</th><th>Evento clave</th></tr></thead>
       <tbody>
-        <tr>
-          <td>Enero 2026</td><td>298,14 Bs</td><td>370,25 Bs</td>
-          <td><span class="tag tag-r">+24,2%</span></td>
-          <td>565 – 780 Bs</td>
-          <td><span class="tag tag-y">hasta 140%</span></td>
-          <td>Pico especulativo 8-ene · USDT 780 Bs</td>
-        </tr>
-        <tr>
-          <td>Febrero 2026</td><td>370,25 Bs</td><td>419,98 Bs</td>
-          <td><span class="tag tag-r">+13,4%</span></td>
-          <td>~537 Bs</td>
-          <td><span class="tag tag-r">~28%</span></td>
-          <td>Corrección del mercado · brecha baja</td>
-        </tr>
-        <tr>
-          <td>Marzo 2026</td><td>419,98 Bs</td><td>473,87 Bs</td>
-          <td><span class="tag tag-r">+12,8%</span></td>
-          <td>~660 Bs</td>
-          <td><span class="tag tag-r">~39%</span></td>
-          <td>M2 crece +50% en 2026 · nuevo repunte</td>
-        </tr>
-        <tr>
-          <td>Abril 2026</td><td>473,87 Bs</td><td>487,11 Bs</td>
-          <td><span class="tag tag-r">+2,8%</span></td>
-          <td>~638–645 Bs</td>
-          <td><span class="tag tag-r">~32–34%</span></td>
-          <td>Desaceleración · menor ritmo</td>
-        </tr>
-        <tr style="background:#0a1020;">
-          <td style="color:#60a5fa;">Mayo 2026 *</td>
-          <td>487,11 Bs</td>
-          <td style="color:#60a5fa;font-weight:800;">504,91 Bs</td>
-          <td><span class="tag tag-r">+3,7%</span></td>
-          <td style="color:#a78bfa;font-weight:700;">654,68 Bs</td>
-          <td><span class="tag tag-r">~29,7%</span></td>
-          <td style="color:#fbbf24;">⭐ Primer cruce histórico 500 Bs (11-may)</td>
-        </tr>
+        <tr><td>Enero 2026</td><td>298,14 Bs</td><td>370,25 Bs</td><td><span class="tag tr">+24,2%</span></td><td>565–780 Bs</td><td><span class="tag ty">hasta 140%</span></td><td>Pico especulativo 8-ene · USDT 780 Bs</td></tr>
+        <tr><td>Febrero 2026</td><td>370,25 Bs</td><td>419,98 Bs</td><td><span class="tag tr">+13,4%</span></td><td>~537 Bs</td><td><span class="tag tr">~28%</span></td><td>Corrección del mercado · brecha baja</td></tr>
+        <tr><td>Marzo 2026</td><td>419,98 Bs</td><td>473,87 Bs</td><td><span class="tag tr">+12,8%</span></td><td>~660 Bs</td><td><span class="tag tr">~39%</span></td><td>M2 crece +50% en 2026 · nuevo repunte</td></tr>
+        <tr><td>Abril 2026</td><td>473,87 Bs</td><td>487,11 Bs</td><td><span class="tag tr">+2,8%</span></td><td>638–645 Bs</td><td><span class="tag tr">~32–34%</span></td><td>Desaceleración · menor ritmo</td></tr>
+        <tr style="background:#0a1020;"><td style="color:#60a5fa;">Mayo 2026 *</td><td>487,11 Bs</td><td style="color:#60a5fa;font-weight:800;">504,91 Bs</td><td><span class="tag tr">+3,7%</span></td><td style="color:#a78bfa;font-weight:700;">654,68 Bs</td><td><span class="tag tr">~29,7%</span></td><td style="color:#fbbf24;">⭐ Primer cruce 500 Bs (11-may)</td></tr>
       </tbody>
     </table>
-  </div>
+  </div></div>
 
-  <!-- TABLA BRECHA HISTORICA -->
-  <div class="section-title">Evolución de la brecha cambiaria — hitos confirmados</div>
-  <div class="tbl-card">
+  <!-- TABLA BRECHA -->
+  <div class="sec">Evolución de la brecha cambiaria — hitos confirmados</div>
+  <div class="card"><div class="over">
     <h3>Diferencial USDT vs BCV Oficial — 2024–2026</h3>
-    <p class="chart-sub" style="margin-bottom:18px;">Fuentes: BCV · Binance P2P · Confirmado.com.ve · Monitor Dólar · DolarToday · TCambio</p>
-    <table>
-      <thead>
-        <tr><th>Fecha</th><th>BCV Oficial</th><th>USDT / Paralelo</th><th>Brecha (%)</th><th>Diferencial (Bs)</th><th>Interpretación</th></tr>
-      </thead>
+    <p class="sub">Fuentes: BCV · Binance P2P · Confirmado · Monitor Dólar · DolarToday · TCambio</p>
+    <table class="tbl">
+      <thead><tr><th>Fecha</th><th>BCV Oficial</th><th>USDT / Paralelo</th><th>Brecha (%)</th><th>Diferencial (Bs)</th><th>Interpretación</th></tr></thead>
       <tbody>
-        <tr><td>Dic 2024</td><td>51,93 Bs</td><td>~57 Bs</td><td><span class="tag tag-g">~10%</span></td><td>~5 Bs</td><td>Brecha mínima · anclaje controlado BCV</td></tr>
-        <tr><td>6 feb 2025</td><td>60,14 Bs</td><td>72,29 Bs</td><td><span class="tag tag-y">20%</span></td><td>12,15 Bs</td><td>Inicio del desanclaje gradual</td></tr>
-        <tr><td>Sep 2025</td><td>~163 Bs</td><td>~200 Bs</td><td><span class="tag tag-y">~23%</span></td><td>~37 Bs</td><td>Divergencia creciente · 2° semestre 2025</td></tr>
-        <tr><td>Dic 2025</td><td>298,14 Bs</td><td>~400 Bs</td><td><span class="tag tag-r">~34%</span></td><td>~102 Bs</td><td>Brecha se amplía al cierre del año</td></tr>
-        <tr><td>1 ene 2026</td><td>298,14 Bs</td><td>565,20 Bs</td><td><span class="tag tag-r">89%</span></td><td>267 Bs</td><td>Salto brusco · expectativas de devaluación</td></tr>
-        <tr style="background:#1a0a0a;"><td style="color:#f87171;font-weight:700;">8 ene 2026 🔴 PICO</td><td>~315 Bs</td><td>760–780 Bs</td><td><span class="tag" style="background:rgba(239,68,68,.2);color:#f87171;font-weight:900;">+140%</span></td><td>~450 Bs</td><td>Máximo histórico · pánico especulativo</td></tr>
-        <tr><td>18 feb 2026</td><td>396,36 Bs</td><td>537 Bs</td><td><span class="tag tag-r">~35%</span></td><td>141 Bs</td><td>Corrección post-pico · mercado se autorregula</td></tr>
-        <tr><td>6 abr 2026</td><td>474 Bs</td><td>638 Bs</td><td><span class="tag tag-r">34,4%</span></td><td>164 Bs</td><td>Nuevo equilibrio · brecha estabilizada</td></tr>
-        <tr style="background:#0a0a1a;"><td style="color:#60a5fa;font-weight:700;">12 may 2026 ⭐</td><td style="color:#60a5fa;font-weight:700;">504,91 Bs</td><td style="color:#a78bfa;font-weight:700;">654,68 Bs</td><td><span class="tag tag-r">29,7%</span></td><td style="color:#fbbf24;font-weight:700;">149,77 Bs</td><td>HOY · brecha comprimiéndose levemente</td></tr>
+        <tr><td>Dic 2024</td><td>51,93 Bs</td><td>~57 Bs</td><td><span class="tag tg">~10%</span></td><td>~5 Bs</td><td>Brecha mínima · anclaje controlado</td></tr>
+        <tr><td>6 feb 2025</td><td>60,14 Bs</td><td>72,29 Bs</td><td><span class="tag ty">20%</span></td><td>12,15 Bs</td><td>Inicio del desanclaje gradual</td></tr>
+        <tr><td>Sep 2025</td><td>~163 Bs</td><td>~200 Bs</td><td><span class="tag ty">~23%</span></td><td>~37 Bs</td><td>Divergencia creciente · 2° semestre 2025</td></tr>
+        <tr><td>Dic 2025</td><td>298,14 Bs</td><td>~400 Bs</td><td><span class="tag tr">~34%</span></td><td>~102 Bs</td><td>Brecha se amplía al cierre del año</td></tr>
+        <tr><td>1 ene 2026</td><td>298,14 Bs</td><td>565,20 Bs</td><td><span class="tag tr">89%</span></td><td>267 Bs</td><td>Salto brusco · expectativas de devaluación</td></tr>
+        <tr style="background:#1a0808;"><td style="color:#f87171;font-weight:700;">8 ene 2026 🔴 PICO</td><td>~315 Bs</td><td>760–780 Bs</td><td><span class="tag" style="background:rgba(239,68,68,.2);color:#f87171;font-weight:900;">+140%</span></td><td>~450 Bs</td><td>Máximo histórico · pánico especulativo</td></tr>
+        <tr><td>18 feb 2026</td><td>396,36 Bs</td><td>537 Bs</td><td><span class="tag tr">~35%</span></td><td>141 Bs</td><td>Corrección post-pico · autorregulación</td></tr>
+        <tr><td>6 abr 2026</td><td>474 Bs</td><td>638 Bs</td><td><span class="tag tr">34,4%</span></td><td>164 Bs</td><td>Nuevo equilibrio · brecha estabilizada</td></tr>
+        <tr style="background:#080a1a;"><td style="color:#60a5fa;font-weight:700;">12 may 2026 ⭐</td><td style="color:#60a5fa;font-weight:700;">504,91 Bs</td><td style="color:#a78bfa;font-weight:700;">654,68 Bs</td><td><span class="tag tr">29,7%</span></td><td style="color:#fbbf24;font-weight:700;">149,77 Bs</td><td>HOY · brecha comprimiéndose levemente</td></tr>
       </tbody>
     </table>
-  </div>
+  </div></div>
 
   <!-- TIMELINE -->
-  <div class="section-title">Línea del tiempo cambiaria</div>
-  <div class="timeline">
+  <div class="sec">Línea del tiempo cambiaria</div>
+  <div class="tl">
     <h3>Hitos históricos del mercado cambiario venezolano</h3>
-    <p class="chart-sub" style="margin-bottom:20px;">Desde la reconversión monetaria de 2021 hasta hoy · Bolívar digital (Bs.D)</p>
+    <p class="sub" style="font-size:11px;color:#334155;margin-top:3px;">Desde la reconversión monetaria de 2021 hasta hoy · Bolívar Digital (Bs.D)</p>
     <ul class="tl-list">
-      <li class="tl-item">
-        <div class="tl-dot" style="background:rgba(99,102,241,.15);color:#818cf8;">💱</div>
-        <div class="tl-content">
-          <div class="tl-date">Octubre 2021</div>
-          <div class="tl-title">Tercera Reconversión Monetaria — Nace el Bolívar Digital</div>
-          <div class="tl-desc">El BCV eliminó 6 ceros. 1.000.000 Bs soberanos = 1 Bs digital. El dólar arrancó en ~4,57 Bs digitales. Inflación anual 2021: +686%. Venezuela acumulaba ya tres reconversiones en 13 años.</div>
-        </div>
-      </li>
-      <li class="tl-item">
-        <div class="tl-dot" style="background:rgba(59,130,246,.15);color:#60a5fa;">📈</div>
-        <div class="tl-content">
-          <div class="tl-date">2022 · Dólar: 4,57 → 13,63 Bs (+198%)</div>
-          <div class="tl-title">Depreciación acelerada · Brecha baja con "dolarización de facto"</div>
-          <div class="tl-desc">Con la dolarización informal en marcha, el BCV perdió control parcial de precios. El dólar casi triplicó su valor. La brecha paralelo/BCV se mantuvo entre 10–20%, menor que años anteriores gracias al flujo de divisas privadas.</div>
-        </div>
-      </li>
-      <li class="tl-item">
-        <div class="tl-dot" style="background:rgba(139,92,246,.15);color:#a78bfa;">📊</div>
-        <div class="tl-content">
-          <div class="tl-date">2023 · Dólar: 14 → 35,87 Bs (+156%)</div>
-          <div class="tl-title">Depreciación sostenida · Economía crece con alta inflación</div>
-          <div class="tl-desc">Venezuela registra crecimiento del PIB por primera vez en años (~5%), pero la inflación y devaluación continúan. El dólar BCV subió de 14 a 35,87 Bs. La brecha con el paralelo permaneció controlada.</div>
-        </div>
-      </li>
-      <li class="tl-item">
-        <div class="tl-dot" style="background:rgba(16,185,129,.15);color:#34d399;">🏦</div>
-        <div class="tl-content">
-          <div class="tl-date">2024 · Dólar: 35,87 → 51,93 Bs (+44,8%)</div>
-          <div class="tl-title">Año de anclaje relativo · La menor devaluación desde 2021</div>
-          <div class="tl-desc">El BCV adoptó una política de anclaje moderado, la más baja desde la reconversión. La brecha con el paralelo se mantuvo en 10–12%. El PIB creció ~+9% (19 trimestres consecutivos de crecimiento). La inflación bajó al 47,96% anual.</div>
-        </div>
-      </li>
-      <li class="tl-item">
-        <div class="tl-dot" style="background:rgba(251,191,36,.15);color:#fbbf24;">🔥</div>
-        <div class="tl-content">
-          <div class="tl-date">2025 · Dólar: 51,93 → 298,14 Bs (+474%)</div>
-          <div class="tl-title">El año más devastador desde la reconversión · Abandono del ancla</div>
-          <div class="tl-desc">El bolívar se derrumbó en forma sostenida durante todo el año. La política de anclaje de 2024 fue abandonada. En el 2° semestre, el BCV imprimió masivamente: la base monetaria creció +790% interanual. Binance y Bybit P2P se consolidaron como formadores del precio real del dólar. El salario mínimo quedó en ~$0,30 USD.</div>
-        </div>
-      </li>
-      <li class="tl-item">
-        <div class="tl-dot" style="background:rgba(239,68,68,.15);color:#f87171;">⚡</div>
-        <div class="tl-content">
-          <div class="tl-date">8 enero 2026 · PICO HISTÓRICO</div>
-          <div class="tl-title">USDT llega a 780 Bs · Brecha supera el 140%</div>
-          <div class="tl-desc">Los primeros días de enero generaron pánico especulativo. Con el BCV en ~315 Bs, el USDT/Binance llegó a 760–780 Bs: brecha del 140%+, el máximo jamás registrado. Analistas lo catalogaron como distorsión especulativa sin respaldo real de transacciones comerciales.</div>
-        </div>
-      </li>
-      <li class="tl-item">
-        <div class="tl-dot" style="background:rgba(139,92,246,.15);color:#a78bfa;">📉</div>
-        <div class="tl-content">
-          <div class="tl-date">Febrero 2026 · Corrección</div>
-          <div class="tl-title">USDT baja de 780 → 537 Bs · Brecha se comprime a 28–35%</div>
-          <div class="tl-desc">El mercado demostró tener mecanismos de autorregulación. El USDT corrigió bruscamente mientras el BCV continuó subiendo hacia 396–420 Bs. La brecha bajó desde 140% a 28–35%. Se normalizó el mercado P2P.</div>
-        </div>
-      </li>
-      <li class="tl-item">
-        <div class="tl-dot" style="background:rgba(6,182,212,.15);color:#22d3ee;">⭐</div>
-        <div class="tl-content">
-          <div class="tl-date">12 mayo 2026 — HOY</div>
-          <div class="tl-title">BCV: 504,91 Bs · USDT: 654,68 Bs · Brecha: 29,7%</div>
-          <div class="tl-desc">El dólar oficial cruza por primera vez la barrera de los 500 Bs (hito del 11-may). Devaluación acumulada 2026: +67,8%. La base monetaria creció +790% en un año. La liquidez M2 subió +50% en lo que va de 2026. El bolívar continúa depreciándose sin señales de estabilización estructural. El diferencial USDT/BCV se mantiene en torno al 29,7% (149,77 Bs de diferencia).</div>
-        </div>
-      </li>
+      <li class="tl-item"><div class="tl-dot" style="background:rgba(99,102,241,.15);color:#818cf8;">💱</div><div><div class="tl-date">Octubre 2021</div><div class="tl-title">Tercera Reconversión Monetaria — Nace el Bolívar Digital</div><div class="tl-desc">El BCV eliminó 6 ceros. 1.000.000 Bs soberanos = 1 Bs digital. El dólar arrancó en ~4,57 Bs digitales. Inflación anual 2021: +686%. Venezuela acumulaba ya tres reconversiones monetarias en 13 años.</div></div></li>
+      <li class="tl-item"><div class="tl-dot" style="background:rgba(59,130,246,.15);color:#60a5fa;">📈</div><div><div class="tl-date">2022 · BCV: 4,57 → 13,63 Bs (+198%)</div><div class="tl-title">Depreciación acelerada · Dolarización informal en marcha</div><div class="tl-desc">Con la dolarización informal activa, el dólar casi triplicó su valor. La brecha paralelo/BCV se mantuvo entre 10–20%, menor que años anteriores gracias al flujo de divisas privadas. El BCV perdió control parcial de los precios.</div></div></li>
+      <li class="tl-item"><div class="tl-dot" style="background:rgba(139,92,246,.15);color:#a78bfa;">📊</div><div><div class="tl-date">2023 · BCV: 14 → 35,87 Bs (+156%)</div><div class="tl-title">Depreciación sostenida · PIB crece por primera vez en años</div><div class="tl-desc">Venezuela registra crecimiento del PIB (~5%) pero inflación y devaluación continúan. La brecha con el paralelo permaneció controlada entre 10–15%. El dólar BCV subió de 14 a 35,87 Bs durante el año.</div></div></li>
+      <li class="tl-item"><div class="tl-dot" style="background:rgba(16,185,129,.15);color:#34d399;">🏦</div><div><div class="tl-date">2024 · BCV: 35,87 → 51,93 Bs (+44,8%)</div><div class="tl-title">Año de anclaje relativo · La menor devaluación desde la reconversión</div><div class="tl-desc">El BCV adoptó política de anclaje moderado. Menor variación anual desde 2021. Brecha paralelo/BCV: 10–12%. PIB creció ~+9% (19 trimestres consecutivos de crecimiento). Inflación bajó al 47,96% anual.</div></div></li>
+      <li class="tl-item"><div class="tl-dot" style="background:rgba(251,191,36,.15);color:#fbbf24;">🔥</div><div><div class="tl-date">2025 · BCV: 51,93 → 298,14 Bs (+474%)</div><div class="tl-title">El año más devastador · Abandono del ancla cambiaria</div><div class="tl-desc">El bolívar se derrumbó sostenidamente durante todo el año. La política de anclaje de 2024 fue abandonada. El BCV imprimió masivamente: base monetaria creció +790% interanual. Binance y Bybit P2P se consolidaron como formadores del precio real. Salario mínimo: ~$0,30 USD.</div></div></li>
+      <li class="tl-item"><div class="tl-dot" style="background:rgba(239,68,68,.15);color:#f87171;">⚡</div><div><div class="tl-date">8 enero 2026 · PICO HISTÓRICO</div><div class="tl-title">USDT llega a 780 Bs · Brecha supera el 140%</div><div class="tl-desc">Pánico especulativo en los primeros días de 2026. Con BCV en ~315 Bs, el USDT/Binance llegó a 760–780 Bs: brecha del 140%+, el máximo jamás registrado. Analistas lo catalogaron como distorsión especulativa sin respaldo real de transacciones comerciales.</div></div></li>
+      <li class="tl-item"><div class="tl-dot" style="background:rgba(139,92,246,.15);color:#a78bfa;">📉</div><div><div class="tl-date">Febrero 2026 · Corrección</div><div class="tl-title">USDT baja de 780 → 537 Bs · Brecha se comprime a 28–35%</div><div class="tl-desc">El mercado demostró tener mecanismos de autorregulación. El USDT corrigió bruscamente mientras el BCV continuó subiendo. La brecha bajó desde 140% hasta 28–35%. Se normalizó el mercado P2P.</div></div></li>
+      <li class="tl-item"><div class="tl-dot" style="background:rgba(6,182,212,.15);color:#22d3ee;">⭐</div><div><div class="tl-date">12 mayo 2026 — HOY</div><div class="tl-title">BCV: 504,91 Bs · USDT: 654,68 Bs · Brecha: 29,7%</div><div class="tl-desc">El dólar oficial cruza por primera vez la barrera de los 500 Bs (11-may). Devaluación acumulada 2026: +67,8%. Base monetaria creció +790% en un año. Liquidez M2 subió +50% en 2026. El diferencial USDT/BCV se mantiene en 29,7% (149,77 Bs de diferencia). Sin señales de estabilización estructural.</div></div></li>
     </ul>
   </div>
 
   <!-- CONTEXTO MACRO -->
-  <div class="section-title">Contexto macroeconómico</div>
-  <div class="ctx-grid">
-    <div class="ctx-card">
-      <h4>🏦 Indicadores cambiarios · 12-may-2026</h4>
-      <ul>
-        <li>Dólar BCV oficial<span class="v" style="color:#60a5fa;">504,91 Bs</span></li>
-        <li>USDT Binance P2P<span class="v" style="color:#a78bfa;">654,68 Bs</span></li>
-        <li>Euro BCV oficial (11-may)<span class="v">589,27 Bs</span></li>
-        <li>Brecha USDT / BCV<span class="v" style="color:#fbbf24;">29,7% · 149,77 Bs</span></li>
-        <li>Devaluación acumulada 2026<span class="v" style="color:#f87171;">+67,8%</span></li>
-        <li>Salario mínimo en USD<span class="v" style="color:#f87171;">~$0,26</span></li>
-      </ul>
-    </div>
-    <div class="ctx-card">
-      <h4>📊 Inflación sectorial · ene–feb 2026</h4>
-      <ul>
-        <li>Restaurantes y Hoteles<span class="v" style="color:#f87171;">+59,7%</span></li>
-        <li>Salud<span class="v" style="color:#f87171;">+58,1%</span></li>
-        <li>Alimentos y Bebidas<span class="v" style="color:#f87171;">+53,1%</span></li>
-        <li>Educación<span class="v">+41,0%</span></li>
-        <li>Comunicaciones<span class="v">+22,3%</span></li>
-        <li>Inflación anual 2024 (oficial)<span class="v" style="color:#34d399;">47,96%</span></li>
-      </ul>
-    </div>
-    <div class="ctx-card">
-      <h4>⚡ Política monetaria · BCV</h4>
-      <ul>
-        <li>Crecimiento base monetaria (anual)<span class="v" style="color:#f87171;">+790%</span></li>
-        <li>Liquidez M2 (crecimiento 2026)<span class="v" style="color:#f87171;">+50%</span></li>
-        <li>M2 en 1 semana (13-mar-2026)<span class="v" style="color:#f87171;">+12,2%</span></li>
-        <li>Base monetaria total (mar-26)<span class="v">1.136 Bill. Bs</span></li>
-        <li>PIB Venezuela 2025<span class="v" style="color:#34d399;">+8,66%</span></li>
-        <li>Trimestres consecutivos creciendo<span class="v" style="color:#34d399;">19</span></li>
-      </ul>
-    </div>
-    <div class="ctx-card">
-      <h4>🛢️ Petróleo y divisas</h4>
-      <ul>
-        <li>Exportaciones en divisas (petróleo)<span class="v">&gt;83%</span></li>
-        <li>Producción diaria aprox. 2026<span class="v">~800.000 bbl</span></li>
-        <li>Producción máxima histórica (1998)<span class="v">3,5 M bbl/día</span></li>
-        <li>Licencia Chevron activa<span class="v" style="color:#34d399;">Sí</span></li>
-        <li>Reservas probadas mundiales<span class="v">~17%</span></li>
-        <li>Participación en prod. mundial<span class="v" style="color:#f87171;">&lt;0,8%</span></li>
-      </ul>
-    </div>
+  <div class="sec">Contexto macroeconómico</div>
+  <div class="ctx">
+    <div class="ctx-card"><h4>🏦 Indicadores cambiarios · 12-may-2026</h4><ul>
+      <li>Dólar BCV oficial<span class="v" style="color:#60a5fa;">504,91 Bs</span></li>
+      <li>USDT Binance P2P<span class="v" style="color:#a78bfa;">654,68 Bs</span></li>
+      <li>Euro BCV (11-may)<span class="v">589,27 Bs</span></li>
+      <li>Brecha USDT/BCV<span class="v" style="color:#fbbf24;">29,7% · 149,77 Bs</span></li>
+      <li>Devaluación acumulada 2026<span class="v" style="color:#f87171;">+67,8%</span></li>
+      <li>Salario mínimo en USD<span class="v" style="color:#f87171;">~$0,26</span></li>
+    </ul></div>
+    <div class="ctx-card"><h4>📊 Inflación sectorial · ene–feb 2026</h4><ul>
+      <li>Restaurantes y Hoteles<span class="v" style="color:#f87171;">+59,7%</span></li>
+      <li>Salud<span class="v" style="color:#f87171;">+58,1%</span></li>
+      <li>Alimentos y Bebidas<span class="v" style="color:#f87171;">+53,1%</span></li>
+      <li>Educación<span class="v">+41,0%</span></li>
+      <li>Comunicaciones<span class="v">+22,3%</span></li>
+      <li>Inflación anual 2024<span class="v" style="color:#34d399;">47,96%</span></li>
+    </ul></div>
+    <div class="ctx-card"><h4>⚡ Política monetaria · BCV</h4><ul>
+      <li>Base monetaria (crecimiento anual)<span class="v" style="color:#f87171;">+790%</span></li>
+      <li>Liquidez M2 (crecimiento 2026)<span class="v" style="color:#f87171;">+50%</span></li>
+      <li>M2 en 1 semana (13-mar-2026)<span class="v" style="color:#f87171;">+12,2%</span></li>
+      <li>Base monetaria total (mar-26)<span class="v">1.136 Bill. Bs</span></li>
+      <li>PIB Venezuela 2025<span class="v" style="color:#34d399;">+8,66%</span></li>
+      <li>Trimestres consecutivos creciendo<span class="v" style="color:#34d399;">19</span></li>
+    </ul></div>
+    <div class="ctx-card"><h4>🛢️ Petróleo y divisas</h4><ul>
+      <li>Exportaciones en divisas (petróleo)<span class="v">&gt;83%</span></li>
+      <li>Producción diaria aprox. 2026<span class="v">~800.000 bbl</span></li>
+      <li>Producción máx. histórica (1998)<span class="v">3,5 M bbl/día</span></li>
+      <li>Licencia Chevron activa<span class="v" style="color:#34d399;">Sí</span></li>
+      <li>Reservas probadas mundiales<span class="v">~17%</span></li>
+      <li>Participación en prod. mundial<span class="v" style="color:#f87171;">&lt;0,8%</span></li>
+    </ul></div>
   </div>
 
-</div>
+</div><!-- /wrap -->
 
 <div class="footer">
   <div>
-    <p>Dashboard elaborado con datos de archivos propios + investigación de fuentes oficiales y de mercado · Estado Táchira, Venezuela · 12 de mayo de 2026</p>
-    <p>Basado en: BCV.org.ve · Confirmado.com.ve · FinanzasDigital.com · TCambio.app · DolarToday.com · ExchangeMonitor.net · Monitor Dólar Venezuela · Binance P2P</p>
+    <p>Dashboard elaborado con datos de archivos propios + fuentes oficiales y de mercado · Estado Táchira, Venezuela · 12 de mayo de 2026</p>
+    <p>Fuentes: BCV.org.ve · Confirmado.com.ve · FinanzasDigital.com · TCambio.app · DolarToday.com · ExchangeMonitor.net · Binance P2P</p>
   </div>
-  <div class="sources">
+  <div class="srcs">
     <a href="https://www.bcv.org.ve" target="_blank">BCV Oficial</a>
     <a href="https://finanzasdigital.com" target="_blank">Finanzas Digital</a>
     <a href="https://confirmado.com.ve" target="_blank">Confirmado</a>
@@ -445,233 +269,283 @@
 </div>
 
 <script>
-// Configuracion global Chart.js
-Chart.defaults.color = '#475569';
-Chart.defaults.borderColor = '#1a2535';
-Chart.defaults.font.family = "'Inter', sans-serif";
-Chart.defaults.font.size = 11;
+// ============================================================
+// MOTOR DE GRAFICAS — 100% puro JavaScript, sin dependencias
+// ============================================================
+function initChart(id, cfg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  function draw() {
+    const dpr = window.devicePixelRatio || 1;
+    const W = el.parentElement.clientWidth || 600;
+    const H = parseInt(el.style.height) || 300;
+    el.width  = W * dpr;
+    el.height = H * dpr;
+    el.style.width  = W + 'px';
+    el.style.height = H + 'px';
+    const ctx = el.getContext('2d');
+    ctx.scale(dpr, dpr);
 
-const tooltip = {
-  backgroundColor:'#0d1117',
-  borderColor:'#1e3a5f',
-  borderWidth:1,
-  titleColor:'#e2e8f0',
-  bodyColor:'#94a3b8',
-  padding:10,
-  cornerRadius:8,
-};
+    const isPct = cfg.pct || false;
+    const pad = { t:28, r:20, b:62, l: isPct ? 52 : 70 };
+    const cW = W - pad.l - pad.r;
+    const cH = H - pad.t - pad.b;
 
-// ==============================================================
+    // Aplanar todos los valores para escala
+    const allVals = (cfg.type === 'multiline' || cfg.type === 'multibar')
+      ? cfg.datasets.flatMap(d => d.data)
+      : cfg.data;
+    let minV = Math.min(...allVals);
+    let maxV = Math.max(...allVals);
+    if (cfg.minZero) minV = 0;
+    const range = maxV - minV || 1;
+    minV = Math.max(cfg.minZero ? 0 : minV - range*0.06, cfg.minZero ? 0 : minV - range*0.06);
+    maxV = maxV + range * 0.13;
+
+    const sY = v => pad.t + cH - (v - minV) / (maxV - minV) * cH;
+    const labels = cfg.labels;
+
+    // Fondo
+    ctx.fillStyle = '#0d1117';
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid horizontal
+    const gridN = 5;
+    for (let i = 0; i <= gridN; i++) {
+      const y = pad.t + cH * i / gridN;
+      const val = maxV - (maxV - minV) * i / gridN;
+      ctx.strokeStyle = '#0f1520'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cW, y); ctx.stroke();
+      ctx.fillStyle = '#334155';
+      ctx.font = '10px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      let lbl = val >= 1000 ? (val/1000).toFixed(1)+'K' : val >= 100 ? val.toFixed(0) : val.toFixed(1);
+      ctx.fillText(lbl + (isPct ? '%' : ' Bs'), pad.l - 6, y + 3.5);
+    }
+
+    // Eje X
+    ctx.strokeStyle = '#1a2535'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, pad.t + cH); ctx.lineTo(pad.l + cW, pad.t + cH); ctx.stroke();
+
+    // Etiquetas X
+    const xStep = labels.length > 16 ? Math.ceil(labels.length / 12) : 1;
+    labels.forEach((lbl, i) => {
+      if (i % xStep !== 0 && i !== labels.length-1) return;
+      let x;
+      if (cfg.type === 'bar' || cfg.type === 'multibar') {
+        x = pad.l + (i + 0.5) / labels.length * cW;
+      } else {
+        x = pad.l + i / (labels.length - 1) * cW;
+      }
+      ctx.save();
+      ctx.translate(x, H - pad.b + 12);
+      ctx.rotate(-Math.PI / 5);
+      ctx.fillStyle = '#334155';
+      ctx.font = '9.5px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(lbl, 0, 0);
+      ctx.restore();
+    });
+
+    // ---- LINE CHART ----
+    if (cfg.type === 'line') {
+      const data = cfg.data;
+      const color = cfg.color || '#3b82f6';
+      const sX = i => pad.l + i / (data.length - 1) * cW;
+      // Fill
+      ctx.beginPath();
+      ctx.moveTo(sX(0), sY(data[0]));
+      for (let i = 1; i < data.length; i++) {
+        const cpx = (sX(i-1)+sX(i))/2;
+        ctx.bezierCurveTo(cpx, sY(data[i-1]), cpx, sY(data[i]), sX(i), sY(data[i]));
+      }
+      ctx.lineTo(sX(data.length-1), pad.t+cH);
+      ctx.lineTo(sX(0), pad.t+cH);
+      ctx.closePath();
+      const hex = color.replace('#','');
+      const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16);
+      ctx.fillStyle = `rgba(${r},${g},${b},0.09)`;
+      ctx.fill();
+      // Line
+      ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.setLineDash([]);
+      ctx.moveTo(sX(0), sY(data[0]));
+      for (let i = 1; i < data.length; i++) {
+        const cpx = (sX(i-1)+sX(i))/2;
+        ctx.bezierCurveTo(cpx, sY(data[i-1]), cpx, sY(data[i]), sX(i), sY(data[i]));
+      }
+      ctx.stroke();
+      // Puntos con color variable
+      data.forEach((v, i) => {
+        let pc = color;
+        if (cfg.pointColor) pc = cfg.pointColor(v);
+        ctx.beginPath(); ctx.arc(sX(i), sY(v), 4.5, 0, Math.PI*2);
+        ctx.fillStyle = pc; ctx.fill();
+        ctx.beginPath(); ctx.arc(sX(i), sY(v), 2.5, 0, Math.PI*2);
+        ctx.fillStyle = '#0d1117'; ctx.fill();
+      });
+    }
+
+    // ---- MULTILINE CHART ----
+    if (cfg.type === 'multiline') {
+      cfg.datasets.forEach((ds, di) => {
+        const data = ds.data;
+        const color = ds.color;
+        const sX = i => pad.l + i / (data.length - 1) * cW;
+        const hex = color.replace('#','');
+        const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16);
+        // Fill
+        ctx.beginPath();
+        ctx.moveTo(sX(0), sY(data[0]));
+        for (let i=1;i<data.length;i++){const cpx=(sX(i-1)+sX(i))/2;ctx.bezierCurveTo(cpx,sY(data[i-1]),cpx,sY(data[i]),sX(i),sY(data[i]));}
+        ctx.lineTo(sX(data.length-1), pad.t+cH);
+        ctx.lineTo(sX(0), pad.t+cH);
+        ctx.closePath();
+        ctx.fillStyle=`rgba(${r},${g},${b},0.06)`; ctx.fill();
+        // Line
+        ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=2.5;
+        ctx.setLineDash(ds.dash||[]);
+        ctx.moveTo(sX(0),sY(data[0]));
+        for(let i=1;i<data.length;i++){const cpx=(sX(i-1)+sX(i))/2;ctx.bezierCurveTo(cpx,sY(data[i-1]),cpx,sY(data[i]),sX(i),sY(data[i]));}
+        ctx.stroke(); ctx.setLineDash([]);
+        // Puntos
+        data.forEach((v,i)=>{
+          ctx.beginPath();ctx.arc(sX(i),sY(v),3.5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+          ctx.beginPath();ctx.arc(sX(i),sY(v),2,0,Math.PI*2);ctx.fillStyle='#0d1117';ctx.fill();
+        });
+      });
+      // Leyenda
+      if (cfg.legend) {
+        let lx = pad.l;
+        cfg.legend.forEach((txt, i) => {
+          const col = cfg.datasets[i].color;
+          ctx.fillStyle=col; ctx.fillRect(lx,14,18,3);
+          ctx.beginPath();ctx.arc(lx+9,15.5,3,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();
+          ctx.fillStyle='#94a3b8'; ctx.font='11px Inter, sans-serif'; ctx.textAlign='left';
+          ctx.fillText(txt, lx+24, 19);
+          lx += ctx.measureText(txt).width + 46;
+        });
+      }
+    }
+
+    // ---- BAR CHART ----
+    if (cfg.type === 'bar') {
+      const data = cfg.data;
+      const gW = cW / data.length;
+      const bW = gW * 0.58;
+      data.forEach((v, i) => {
+        const x = pad.l + i * gW + (gW - bW) / 2;
+        const y = sY(v);
+        const bh = sY(minV >= 0 ? 0 : minV) - y;
+        const col = Array.isArray(cfg.colors) ? cfg.colors[i] : (cfg.color||'rgba(59,130,246,.8)');
+        const r2 = Math.min(8, bW/2);
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.moveTo(x+r2, y);
+        ctx.lineTo(x+bW-r2, y);
+        ctx.quadraticCurveTo(x+bW, y, x+bW, y+r2);
+        ctx.lineTo(x+bW, y+bh); ctx.lineTo(x, y+bh);
+        ctx.lineTo(x, y+r2);
+        ctx.quadraticCurveTo(x, y, x+r2, y);
+        ctx.closePath(); ctx.fill();
+        // Valor encima
+        ctx.fillStyle='#64748b'; ctx.font='10px Inter, sans-serif'; ctx.textAlign='center';
+        ctx.fillText((isPct ? v+'%' : v.toFixed(0)), x+bW/2, y-5);
+      });
+    }
+
+    // ---- MULTIBAR CHART ----
+    if (cfg.type === 'multibar') {
+      const n = cfg.datasets.length;
+      const gW = cW / labels.length;
+      const totalBW = gW * 0.72;
+      const bW = totalBW / n;
+      const gapL = (gW - totalBW) / 2;
+      cfg.datasets.forEach((ds, di) => {
+        ds.data.forEach((v, i) => {
+          const x = pad.l + i * gW + gapL + di * bW;
+          const y = sY(v);
+          const bh = sY(0) - y;
+          const r2 = Math.min(7, bW/2);
+          ctx.fillStyle = ds.color;
+          ctx.beginPath();
+          ctx.moveTo(x+r2,y); ctx.lineTo(x+bW-r2,y);
+          ctx.quadraticCurveTo(x+bW,y,x+bW,y+r2);
+          ctx.lineTo(x+bW,y+bh); ctx.lineTo(x,y+bh);
+          ctx.lineTo(x,y+r2); ctx.quadraticCurveTo(x,y,x+r2,y);
+          ctx.closePath(); ctx.fill();
+        });
+      });
+      // Leyenda
+      if (cfg.legend) {
+        let lx = pad.l;
+        cfg.legend.forEach((txt,i)=>{
+          ctx.fillStyle=cfg.datasets[i].color; ctx.fillRect(lx,14,16,10); ctx.fillStyle='#94a3b8';
+          ctx.font='11px Inter,sans-serif'; ctx.textAlign='left';
+          ctx.fillText(txt,lx+22,22); lx+=ctx.measureText(txt).width+44;
+        });
+      }
+    }
+  }
+  draw();
+  window.addEventListener('resize', draw);
+}
+
+// ============================================================
+// DATOS — Fuentes: BCV, Binance P2P, Confirmado, Finanzas Digital
+// ============================================================
+
 // 1. HISTORICO 2022-2026
-// ==============================================================
-const labH = [
-  'Ene-22','Abr-22','Jul-22','Oct-22','Dic-22',
-  'Mar-23','Jun-23','Sep-23','Dic-23',
-  'Mar-24','Jun-24','Sep-24','Dic-24',
-  'Feb-25','May-25','Jul-25','Sep-25','Nov-25','Dic-25',
-  'Ene-26','Feb-26','Mar-26','Abr-26','May-26'
-];
-const bcvH = [
-  4.57,5.12,6.98,12.15,13.63,
-  17.50,24.78,31.62,35.87,
-  36.84,38.27,45.62,51.93,
-  60.14,91,116,163,236,298.14,
-  370.25,419.98,473.87,487.11,504.91
-];
-const usdtH = [
-  5.20,6.10,8.20,14.50,16.20,
-  20.00,28.00,36.00,39.50,
-  40.50,42.00,50.00,57.00,
-  72.29,112,140,200,310,400,
-  565,537,660,645,654.68
-];
-
-new Chart(document.getElementById('cHistorico'),{
-  type:'line',
-  data:{
-    labels:labH,
-    datasets:[
-      {
-        label:'BCV Oficial (Bs/USD)',
-        data:bcvH,
-        borderColor:'#3b82f6',
-        backgroundColor:'rgba(59,130,246,0.07)',
-        borderWidth:2.5,
-        pointRadius:3,
-        pointHoverRadius:6,
-        pointBackgroundColor:'#3b82f6',
-        fill:true,
-        tension:0.35,
-      },
-      {
-        label:'USDT / Paralelo (Bs)',
-        data:usdtH,
-        borderColor:'#a78bfa',
-        backgroundColor:'rgba(167,139,250,0.05)',
-        borderWidth:2.5,
-        pointRadius:3,
-        pointHoverRadius:6,
-        pointBackgroundColor:'#a78bfa',
-        fill:true,
-        tension:0.35,
-        borderDash:[6,3],
-      }
-    ]
-  },
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    interaction:{mode:'index',intersect:false},
-    plugins:{
-      legend:{labels:{color:'#94a3b8',font:{size:12},padding:18,usePointStyle:true,pointStyleWidth:16}},
-      tooltip:{...tooltip,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(2)} Bs`}}
-    },
-    scales:{
-      x:{grid:{color:'#0f1520'},ticks:{maxRotation:45,font:{size:9},color:'#334155'}},
-      y:{grid:{color:'#0f1520'},ticks:{callback:v=>v>=1000?(v/1000).toFixed(1)+'K Bs':v.toFixed(0)+' Bs',color:'#334155'}}
-    }
-  }
+initChart('cH', {
+  type: 'multiline',
+  legend: ['BCV Oficial (Bs/USD)', 'USDT / Paralelo (Bs)'],
+  labels: ['Ene-22','Abr-22','Jul-22','Oct-22','Dic-22','Mar-23','Jun-23','Sep-23','Dic-23','Mar-24','Jun-24','Sep-24','Dic-24','Feb-25','May-25','Jul-25','Sep-25','Nov-25','Dic-25','Ene-26','Feb-26','Mar-26','Abr-26','May-26'],
+  datasets: [
+    { label:'BCV', color:'#3b82f6', dash:[], data:[4.57,5.12,6.98,12.15,13.63,17.50,24.78,31.62,35.87,36.84,38.27,45.62,51.93,60.14,91,116,163,236,298.14,370.25,419.98,473.87,487.11,504.91] },
+    { label:'USDT', color:'#a78bfa', dash:[6,3], data:[5.20,6.10,8.20,14.50,16.20,20.00,28.00,36.00,39.50,40.50,42.00,50.00,57.00,72.29,112,140,200,310,400,565,537,660,645,654.68] }
+  ]
 });
 
-// ==============================================================
 // 2. BCV vs USDT 2026
-// ==============================================================
-new Chart(document.getElementById('c2026'),{
-  type:'bar',
-  data:{
-    labels:['Ene-26','Feb-26','Mar-26','Abr-26','May-26'],
-    datasets:[
-      {
-        label:'BCV Oficial',
-        data:[370.25,419.98,473.87,487.11,504.91],
-        backgroundColor:'rgba(59,130,246,0.75)',
-        borderColor:'#3b82f6',
-        borderWidth:1.5,
-        borderRadius:7,
-        order:1,
-      },
-      {
-        label:'USDT Paralelo',
-        data:[565,537,660,645,654.68],
-        backgroundColor:'rgba(167,139,250,0.75)',
-        borderColor:'#a78bfa',
-        borderWidth:1.5,
-        borderRadius:7,
-        order:2,
-      }
-    ]
-  },
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    interaction:{mode:'index',intersect:false},
-    plugins:{
-      legend:{labels:{color:'#94a3b8',font:{size:11},usePointStyle:true}},
-      tooltip:{...tooltip,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(2)} Bs`}}
-    },
-    scales:{
-      x:{grid:{display:false},ticks:{color:'#334155'}},
-      y:{grid:{color:'#0f1520'},ticks:{callback:v=>v+' Bs',color:'#334155'}}
-    }
-  }
+initChart('c26', {
+  type: 'multibar',
+  legend: ['BCV Oficial', 'USDT Paralelo'],
+  minZero: true,
+  labels: ['Ene-26','Feb-26','Mar-26','Abr-26','May-26'],
+  datasets: [
+    { color:'rgba(59,130,246,0.8)', data:[370.25,419.98,473.87,487.11,504.91] },
+    { color:'rgba(167,139,250,0.8)', data:[565,537,660,645,654.68] }
+  ]
 });
 
-// ==============================================================
 // 3. BRECHA CAMBIARIA
-// ==============================================================
-const brechaLabels = ['Dic-24','Feb-25','Sep-25','Dic-25','1-Ene-26','8-Ene-26','18-Feb-26','28-Mar-26','6-Abr-26','12-May-26'];
-const brechaVals   = [10,20,23,34,89,141,35,44,34.4,29.7];
-const brechaColors = brechaVals.map(v=> v>80?'#ef4444':v>40?'#f59e0b':'#fbbf24');
-
-new Chart(document.getElementById('cBrecha'),{
-  type:'line',
-  data:{
-    labels:brechaLabels,
-    datasets:[{
-      label:'Brecha USDT vs BCV (%)',
-      data:brechaVals,
-      borderColor:'#fbbf24',
-      backgroundColor:'rgba(251,191,36,0.08)',
-      borderWidth:2.5,
-      pointRadius:5,
-      pointHoverRadius:8,
-      pointBackgroundColor:brechaColors,
-      pointBorderColor:brechaColors,
-      fill:true,
-      tension:0.3,
-    }]
-  },
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{
-      legend:{display:false},
-      tooltip:{...tooltip,callbacks:{label:c=>` Brecha: ${c.parsed.y.toFixed(1)}%`}}
-    },
-    scales:{
-      x:{grid:{color:'#0f1520'},ticks:{maxRotation:45,font:{size:9},color:'#334155'}},
-      y:{grid:{color:'#0f1520'},ticks:{callback:v=>v+'%',color:'#334155'},suggestedMin:0}
-    }
-  }
+initChart('cBr', {
+  type: 'line',
+  pct: true,
+  minZero: true,
+  color: '#fbbf24',
+  pointColor: v => v > 80 ? '#ef4444' : v > 40 ? '#f59e0b' : '#fbbf24',
+  labels: ['Dic-24','Feb-25','Sep-25','Dic-25','1-Ene-26','8-Ene-26','18-Feb-26','28-Mar-26','6-Abr-26','12-May-26'],
+  data:   [10, 20, 23, 34, 89, 141, 35, 44, 34.4, 29.7]
 });
 
-// ==============================================================
 // 4. DEVALUACION ANUAL
-// ==============================================================
-new Chart(document.getElementById('cAnual'),{
-  type:'bar',
-  data:{
-    labels:['2022','2023','2024','2025','2026*'],
-    datasets:[{
-      label:'Devaluación anual (%)',
-      data:[198,156,44.8,474,67.8],
-      backgroundColor:['rgba(59,130,246,.8)','rgba(139,92,246,.8)','rgba(16,185,129,.8)','rgba(239,68,68,.9)','rgba(245,158,11,.8)'],
-      borderRadius:9,
-      borderWidth:0,
-    }]
-  },
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{
-      legend:{display:false},
-      tooltip:{...tooltip,callbacks:{label:c=>` Devaluación: ${c.parsed.y}%`}}
-    },
-    scales:{
-      x:{grid:{display:false},ticks:{color:'#334155'}},
-      y:{grid:{color:'#0f1520'},ticks:{callback:v=>v+'%',color:'#334155'}}
-    }
-  }
+initChart('cAn', {
+  type: 'bar',
+  pct: true,
+  minZero: true,
+  labels: ['2022','2023','2024','2025','2026*'],
+  data:   [198, 156, 44.8, 474, 67.8],
+  colors: ['rgba(59,130,246,.85)','rgba(139,92,246,.85)','rgba(16,185,129,.85)','rgba(239,68,68,.9)','rgba(245,158,11,.85)']
 });
 
-// ==============================================================
 // 5. VARIACION MENSUAL 2026
-// ==============================================================
-const varVals = [24.2,13.4,12.8,2.8,3.7];
-new Chart(document.getElementById('cMensual'),{
-  type:'bar',
-  data:{
-    labels:['Enero','Febrero','Marzo','Abril','Mayo*'],
-    datasets:[{
-      label:'Variación mensual BCV (%)',
-      data:varVals,
-      backgroundColor:varVals.map(v=>v>20?'rgba(239,68,68,.85)':v>10?'rgba(251,191,36,.85)':'rgba(59,130,246,.85)'),
-      borderRadius:9,
-      borderWidth:0,
-    }]
-  },
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{
-      legend:{display:false},
-      tooltip:{...tooltip,callbacks:{label:c=>` Var. mensual: ${c.parsed.y}%`}}
-    },
-    scales:{
-      x:{grid:{display:false},ticks:{color:'#334155'}},
-      y:{grid:{color:'#0f1520'},ticks:{callback:v=>v+'%',color:'#334155'},suggestedMin:0}
-    }
-  }
+initChart('cMn', {
+  type: 'bar',
+  pct: true,
+  minZero: true,
+  labels: ['Enero','Febrero','Marzo','Abril','Mayo*'],
+  data:   [24.2, 13.4, 12.8, 2.8, 3.7],
+  colors: ['rgba(239,68,68,.85)','rgba(251,191,36,.85)','rgba(251,191,36,.85)','rgba(59,130,246,.85)','rgba(59,130,246,.85)']
 });
 </script>
 </body>
