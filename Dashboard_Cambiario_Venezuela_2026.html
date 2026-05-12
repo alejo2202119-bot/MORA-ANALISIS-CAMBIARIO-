@@ -54,17 +54,22 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .dr-item span{color:var(--t3);font-size:11px;}
 .badge-live{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:#4ade80;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;white-space:nowrap;}
 
-/* ── TICKER ─────────────────────────────── */
-#ticker{background:var(--yel);padding:8px 36px;display:flex;gap:28px;align-items:center;flex-wrap:wrap;overflow:hidden;}
-.tk{display:flex;align-items:center;gap:7px;white-space:nowrap;}
-.tk .lbl{font-size:9.5px;font-weight:800;color:#5c3d00;letter-spacing:.8px;text-transform:uppercase;}
+/* ── TICKER MARQUEE ─────────────────────── */
+#ticker{background:var(--yel);display:flex;align-items:center;overflow:hidden;height:42px;}
+#tickerScroll{flex:1;overflow:hidden;height:100%;display:flex;align-items:center;}
+#tickerTrack{display:flex;align-items:center;animation:marquee 50s linear infinite;white-space:nowrap;will-change:transform;}
+#tickerTrack:hover{animation-play-state:paused;}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tk{display:inline-flex;align-items:center;gap:7px;padding:0 22px;height:42px;border-right:1px solid rgba(101,60,0,.2);flex-shrink:0;}
+.tk .lbl{font-size:9px;font-weight:800;color:#5c3d00;letter-spacing:.8px;text-transform:uppercase;}
 .tk .val{font-size:15px;font-weight:900;color:#1a0800;}
 .tk .unit{font-size:10px;color:#7a5000;font-weight:600;}
 .tk .chg{font-size:10px;font-weight:700;}
 .chg-up{color:var(--red)!important;} .chg-dn{color:var(--grn)!important;}
-#tk-upd{margin-left:auto;font-size:10px;color:#7a5000;}
-.btn-refresh{background:rgba(101,60,0,.18);border:none;cursor:pointer;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;color:#3d2000;font-family:inherit;transition:background .2s;}
-.btn-refresh:hover{background:rgba(101,60,0,.32);}
+#tickerCtrl{display:flex;align-items:center;gap:8px;padding:0 10px 0 8px;flex-shrink:0;border-left:2px solid rgba(101,60,0,.25);}
+#tk-upd{font-size:9.5px;color:#7a5000;white-space:nowrap;}
+.btn-refresh{background:rgba(101,60,0,.18);border:none;cursor:pointer;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:900;color:#3d2000;font-family:inherit;transition:background .2s;line-height:1;}
+.btn-refresh:hover{background:rgba(101,60,0,.35);}
 
 /* ── LAYOUT ─────────────────────────────── */
 .wrap{max-width:1440px;margin:0 auto;padding:28px 36px;}
@@ -184,14 +189,79 @@ tbody td:first-child{color:var(--t1);font-weight:600;}
   .summary{grid-template-columns:1fr;}
   .wrap{padding:14px;}
   .header{padding:14px 16px;}
-  #ticker{padding:8px 16px;}
   .search-box input{width:200px;}
   .search-box input:focus{width:220px;}
 }
 @media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr);}#topbar .srcs{display:none;}}
+
+/* ── PASSWORD OVERLAY ───────────────────── */
+#pwOverlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#001233 0%,#003893 60%,#001f5b 100%);transition:opacity .55s ease,visibility .55s ease;}
+#pwOverlay.fade-out{opacity:0;visibility:hidden;}
+.pw-box{width:100%;max-width:400px;padding:44px 38px;text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:24px;backdrop-filter:blur(18px);}
+.pw-flag{display:flex;height:5px;border-radius:3px;overflow:hidden;margin:0 auto 30px;width:80px;gap:2px;}
+.pw-flag i{flex:1;border-radius:2px;}
+.pw-flag i:nth-child(1){background:#CF142B;}
+.pw-flag i:nth-child(2){background:#F5A800;}
+.pw-flag i:nth-child(3){background:#5b90f5;}
+.pw-logo{font-size:32px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1;}
+.pw-sub{font-size:12px;color:rgba(255,255,255,.45);margin-top:6px;margin-bottom:32px;letter-spacing:.3px;}
+.pw-input{width:100%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.18);color:#fff;padding:13px 18px;border-radius:12px;font-size:14px;font-family:'Inter',sans-serif;outline:none;text-align:center;letter-spacing:3px;transition:border-color .2s,background .2s;}
+.pw-input::placeholder{letter-spacing:.5px;color:rgba(255,255,255,.28);font-size:13px;}
+.pw-input:focus{border-color:var(--yel);background:rgba(255,255,255,.15);}
+.pw-btn{width:100%;margin-top:12px;padding:13px;background:var(--yel);border:none;color:#1a0800;font-size:14px;font-weight:900;font-family:'Inter',sans-serif;border-radius:12px;cursor:pointer;letter-spacing:.5px;transition:background .2s,transform .1s,box-shadow .2s;}
+.pw-btn:hover{background:#e89d00;box-shadow:0 4px 20px rgba(245,168,0,.4);}
+.pw-btn:active{transform:scale(.98);}
+.pw-err{min-height:20px;margin-top:10px;font-size:12px;color:#fca5a5;letter-spacing:.2px;}
+.pw-hint{font-size:11px;color:rgba(255,255,255,.25);margin-top:22px;}
 </style>
 </head>
 <body>
+
+<!-- ═══ PANTALLA DE ACCESO ═══ -->
+<div id="pwOverlay">
+  <div class="pw-box">
+    <div class="pw-flag"><i></i><i></i><i></i></div>
+    <div class="pw-logo">Dashboard Cambiario</div>
+    <div class="pw-sub">Venezuela · Táchira · 2026</div>
+    <input class="pw-input" id="pwInput" type="password" placeholder="Ingresa la contraseña" autocomplete="off" spellcheck="false">
+    <button class="pw-btn" id="pwBtn">INGRESAR</button>
+    <div class="pw-err" id="pwErr"></div>
+    <div class="pw-hint">Acceso restringido · Economía Táchira 2026</div>
+  </div>
+</div>
+<script>
+(function(){
+  if(sessionStorage.getItem('ec_auth')==='1'){
+    var o=document.getElementById('pwOverlay');
+    if(o){o.style.display='none';}
+    return;
+  }
+  function tryLogin(){
+    var v=document.getElementById('pwInput').value.toLowerCase().replace(/\s/g,'');
+    if(v==='economiatachira2026'){
+      sessionStorage.setItem('ec_auth','1');
+      var overlay=document.getElementById('pwOverlay');
+      overlay.classList.add('fade-out');
+      setTimeout(function(){overlay.style.display='none';},600);
+    } else {
+      var inp=document.getElementById('pwInput');
+      var err=document.getElementById('pwErr');
+      err.textContent='✗ Contraseña incorrecta. Intenta de nuevo.';
+      inp.value='';
+      inp.style.borderColor='#fca5a5';
+      inp.focus();
+      setTimeout(function(){
+        inp.style.borderColor='';
+        err.textContent='';
+      },2800);
+    }
+  }
+  document.getElementById('pwBtn').addEventListener('click',tryLogin);
+  document.getElementById('pwInput').addEventListener('keydown',function(e){
+    if(e.key==='Enter') tryLogin();
+  });
+})();
+</script>
 
 <!-- TOPBAR -->
 <div id="topbar">
@@ -229,16 +299,36 @@ tbody td:first-child{color:var(--t1);font-weight:600;}
   </div>
 </header>
 
-<!-- TICKER -->
+<!-- TICKER MARQUEE -->
 <div id="ticker">
-  <div class="tk"><span class="lbl">BCV Oficial</span><span class="val" id="tk-bcv">—</span><span class="unit">Bs/USD</span><span class="chg chg-up" id="tk-bcv-c"></span></div>
-  <div class="tk"><span class="lbl">USDT P2P</span><span class="val" id="tk-usdt">—</span><span class="unit">Bs</span><span class="chg chg-up" id="tk-usdt-c"></span></div>
-  <div class="tk"><span class="lbl">Brecha</span><span class="val" id="tk-brecha">—</span><span class="unit">%</span></div>
-  <div class="tk"><span class="lbl">EUR BCV</span><span class="val" id="tk-eur">—</span><span class="unit">Bs</span></div>
-  <div class="tk"><span class="lbl">Devalúo 2026</span><span class="val chg-up">+67,8%</span></div>
-  <div class="tk"><span class="lbl">Pico USDT</span><span class="val" style="color:#7a1200;">780</span><span class="unit">8-ene-26</span></div>
-  <span id="tk-upd"></span>
-  <button class="btn-refresh" onclick="fetchLive()">↻ Actualizar</button>
+  <div id="tickerScroll">
+    <div id="tickerTrack">
+      <!-- SET A (con IDs para actualización en vivo) -->
+      <div class="tk"><span class="lbl">BCV Oficial</span><span class="val" id="tk-bcv">504,91</span><span class="unit">Bs/USD</span><span class="chg" id="tk-bcv-c"></span></div>
+      <div class="tk"><span class="lbl">USDT P2P</span><span class="val" id="tk-usdt">654,68</span><span class="unit">Bs</span><span class="chg" id="tk-usdt-c"></span></div>
+      <div class="tk"><span class="lbl">Brecha</span><span class="val" id="tk-brecha">29,7</span><span class="unit">%</span></div>
+      <div class="tk"><span class="lbl">EUR Oficial</span><span class="val" id="tk-eur">589,27</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">Devaluación 2026</span><span class="val chg-up">+67,8%</span></div>
+      <div class="tk"><span class="lbl">Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8 ene</span></div>
+      <div class="tk"><span class="lbl">Salario Mínimo</span><span class="val chg-up">$0,26</span><span class="unit">USD/mes</span></div>
+      <div class="tk"><span class="lbl">Canasta Básica</span><span class="val chg-up">$387</span><span class="unit">1.503 salarios</span></div>
+      <div class="tk"><span class="lbl">Canasta Táchira</span><span class="val chg-up">$422</span><span class="unit">1.639 salarios</span></div>
+      <!-- SET B (copia sin IDs para loop continuo) -->
+      <div class="tk"><span class="lbl">BCV Oficial</span><span class="val" id="tk-bcv-b">504,91</span><span class="unit">Bs/USD</span><span class="chg" id="tk-bcv-cb"></span></div>
+      <div class="tk"><span class="lbl">USDT P2P</span><span class="val" id="tk-usdt-b">654,68</span><span class="unit">Bs</span><span class="chg" id="tk-usdt-cb"></span></div>
+      <div class="tk"><span class="lbl">Brecha</span><span class="val" id="tk-brecha-b">29,7</span><span class="unit">%</span></div>
+      <div class="tk"><span class="lbl">EUR Oficial</span><span class="val" id="tk-eur-b">589,27</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">Devaluación 2026</span><span class="val chg-up">+67,8%</span></div>
+      <div class="tk"><span class="lbl">Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8 ene</span></div>
+      <div class="tk"><span class="lbl">Salario Mínimo</span><span class="val chg-up">$0,26</span><span class="unit">USD/mes</span></div>
+      <div class="tk"><span class="lbl">Canasta Básica</span><span class="val chg-up">$387</span><span class="unit">1.503 salarios</span></div>
+      <div class="tk"><span class="lbl">Canasta Táchira</span><span class="val chg-up">$422</span><span class="unit">1.639 salarios</span></div>
+    </div>
+  </div>
+  <div id="tickerCtrl">
+    <span id="tk-upd"></span>
+    <button class="btn-refresh" onclick="fetchLive()" title="Actualizar tasas">↻</button>
+  </div>
 </div>
 
 <!-- TOOLTIP FLOTANTE -->
@@ -489,11 +579,16 @@ async function fetchLive() {
 function applyRates(r, live, ts) {
   const br = ((r.usdt - r.bcv) / r.bcv * 100).toFixed(1);
   const fmt = v => v.toFixed(2);
-  // Ticker
+  // Ticker set A
   setText('tk-bcv',  fmt(r.bcv));
   setText('tk-usdt', fmt(r.usdt));
   setText('tk-brecha', br);
   setText('tk-eur', fmt(r.eur));
+  // Ticker set B (loop duplicate)
+  setText('tk-bcv-b',  fmt(r.bcv));
+  setText('tk-usdt-b', fmt(r.usdt));
+  setText('tk-brecha-b', br);
+  setText('tk-eur-b', fmt(r.eur));
   // Summary / KPI
   ['ss-bcv','cx-bcv'].forEach(id => setText(id, fmt(r.bcv)+' Bs'));
   ['ss-usdt','cx-usdt'].forEach(id => setText(id, fmt(r.usdt)+' Bs'));
