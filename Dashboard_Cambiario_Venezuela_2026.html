@@ -451,34 +451,42 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <div id="ticker">
   <div id="tickerScroll">
     <div id="tickerTrack">
-      <!-- SET A (con IDs para actualización en vivo) -->
-      <div class="tk"><span class="lbl">BCV Oficial</span><span class="val" id="tk-bcv">504,91</span><span class="unit">Bs/USD</span><span class="chg" id="tk-bcv-c"></span></div>
-      <div class="tk"><span class="lbl">USDT P2P</span><span class="val" id="tk-usdt">654,68</span><span class="unit">Bs</span><span class="chg" id="tk-usdt-c"></span></div>
-      <div class="tk"><span class="lbl">Brecha</span><span class="val" id="tk-brecha">29,7</span><span class="unit">%</span></div>
-      <div class="tk"><span class="lbl">EUR Oficial</span><span class="val" id="tk-eur">589,27</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">Devaluación 2026</span><span class="val chg-up">+67,8%</span></div>
-      <div class="tk"><span class="lbl">Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8 ene</span></div>
-      <div class="tk"><span class="lbl">Salario Mínimo</span><span class="val chg-up">$0,26</span><span class="unit">USD/mes</span></div>
-      <div class="tk"><span class="lbl">Canasta Básica</span><span class="val chg-up">$387</span><span class="unit">1.503 salarios</span></div>
-      <div class="tk"><span class="lbl">Canasta Táchira</span><span class="val chg-up">$422</span><span class="unit">1.639 salarios</span></div>
-      <div class="tk"><span class="lbl">Peso Colombiano</span><span class="val" id="tk-cop">~4.100</span><span class="unit">COP = 1 USD</span></div>
-      <div class="tk"><span class="lbl">1 COP en Bs</span><span class="val" id="tk-cop-bs">~0,123</span><span class="unit">Bs/COP</span></div>
-      <div class="tk"><span class="lbl">COP Frontera (compra)</span><span class="val" style="color:var(--grn);">3.550</span><span class="unit">COP/USD · Táchira</span></div>
-      <div class="tk"><span class="lbl">COP Frontera (venta)</span><span class="val" style="color:var(--red);">3.600</span><span class="unit">COP/USD · Táchira</span></div>
-      <!-- SET B (copia sin IDs para loop continuo) -->
-      <div class="tk"><span class="lbl">BCV Oficial</span><span class="val" id="tk-bcv-b">504,91</span><span class="unit">Bs/USD</span><span class="chg" id="tk-bcv-cb"></span></div>
-      <div class="tk"><span class="lbl">USDT P2P</span><span class="val" id="tk-usdt-b">654,68</span><span class="unit">Bs</span><span class="chg" id="tk-usdt-cb"></span></div>
-      <div class="tk"><span class="lbl">Brecha</span><span class="val" id="tk-brecha-b">29,7</span><span class="unit">%</span></div>
-      <div class="tk"><span class="lbl">EUR Oficial</span><span class="val" id="tk-eur-b">589,27</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">Devaluación 2026</span><span class="val chg-up">+67,8%</span></div>
-      <div class="tk"><span class="lbl">Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8 ene</span></div>
-      <div class="tk"><span class="lbl">Salario Mínimo</span><span class="val chg-up">$0,26</span><span class="unit">USD/mes</span></div>
-      <div class="tk"><span class="lbl">Canasta Básica</span><span class="val chg-up">$387</span><span class="unit">1.503 salarios</span></div>
-      <div class="tk"><span class="lbl">Canasta Táchira</span><span class="val chg-up">$422</span><span class="unit">1.639 salarios</span></div>
-      <div class="tk"><span class="lbl">Peso Colombiano</span><span class="val" id="tk-cop-b">~4.100</span><span class="unit">COP = 1 USD</span></div>
-      <div class="tk"><span class="lbl">1 COP en Bs</span><span class="val" id="tk-cop-bs-b">~0,123</span><span class="unit">Bs/COP</span></div>
-      <div class="tk"><span class="lbl">COP Frontera (compra)</span><span class="val" style="color:var(--grn);">3.550</span><span class="unit">COP/USD · Táchira</span></div>
-      <div class="tk"><span class="lbl">COP Frontera (venta)</span><span class="val" style="color:var(--red);">3.600</span><span class="unit">COP/USD · Táchira</span></div>
+      <!-- ══ SET A — con IDs, actualizados por JS en cada fetch ══ -->
+      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv">504,91</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt">654,68</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">📐 Brecha</span><span class="val" id="tk-brecha">29,7</span><span class="unit">%</span></div>
+      <div class="tk"><span class="lbl">💶 EUR BCV</span><span class="val" id="tk-eur">589,27</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🔵 Binance P2P</span><span class="val" id="tk-bin">658,20</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">🟡 Yadio.io</span><span class="val" id="tk-yad">660,00</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">🛢️ WTI Crudo</span><span class="val" id="tk-wti">78,50</span><span class="unit">USD/bbl</span></div>
+      <div class="tk"><span class="lbl">🇨🇴 Peso COP/USD</span><span class="val" id="tk-cop">4.100</span><span class="unit">COP</span></div>
+      <div class="tk"><span class="lbl">🇨🇴 1 COP en Bs</span><span class="val" id="tk-cop-bs">0,1232</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval">+67,8%</span></div>
+      <div class="tk"><span class="lbl">💰 CBA en Bolívares</span><span class="val chg-up" id="tk-cba-bs">195.402</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🛑 Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8-ene</span></div>
+      <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,26</span><span class="unit">USD/mes</span></div>
+      <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$387</span><span class="unit">· 1.503 salarios</span></div>
+      <div class="tk"><span class="lbl">🌄 CBA Táchira</span><span class="val chg-up">$422</span><span class="unit">· frontera +9%</span></div>
+      <div class="tk"><span class="lbl">🌉 COP Frontera compra</span><span class="val" style="color:var(--grn);">3.550</span><span class="unit">COP/USD · Táchira</span></div>
+      <div class="tk"><span class="lbl">🌉 COP Frontera venta</span><span class="val" style="color:var(--red);">3.600</span><span class="unit">COP/USD · Táchira</span></div>
+      <!-- ══ SET B — duplicado para loop continuo ══ -->
+      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv-b">504,91</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt-b">654,68</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">📐 Brecha</span><span class="val" id="tk-brecha-b">29,7</span><span class="unit">%</span></div>
+      <div class="tk"><span class="lbl">💶 EUR BCV</span><span class="val" id="tk-eur-b">589,27</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🔵 Binance P2P</span><span class="val" id="tk-bin-b">658,20</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">🟡 Yadio.io</span><span class="val" id="tk-yad-b">660,00</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">🛢️ WTI Crudo</span><span class="val" id="tk-wti-b">78,50</span><span class="unit">USD/bbl</span></div>
+      <div class="tk"><span class="lbl">🇨🇴 Peso COP/USD</span><span class="val" id="tk-cop-b">4.100</span><span class="unit">COP</span></div>
+      <div class="tk"><span class="lbl">🇨🇴 1 COP en Bs</span><span class="val" id="tk-cop-bs-b">0,1232</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval-b">+67,8%</span></div>
+      <div class="tk"><span class="lbl">💰 CBA en Bolívares</span><span class="val chg-up" id="tk-cba-bs-b">195.402</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🛑 Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8-ene</span></div>
+      <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,26</span><span class="unit">USD/mes</span></div>
+      <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$387</span><span class="unit">· 1.503 salarios</span></div>
+      <div class="tk"><span class="lbl">🌄 CBA Táchira</span><span class="val chg-up">$422</span><span class="unit">· frontera +9%</span></div>
+      <div class="tk"><span class="lbl">🌉 COP Frontera compra</span><span class="val" style="color:var(--grn);">3.550</span><span class="unit">COP/USD · Táchira</span></div>
+      <div class="tk"><span class="lbl">🌉 COP Frontera venta</span><span class="val" style="color:var(--red);">3.600</span><span class="unit">COP/USD · Táchira</span></div>
     </div>
   </div>
   <div id="tickerCtrl">
@@ -896,6 +904,27 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
         <td>BCV, USDT, EUR en tiempo real · Integrada directamente en este dashboard para auto-actualización</td>
         <td>Tiempo real</td>
         <td><a href="https://ve.dolarapi.com" target="_blank" style="color:var(--grn);font-size:11px;">ve.dolarapi.com</a></td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--blue-m);">🟡 Yadio.io</strong><br><span style="font-size:10px;color:var(--t3);">Monitor de tasas P2P · Venezuela</span></td>
+        <td><span class="tag t-b">API</span></td>
+        <td>Agrega precios de compra/venta de USDT en el mercado P2P venezolano en tiempo real. Es una fuente independiente al BCV que refleja el tipo de cambio que la gente usa en la calle. <strong>¿Qué es Yadio?</strong> Es una plataforma web (yadio.io) que monitorea automáticamente miles de anuncios de compra y venta de criptomonedas en exchanges P2P (Binance, LocalBitcoins, etc.) y calcula un precio promedio del dólar paralelo para Venezuela y otros países de América Latina. No es un banco ni una casa de cambio: es un <em>agregador de precios</em> que refleja lo que el mercado está pagando realmente.</td>
+        <td>Tiempo real (≈5 min)</td>
+        <td><a href="https://yadio.io" target="_blank" style="color:var(--blue-m);font-size:11px;">yadio.io</a></td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--pur);">🔵 Binance P2P</strong><br><span style="font-size:10px;color:var(--t3);">Mercado persona a persona · Exchange global</span></td>
+        <td><span class="tag" style="background:var(--pur-l);color:var(--pur);">P2P</span></td>
+        <td>La mayor plataforma de intercambio P2P del mundo. En Venezuela es la referencia principal del "dólar paralelo" ya que permite comprar y vender USDT (Tether) directamente entre personas a precios libres de mercado, fuera del control del BCV.</td>
+        <td>Tiempo real</td>
+        <td><a href="https://p2p.binance.com" target="_blank" style="color:var(--pur);font-size:11px;">p2p.binance.com</a></td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--grn);">🛢️ EIA · Yahoo Finance</strong><br><span style="font-size:10px;color:var(--t3);">Petróleo WTI · Cushing, Oklahoma</span></td>
+        <td><span class="tag t-g">API</span></td>
+        <td>Precio spot del petróleo crudo WTI (West Texas Intermediate). Histórico mensual verificado desde la EIA (U.S. Energy Information Administration). Precio en tiempo real desde Yahoo Finance (símbolo CL=F). Dato crítico para Venezuela ya que el 95% de sus divisas provienen del petróleo.</td>
+        <td>Tiempo real (mercado abierto)</td>
+        <td><a href="https://finance.yahoo.com/quote/CL=F" target="_blank" style="color:var(--grn);font-size:11px;">finance.yahoo.com</a></td>
       </tr>
       <tr>
         <td><strong style="color:var(--ora);">📦 CENDAS-FVM</strong><br><span style="font-size:10px;color:var(--t3);">Centro de Doc. y Análisis Social · FVEN</span></td>
@@ -1455,16 +1484,26 @@ function drawCompChart(){
 function applyRates(r, live, ts) {
   const br = ((r.usdt - r.bcv) / r.bcv * 100).toFixed(1);
   const fmt = v => v.toFixed(2);
-  // Ticker set A
-  setText('tk-bcv',  fmt(r.bcv));
-  setText('tk-usdt', fmt(r.usdt));
+  // ── Ticker SET A ──
+  setText('tk-bcv',    fmt(r.bcv));
+  setText('tk-usdt',   fmt(r.usdt));
   setText('tk-brecha', br);
-  setText('tk-eur', fmt(r.eur));
-  // Ticker set B
-  setText('tk-bcv-b',  fmt(r.bcv));
-  setText('tk-usdt-b', fmt(r.usdt));
+  setText('tk-eur',    fmt(r.eur));
+  setText('tk-bin',    fmt(STATE.binance));
+  setText('tk-yad',    fmt(STATE.yadio));
+  setText('tk-wti',    fmt(STATE.wti));
+  setText('tk-deval',  '+'+((r.bcv-298.14)/298.14*100).toFixed(1)+'%');
+  setText('tk-cba-bs', fmtI(387*r.bcv));
+  // ── Ticker SET B ──
+  setText('tk-bcv-b',    fmt(r.bcv));
+  setText('tk-usdt-b',   fmt(r.usdt));
   setText('tk-brecha-b', br);
-  setText('tk-eur-b', fmt(r.eur));
+  setText('tk-eur-b',    fmt(r.eur));
+  setText('tk-bin-b',    fmt(STATE.binance));
+  setText('tk-yad-b',    fmt(STATE.yadio));
+  setText('tk-wti-b',    fmt(STATE.wti));
+  setText('tk-deval-b',  '+'+((r.bcv-298.14)/298.14*100).toFixed(1)+'%');
+  setText('tk-cba-bs-b', fmtI(387*r.bcv));
   // KPIs
   setText('kv-bcv', fmt(r.bcv));
   setText('kv-usdt', fmt(r.usdt));
