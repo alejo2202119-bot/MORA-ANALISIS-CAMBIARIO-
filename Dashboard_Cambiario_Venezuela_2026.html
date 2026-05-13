@@ -1057,13 +1057,13 @@ function applyRates(r, live, ts) {
   ['ss-usdt','cx-usdt'].forEach(id => setText(id, fmt(r.usdt)+' Bs'));
   setText('kv-bcv', fmt(r.bcv));
   setText('kv-usdt', fmt(r.usdt));
-  // COP actualizado en stats
-  setText('ss-cop', cop.toLocaleString('es-VE')+' COP = 1 USD');
-  setText('ss-cop-bs', '~'+copBsF+' Bs por 1 COP');
   // COP (peso colombiano): aprox 4100 COP = 1 USD. 1 COP = BCV/4100 Bs
   const cop = 4100; // COP por 1 USD (tasa referencial Banco de la República Colombia)
   const copBs = (r.bcv / cop).toFixed(4);
   const copBsF = copBs.replace('.', ',');
+  // COP actualizado en stats
+  setText('ss-cop', cop.toLocaleString('es-VE')+' COP = 1 USD');
+  setText('ss-cop-bs', '~'+copBsF+' Bs por 1 COP');
   setText('tk-cop',   cop.toLocaleString('es-VE'));
   setText('tk-cop-b', cop.toLocaleString('es-VE'));
   setText('tk-cop-bs',   '~'+copBsF);
