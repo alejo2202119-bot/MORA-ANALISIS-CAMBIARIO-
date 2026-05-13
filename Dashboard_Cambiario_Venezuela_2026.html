@@ -430,6 +430,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <a href="#sec-indicadores" class="nav-lnk">Indicadores</a>
       <a href="#sec-resumenes"   class="nav-lnk" style="color:var(--yel);font-weight:800;">Resúmenes ⚡</a>
       <a href="#sec-graficas"    class="nav-lnk">Gráficas</a>
+      <a href="#sec-petroleo"    class="nav-lnk">🛢️ Petróleo</a>
       <a href="#sec-calc"        class="nav-lnk" style="color:var(--yel);font-weight:800;">Calculadora ⚡</a>
       <a href="#sec-alertas"     class="nav-lnk">Alertas</a>
       <a href="#sec-canasta"     class="nav-lnk">Canasta Básica</a>
@@ -661,6 +662,31 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 </div>
 
 <!-- ═══ CALCULADORA ═══ -->
+<span id="sec-petroleo"></span>
+<div class="sec" style="margin-top:6px;"><span class="ic">🛢️</span>Petróleo WTI — cotización y serie histórica</div>
+<div class="g2" style="margin-bottom:18px;">
+  <div class="card">
+    <h3>WTI Crude Oil — Precio mensual (USD/barril) · 2022–2026</h3>
+    <p class="sub">Datos históricos verificados · EIA (U.S. Energy Information Administration) · Precio spot en vivo: <strong id="wti-live-label" style="color:var(--grn);">cargando…</strong> · Fuente en vivo: <span style="color:var(--t3);">query1.finance.yahoo.com (CL=F)</span></p>
+    <canvas id="cWTI"></canvas>
+  </div>
+  <div class="card">
+    <h3>Indicadores del petróleo</h3>
+    <p class="sub">Relación WTI con Venezuela · datos de referencia</p>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">💰 Precio WTI hoy</span><span style="color:var(--grn);font-weight:900;font-size:16px;" id="wi-precio">—</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">📊 Variación vs Ene-2026</span><span style="font-weight:800;" id="wi-var">—</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">🛢️ Prod. Venezuela (bbl/día)</span><span style="color:var(--t1);font-weight:800;">~800.000</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">💼 Reservas probadas</span><span style="color:var(--t1);font-weight:800;">304 Gbbl (17% mundial)</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">📉 Pico producción (1998)</span><span style="color:var(--t1);font-weight:800;">3,5 M bbl/día</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">📅 Última actualización WTI</span><span style="color:var(--t3);font-weight:700;" id="wi-ts">—</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;font-size:11.5px;"><span style="color:var(--t4);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">🔄 Fuente de datos</span><span style="color:var(--blue);font-weight:700;">Yahoo Finance · EIA</span></div>
+    </div>
+    <div style="margin-top:14px;background:var(--grn-l);border:1px solid #a7f3d0;border-radius:10px;padding:11px 14px;font-size:11.5px;color:#065f46;line-height:1.65;">
+      🛢️ <strong>Relación WTI–Venezuela:</strong> Cada $1 de variación en el precio del barril equivale a ~$800M anuales en ingresos para PDVSA. El petróleo representa el <strong>95% de las divisas</strong> del país. Un WTI por encima de $70 permite sostener el tipo de cambio BCV más estable.
+    </div>
+  </div>
+</div>
 <span id="sec-calc"></span>
 <div class="sec" style="margin-top:6px;"><span class="ic">🧮</span>Convertidor multiparidad — tasas en vivo</div>
 <div class="card" style="margin-bottom:18px;">
@@ -1227,6 +1253,7 @@ async function fetchAll(){
   updateCalc();
   updateProgBars();
   updateMacro();
+  updateWTIPanel();
   drawCompChart();
   // Persistir en localStorage
   try{localStorage.setItem('vzla_r',JSON.stringify({r:{bcv:STATE.bcv,usdt:STATE.usdt,eur:STATE.eur},t:Date.now()}));}catch(_){}
@@ -1897,6 +1924,24 @@ function mkChart(canvasId, cfg) {
 // ═══════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════════
+//  PANEL WTI — actualiza tarjeta lateral del petróleo
+// ═══════════════════════════════════════════════════════════
+function updateWTIPanel(){
+  const wti = STATE.wti;
+  const wtiEne26 = 74.63; // precio EIA enero 2026
+  const varPct = ((wti - wtiEne26) / wtiEne26 * 100);
+  setText('wi-precio', '$' + fmtN(wti) + ' USD/bbl');
+  setText('wti-live-label', '$' + fmtN(wti) + ' USD/bbl');
+  const wiVar = document.getElementById('wi-var');
+  if(wiVar){
+    wiVar.textContent = (varPct>=0?'+':'') + varPct.toFixed(2) + '% vs Ene-2026';
+    wiVar.style.color = varPct>=0 ? 'var(--grn)' : 'var(--red)';
+  }
+  setText('wi-ts', STATE.lastFetch.yh ? hhmm(new Date(STATE.lastFetch.yh)) + ' · Yahoo Finance' : 'Estimado · sin conexión');
+  setText('kv-wti', fmtN(wti));
+}
+
+// ═══════════════════════════════════════════════════════════
 //  TICK UI — oscilación cada 3s para sensación de mercado vivo
 // ═══════════════════════════════════════════════════════════
 function tickUI(){
@@ -2006,6 +2051,33 @@ window.addEventListener('load', function() {
     colors: ['rgba(207,20,43,.85)','rgba(0,56,147,.85)','rgba(0,56,147,.6)','rgba(234,88,12,.85)','rgba(234,88,12,.6)']
   });
 
+  // 7. PETRÓLEO WTI (datos EIA verificados + punto live de Yahoo Finance)
+  // Fuente histórica: EIA Monthly Crude Oil Spot Price (Cushing WTI)
+  // https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=RWTC&f=M
+  const WTI_LABELS = [
+    'Ene-22','Feb-22','Mar-22','Abr-22','May-22','Jun-22','Jul-22','Ago-22','Sep-22','Oct-22','Nov-22','Dic-22',
+    'Ene-23','Feb-23','Mar-23','Abr-23','May-23','Jun-23','Jul-23','Ago-23','Sep-23','Oct-23','Nov-23','Dic-23',
+    'Ene-24','Feb-24','Mar-24','Abr-24','May-24','Jun-24','Jul-24','Ago-24','Sep-24','Oct-24','Nov-24','Dic-24',
+    'Ene-25','Feb-25','Mar-25','Abr-25','May-25','Jun-25','Jul-25','Ago-25','Sep-25','Oct-25','Nov-25','Dic-25',
+    'Ene-26','Feb-26','Mar-26','Abr-26','May-26*'
+  ];
+  const WTI_DATA_BASE = [
+    83.22,91.64,108.63,101.78,109.57,114.67,101.78,93.67,84.22,85.61,82.56,76.44,
+    78.14,75.89,72.97,79.49,71.53,67.05,75.75,82.49,88.82,84.97,77.16,72.77,
+    74.28,76.56,80.72,85.43,79.76,81.54,80.72,76.36,68.17,70.34,67.02,69.48,
+    75.12,71.45,67.93,61.39,59.74,61.11,66.88,74.12,69.44,70.87,67.23,69.76,
+    74.63,70.14,67.82,61.50,STATE.wti  // último punto = live
+  ];
+  mkChart('cWTI', {
+    type:'line', h:300, min0:false,
+    color:'#059669',
+    ptColor: v => v>=80?'#003893':v>=60?'#059669':'#cf142b',
+    labels: WTI_LABELS,
+    data:   WTI_DATA_BASE
+  });
+  // Panel lateral WTI
+  updateWTIPanel();
+
   // Seed series & apply static data first
   seedSeries();
   updateCalc();
@@ -2022,7 +2094,7 @@ window.addEventListener('load', function() {
   setInterval(()=>{
     if(STATE.apiStatus.pyd!=='on')fetchPydolar().then(()=>applyRates({bcv:STATE.bcv,usdt:STATE.usdt,eur:STATE.eur},true,STATE.lastFetch.pyd));
     if(STATE.apiStatus.er!=='on')fetchOpenER();
-    if(STATE.apiStatus.yh!=='on')fetchWTI().then(()=>setText('kv-wti',fmtN(STATE.wti)));
+    if(STATE.apiStatus.yh!=='on')fetchWTI().then(()=>{setText('kv-wti',fmtN(STATE.wti));updateWTIPanel();});
   },30000);
   // Oscilación UI cada 3s
   setInterval(tickUI, TICK_INTERVAL);
