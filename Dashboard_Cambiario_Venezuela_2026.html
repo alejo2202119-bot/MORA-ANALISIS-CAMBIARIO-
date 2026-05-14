@@ -185,17 +185,88 @@ tbody td:first-child{color:var(--t1);font-weight:600;}
 /* ── RESPONSIVE ─────────────────────────── */
 @media(max-width:1400px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
 @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.ctx-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ── TABLET (≤900px) ──────────────────────────── */
 @media(max-width:900px){
   .g2,.g22,.g3{grid-template-columns:1fr;}
   .kpi-grid{grid-template-columns:repeat(2,1fr);}
   .ctx-grid{grid-template-columns:1fr 1fr;}
   .summary{grid-template-columns:1fr;}
-  .wrap{padding:14px;}
-  .header{padding:14px 16px;}
-  .search-box input{width:200px;}
-  .search-box input:focus{width:220px;}
+  .wrap{padding:16px 14px;}
+  .header{padding:12px 14px;gap:10px;}
+  .search-box input{width:180px;}
+  .search-box input:focus{width:210px;}
+  .calc-grid{grid-template-columns:1fr;}
+  #refreshBar{left:0;}
 }
-@media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr);}#topbar .srcs{display:none;}}
+
+/* ── MÓVIL (≤600px) ──────────────────────────── */
+@media(max-width:600px){
+  #topbar{padding:5px 12px;font-size:10px;}
+  #topbar .srcs{display:none;}
+  #topbar .live{font-size:10px;}
+  .header{padding:10px 12px;flex-direction:column;align-items:flex-start;gap:8px;}
+  .brand h1{font-size:15px;}
+  .brand p{font-size:9.5px;}
+  .header-right{width:100%;justify-content:space-between;}
+  .header-right nav{display:flex;gap:2px;flex-wrap:wrap;width:100%;margin-top:4px;}
+  .nav-lnk{font-size:10px;padding:4px 7px;}
+  .search-box{width:100%;}
+  .search-box input{width:100% !important;font-size:12px;}
+  #ticker{height:38px;}
+  .tk{padding:0 14px;}
+  .tk .lbl{font-size:8px;}
+  .tk .val{font-size:13px;}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .kpi{padding:12px 10px;}
+  .kpi-val{font-size:19px;}
+  .wrap{padding:10px 10px;}
+  .res-grid{grid-template-columns:1fr;}
+  .g2,.g22,.g3{grid-template-columns:1fr;}
+  .calc-grid{grid-template-columns:1fr;}
+  .calc-row{grid-template-columns:1fr 28px 1fr;gap:5px;padding:8px 10px;}
+  .calc-side input{font-size:12px;}
+  .card{padding:14px 12px;}
+  .card h3{font-size:12.5px;}
+  table{font-size:10.5px;}
+  thead th{font-size:8.5px;padding:7px 8px;}
+  tbody td{padding:8px 8px;}
+  .c-card{padding:14px;}
+  .tl-card{padding:14px;}
+  .footer{padding:14px 12px;font-size:9.5px;flex-direction:column;gap:8px;}
+  .footer .apis{gap:8px;}
+  .pdf-btn{width:100%;justify-content:center;}
+  #pdf-fab{display:none;}
+  #pdf-bar-btn{display:flex !important;}
+}
+
+/* ── TELÉFONO MUY PEQUEÑO (≤380px) ──────────── */
+@media(max-width:380px){
+  .kpi-grid{grid-template-columns:1fr;}
+  .kpi-val{font-size:22px;}
+  .nav-lnk{font-size:9px;padding:3px 6px;}
+}
+
+
+/* ── BOTÓN PDF ─────────────────────────────── */
+.pdf-btn{display:inline-flex;align-items:center;gap:7px;background:var(--red);color:#fff;border:none;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;text-decoration:none;white-space:nowrap;}
+.pdf-btn:hover{background:#b01020;transform:translateY(-1px);box-shadow:0 4px 14px rgba(207,20,43,.4);}
+.pdf-btn .pdf-ic{font-size:14px;}
+#pdf-fab{position:fixed;bottom:24px;right:24px;z-index:1000;background:var(--red);color:#fff;border:none;width:52px;height:52px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(207,20,43,.5);transition:all .2s;}
+#pdf-fab:hover{background:#b01020;transform:scale(1.1);}
+#pdf-bar-btn{display:none;}
+@media print{
+  #pwOverlay,#topbar,.header,#ticker,#refreshBar,#pdf-fab,#pdf-bar-btn,.btn-refresh,.search-box,#chartTooltip{display:none!important;}
+  body{background:#fff;color:#000;font-size:11px;}
+  .wrap{padding:12px;max-width:100%;}
+  .card,.kpi,.c-card,.tl-card,.tbl-card,.ctx-c{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
+  canvas{max-width:100%;}
+  .kpi-grid{grid-template-columns:repeat(4,1fr);}
+  .g2,.g22{grid-template-columns:1fr 1fr;}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  h2,h3{color:#003893;}
+  @page{margin:1.5cm;size:A4;}
+}
 
 /* ── SCROLL-OFFSET para header sticky (~130px topbar+header+ticker) ── */
 span[id^="sec-"]{display:block;scroll-margin-top:135px;}
@@ -438,6 +509,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <a href="#sec-macro"       class="nav-lnk">Macro</a>
       <a href="#sec-fuentes"     class="nav-lnk">Fuentes</a>
     </nav>
+    <button id="pdf-bar-btn" class="pdf-btn" onclick="downloadPDF()" title="Descargar PDF"><span class="pdf-ic">📄</span>PDF</button>
     <div class="badge-live"><span class="dot"></span><div class="api-dots"><div class="api-dot-wrap"><span class="dot-small off" id="adc-pyd"></span>pydolar</div><div class="api-dot-wrap"><span class="dot-small off" id="adc-er"></span>er-api</div><div class="api-dot-wrap"><span class="dot-small off" id="adc-yh"></span>WTI</div></div><span id="liveLabel">Actualizando…</span></div>
     <div class="search-box">
       <span class="si">🔍</span>
@@ -494,6 +566,9 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <button class="btn-refresh" onclick="fetchLive()" title="Actualizar tasas">↻</button>
   </div>
 </div>
+
+<!-- BOTÓN PDF FLOTANTE -->
+<button id="pdf-fab" onclick="downloadPDF()" title="Descargar PDF como imagen / imprimir">📄</button>
 
 <!-- TOOLTIP FLOTANTE -->
 <div id="chartTooltip"></div>
@@ -1112,7 +1187,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 // ═══════════════════════════════════════════════════════════
 //  ESTADO GLOBAL
 // ═══════════════════════════════════════════════════════════
-const STATIC = { bcv:504.91, usdt:654.68, eur:589.27 };
+const STATIC = { bcv:504.91, usdt:654.68, eur:589.27 }; // Fallback mayo-2026 · se sobreescribe con API
 const STATE = {
   bcv:504.91, usdt:654.68, eur:589.27,
   cop:4100, wti:78.50,
@@ -1258,7 +1333,7 @@ async function fetchWTI(){
     }
   }catch(e){logAPI('yahoo-wti','fail',Date.now()-t0,e.message);}
   // Fallback: WTI oscilando en rango realista
-  STATE.wti=75+Math.random()*8;
+  STATE.wti = STATE.wti > 0 ? STATE.wti : 78.50 + (Math.random()-0.5)*2; // Fallback WTI estimado
   setDots('yh','warn');
   return false;
 }
@@ -2138,6 +2213,25 @@ window.addEventListener('load', function() {
   // Oscilación UI cada 3s
   setInterval(tickUI, TICK_INTERVAL);
 });
+
+// ═══════════════════════════════════════════════════════════
+//  DESCARGA PDF — usa window.print() con @media print CSS
+// ═══════════════════════════════════════════════════════════
+function downloadPDF() {
+  // Muestra mensaje breve
+  const fab = document.getElementById('pdf-fab');
+  const barBtn = document.getElementById('pdf-bar-btn');
+  const orig = fab ? fab.textContent : '📄';
+  if(fab){ fab.textContent='⏳'; fab.style.pointerEvents='none'; }
+  if(barBtn){ barBtn.innerHTML='<span class="pdf-ic">⏳</span>Preparando…'; barBtn.disabled=true; }
+  // Espera a que los canvas estén pintados
+  setTimeout(function(){
+    window.print();
+    if(fab){ fab.textContent=orig; fab.style.pointerEvents=''; }
+    if(barBtn){ barBtn.innerHTML='<span class="pdf-ic">📄</span>PDF'; barBtn.disabled=false; }
+  }, 400);
+}
+
 </script>
 </body>
 </html>
