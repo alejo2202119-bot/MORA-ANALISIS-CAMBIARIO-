@@ -256,16 +256,78 @@ tbody td:first-child{color:var(--t1);font-weight:600;}
 #pdf-fab:hover{background:#b01020;transform:scale(1.1);}
 #pdf-bar-btn{display:none;}
 @media print{
-  #pwOverlay,#topbar,.header,#ticker,#refreshBar,#pdf-fab,#pdf-bar-btn,.btn-refresh,.search-box,#chartTooltip{display:none!important;}
-  body{background:#fff;color:#000;font-size:11px;}
-  .wrap{padding:12px;max-width:100%;}
-  .card,.kpi,.c-card,.tl-card,.tbl-card,.ctx-c{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
-  canvas{max-width:100%;}
-  .kpi-grid{grid-template-columns:repeat(4,1fr);}
-  .g2,.g22{grid-template-columns:1fr 1fr;}
-  .g3{grid-template-columns:repeat(3,1fr);}
+  /* ── Ocultar UI chrome ── */
+  #pwOverlay,#topbar,.header,#ticker,#refreshBar,#pdf-fab,#pdf-bar-btn,
+  .btn-refresh,.search-box,#chartTooltip,
+  #block-graficas,#block-calc,#block-alertas,#block-tablas{display:none!important;}
+
+  /* ── Base ── */
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  body{background:#fff;color:#111;font-size:10.5px;font-family:'Inter',sans-serif;}
+  a{color:#003893;text-decoration:none;}
+  .wrap{padding:0;max-width:100%;}
+
+  /* ── Encabezado de impresión ── */
+  .wrap::before{
+    content:"Dashboard Cambiario · Venezuela 2026  ·  FUNDESTA  ·  " attr(data-fecha);
+    display:block;font-size:9px;color:#64748b;text-align:right;
+    border-bottom:2px solid #003893;padding-bottom:6px;margin-bottom:18px;
+  }
+
+  /* ── Saltos de página ── */
+  #sec-indicadores{page-break-before:always;}
+  #sec-resumenes{page-break-before:always;}
+  #sec-canasta{page-break-before:always;}
+  #sec-petroleo{page-break-before:always;}
+  #sec-macro,#sec-fuentes{page-break-before:always;}
+
+  /* ── Grids no-print dentro de secciones impresas ── */
+  .g2,.g22{display:block!important;}
+
+  /* ── Grids adaptados a papel ── */
+  .kpi-grid{grid-template-columns:repeat(4,1fr);gap:8px;}
+  .g3{grid-template-columns:1fr 1fr 1fr;gap:10px;}
+  .res-grid{grid-template-columns:1fr 1fr 1fr;gap:10px;}
+  .sum-stats{grid-template-columns:repeat(4,1fr);}
+  .summary{grid-template-columns:1fr 1fr;gap:16px;}
+
+  /* ── Cards / KPIs ── */
+  .card,.kpi,.c-card,.tbl-card,.ctx-c,.res-card,.tl-card{
+    box-shadow:none;border:1px solid #d1d5db;break-inside:avoid;margin-bottom:8px;
+  }
+  .kpi{padding:10px;}
+  .kpi-val{font-size:18px;}
+
+  /* ── Tablas ── */
+  table{width:100%;border-collapse:collapse;font-size:9.5px;}
+  th,td{padding:4px 6px;border:1px solid #e2e8f0;}
+  thead{background:#003893!important;color:#fff!important;}
+  tr:nth-child(even){background:#f8fafc;}
+
+  /* ── Canvas ── */
+  canvas{max-width:100%;height:auto!important;max-height:180px!important;}
+
+  /* ── Colores importantes ── */
   h2,h3{color:#003893;}
-  @page{margin:1.5cm;size:A4;}
+  .c-blue{color:#003893!important;}
+  .c-red{color:#cf142b!important;}
+  .c-yel{color:#b45309!important;}
+  .c-pur{color:#6d28d9!important;}
+  .c-grn,.c-green{color:#059669!important;}
+  .tag.t-r{background:#fee2e2;color:#991b1b;}
+  .tag.t-y{background:#fef3c7;color:#92400e;}
+  .tag.t-g{background:#d1fae5;color:#065f46;}
+  .tag.t-b{background:#dbeafe;color:#1e40af;}
+
+  /* ── Pie de página con numeración ── */
+  @page{margin:1.8cm 1.5cm;size:A4;}
+  @page{@bottom-right{content:"Pág. " counter(page) " / " counter(pages);font-size:8px;color:#94a3b8;}}
+  @page:first{@bottom-right{content:""}}
+
+  /* ── Alertas y chips ── */
+  .c-alert{font-size:9.5px;padding:7px 10px;}
+  .res-foot{font-size:8.5px;}
+  .sec{font-size:9px;margin-bottom:10px;}
 }
 
 /* ── SCROLL-OFFSET para header sticky (~130px topbar+header+ticker) ── */
@@ -524,8 +586,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   <div id="tickerScroll">
     <div id="tickerTrack">
       <!-- ══ SET A — con IDs, actualizados por JS en cada fetch ══ -->
-      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv">504,91</span><span class="unit">Bs/USD</span></div>
-      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt">654,68</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv">510,79</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt">665,00</span><span class="unit">Bs</span></div>
       <div class="tk"><span class="lbl">📐 Brecha</span><span class="val" id="tk-brecha">29,7</span><span class="unit">%</span></div>
       <div class="tk"><span class="lbl">💶 EUR BCV</span><span class="val" id="tk-eur">589,27</span><span class="unit">Bs</span></div>
       <div class="tk"><span class="lbl">🔵 Binance P2P</span><span class="val" id="tk-bin">658,20</span><span class="unit">Bs/USD</span></div>
@@ -533,7 +595,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <div class="tk"><span class="lbl">🛢️ WTI Crudo</span><span class="val" id="tk-wti">78,50</span><span class="unit">USD/bbl</span></div>
       <div class="tk"><span class="lbl">🇨🇴 Peso COP/USD</span><span class="val" id="tk-cop">4.100</span><span class="unit">COP</span></div>
       <div class="tk"><span class="lbl">🇨🇴 1 COP en Bs</span><span class="val" id="tk-cop-bs">0,1232</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval">+67,8%</span></div>
+      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval">+71,3%</span></div>
       <div class="tk"><span class="lbl">💰 CBA en Bolívares</span><span class="val chg-up" id="tk-cba-bs">195.402</span><span class="unit">Bs</span></div>
       <div class="tk"><span class="lbl">🛑 Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8-ene</span></div>
       <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,26</span><span class="unit">USD/mes</span></div>
@@ -542,8 +604,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <div class="tk"><span class="lbl">🌉 COP Frontera compra</span><span class="val" style="color:var(--grn);">3.550</span><span class="unit">COP/USD · Táchira</span></div>
       <div class="tk"><span class="lbl">🌉 COP Frontera venta</span><span class="val" style="color:var(--red);">3.600</span><span class="unit">COP/USD · Táchira</span></div>
       <!-- ══ SET B — duplicado para loop continuo ══ -->
-      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv-b">504,91</span><span class="unit">Bs/USD</span></div>
-      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt-b">654,68</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv-b">510,79</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt-b">665,00</span><span class="unit">Bs</span></div>
       <div class="tk"><span class="lbl">📐 Brecha</span><span class="val" id="tk-brecha-b">29,7</span><span class="unit">%</span></div>
       <div class="tk"><span class="lbl">💶 EUR BCV</span><span class="val" id="tk-eur-b">589,27</span><span class="unit">Bs</span></div>
       <div class="tk"><span class="lbl">🔵 Binance P2P</span><span class="val" id="tk-bin-b">658,20</span><span class="unit">Bs/USD</span></div>
@@ -551,7 +613,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <div class="tk"><span class="lbl">🛢️ WTI Crudo</span><span class="val" id="tk-wti-b">78,50</span><span class="unit">USD/bbl</span></div>
       <div class="tk"><span class="lbl">🇨🇴 Peso COP/USD</span><span class="val" id="tk-cop-b">4.100</span><span class="unit">COP</span></div>
       <div class="tk"><span class="lbl">🇨🇴 1 COP en Bs</span><span class="val" id="tk-cop-bs-b">0,1232</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval-b">+67,8%</span></div>
+      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval-b">+71,3%</span></div>
       <div class="tk"><span class="lbl">💰 CBA en Bolívares</span><span class="val chg-up" id="tk-cba-bs-b">195.402</span><span class="unit">Bs</span></div>
       <div class="tk"><span class="lbl">🛑 Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8-ene</span></div>
       <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,26</span><span class="unit">USD/mes</span></div>
@@ -573,7 +635,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <!-- TOOLTIP FLOTANTE -->
 <div id="chartTooltip"></div>
 
-<div class="wrap">
+<div class="wrap" id="mainWrap">
 
 <!-- ═══ RESUMEN EJECUTIVO ═══ -->
 <span id="sec-resumen"></span>
@@ -590,10 +652,10 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="ss"><div class="sl">USDT Paralelo</div><div class="sv c-pur" id="ss-usdt">—</div><div class="sd">Binance P2P · hoy</div></div>
     <div class="ss"><div class="sl">Brecha cambiaria</div><div class="sv c-yel" id="ss-brecha">—</div><div class="sd" id="ss-brecha-d">Diferencial BCV vs mercado</div></div>
     <div class="ss"><div class="sl">Devaluación 2026</div><div class="sv c-red" id="ss-deval">—</div><div class="sd">Desde 1-ene-2026 · 298,14 Bs</div></div>
-    <div class="ss"><div class="sl">Peso Colombiano</div><div class="sv" id="ss-cop" style="color:var(--grn);">~4.100 COP</div><div class="sd">por 1 USD · ref. Banco República</div></div>
-    <div class="ss"><div class="sl">1 COP en Bolívares</div><div class="sv" id="ss-cop-bs" style="color:var(--grn);">~0,1232 Bs</div><div class="sd">tasa implícita BCV/COP</div></div>
-    <div class="ss"><div class="sl">Salario mín. en USD</div><div class="sv c-red">$0,26</div><div class="sd">130 Bs/mes · Decreto 2026</div></div>
-    <div class="ss"><div class="sl">Canasta básica CBA</div><div class="sv c-red">~$387</div><div class="sd">1.503 salarios mínimos</div></div>
+    <div class="ss"><div class="sl">Peso Colombiano</div><div class="sv" id="ss-cop" style="color:var(--grn);">~4.380 COP</div><div class="sd">por 1 USD · ref. Banco República</div></div>
+    <div class="ss"><div class="sl">1 COP en Bolívares</div><div class="sv" id="ss-cop-bs" style="color:var(--grn);">~0,1167 Bs</div><div class="sd">tasa implícita BCV/COP</div></div>
+    <div class="ss"><div class="sl">Salario mín. en USD</div><div class="sv c-red">$0,25</div><div class="sd">130 Bs/mes (base) · Ingreso integral $240</div></div>
+    <div class="ss"><div class="sl">Canasta básica CBA</div><div class="sv c-red">~$692</div><div class="sd">2.717 salarios mínimos · CENDAS-FVM</div></div>
   </div>
 </div>
 
@@ -601,12 +663,12 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <span id="sec-indicadores"></span>
 <div class="sec"><span class="ic">📊</span>Indicadores clave · <span class="dyn-date-full"></span></div>
 <div class="kpi-grid">
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#001f5b,var(--blue));"></div><div class="kpi-ico">🏦</div><div class="kpi-lbl">Dólar BCV Oficial</div><div class="kpi-val c-blue" id="kv-bcv">504,91</div><div class="kpi-sub" id="kv-bcv-sub">↑ En vivo · Bs/USD · <span id="kv-bcv-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#4c1d95,var(--pur));"></div><div class="kpi-ico">💜</div><div class="kpi-lbl">USDT Paralelo</div><div class="kpi-val c-pur" id="kv-usdt">654,68</div><div class="kpi-sub" id="kv-usdt-sub">↑ Binance P2P · <span id="kv-usdt-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,var(--yel));"></div><div class="kpi-ico">📐</div><div class="kpi-lbl">Brecha Cambiaria</div><div class="kpi-val c-yel" id="kv-brecha">29,7%</div><div class="kpi-sub">USDT vs BCV · diferencial</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7f1d1d,var(--red));"></div><div class="kpi-ico">📉</div><div class="kpi-lbl">Devaluación 2026</div><div class="kpi-val c-red" id="kv-deval">+67,8%</div><div class="kpi-sub">Desde 298,14 Bs · 1-ene</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a5c,#0ea5e9);"></div><div class="kpi-ico">🇨🇴</div><div class="kpi-lbl">Peso COP / USD</div><div class="kpi-val" style="color:#0ea5e9;" id="kv-cop">4.100</div><div class="kpi-sub">1 COP = <span id="kv-cop-bs">—</span> Bs · <span id="kv-cop-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a1a,#059669);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">WTI Crudo</div><div class="kpi-val" style="color:var(--grn);" id="kv-wti">78,50</div><div class="kpi-sub">USD/barril · <span id="kv-wti-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#001f5b,var(--blue));"></div><div class="kpi-ico">🏦</div><div class="kpi-lbl">Dólar BCV Oficial</div><div class="kpi-val c-blue" id="kv-bcv">510,79</div><div class="kpi-sub" id="kv-bcv-sub">↑ En vivo · Bs/USD · <span id="kv-bcv-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#4c1d95,var(--pur));"></div><div class="kpi-ico">💜</div><div class="kpi-lbl">USDT Paralelo</div><div class="kpi-val c-pur" id="kv-usdt">665,00</div><div class="kpi-sub" id="kv-usdt-sub">↑ Binance P2P · <span id="kv-usdt-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,var(--yel));"></div><div class="kpi-ico">📐</div><div class="kpi-lbl">Brecha Cambiaria</div><div class="kpi-val c-yel" id="kv-brecha">30,2%</div><div class="kpi-sub">USDT vs BCV · diferencial</div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7f1d1d,var(--red));"></div><div class="kpi-ico">📉</div><div class="kpi-lbl">Devaluación 2026</div><div class="kpi-val c-red" id="kv-deval">+71,3%</div><div class="kpi-sub">Desde 298,14 Bs · 1-ene-26</div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a5c,#0ea5e9);"></div><div class="kpi-ico">🇨🇴</div><div class="kpi-lbl">Peso COP / USD</div><div class="kpi-val" style="color:#0ea5e9;" id="kv-cop">4.380</div><div class="kpi-sub">1 COP = <span id="kv-cop-bs">—</span> Bs · <span id="kv-cop-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a1a,#059669);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">WTI Crudo</div><div class="kpi-val" style="color:var(--grn);" id="kv-wti">101,50</div><div class="kpi-sub">USD/barril · <span id="kv-wti-ts">—</span></div></div>
   <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7c2d12,var(--ora));"></div><div class="kpi-ico">🔥</div><div class="kpi-lbl">Devaluación 2025</div><div class="kpi-val c-ora">+474%</div><div class="kpi-sub">51,93 → 298,14 Bs</div></div>
   <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#14532d,var(--grn));"></div><div class="kpi-ico">🔴</div><div class="kpi-lbl">Pico USDT 2026</div><div class="kpi-val" style="color:#991b1b;">780 Bs</div><div class="kpi-sub">8-ene · brecha 140%</div></div>
 </div>
@@ -664,13 +726,13 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
         <div class="res-sub">Poder adquisitivo en tiempo real</div>
       </div>
     </div>
-    <div class="res-row"><span class="res-lbl">🥗 CBA Venezuela (USD)</span><span class="res-val up">$387 USD</span></div>
+    <div class="res-row"><span class="res-lbl">🥗 CBA Venezuela (USD)</span><span class="res-val up">$692 USD</span></div>
     <div class="res-row"><span class="res-lbl">🥗 CBA Venezuela (Bs hoy)</span><span class="res-val up" id="rc-cba-bs">—</span></div>
-    <div class="res-row"><span class="res-lbl">🌄 CBA Táchira (+9% frontera)</span><span class="res-val up" id="rc-cba-tachira">$422 USD</span></div>
-    <div class="res-row"><span class="res-lbl">🏠 CBN Venezuela</span><span class="res-val up">$589 USD</span></div>
+    <div class="res-row"><span class="res-lbl">🌄 CBA Táchira (+9% frontera)</span><span class="res-val up" id="rc-cba-tachira">$755 USD</span></div>
+    <div class="res-row"><span class="res-lbl">🏠 CBN Venezuela</span><span class="res-val up">$1.200 USD</span></div>
     <div class="res-row"><span class="res-lbl">💼 Salario mínimo en USD</span><span class="res-val up" id="rc-salario-usd">$0,26 USD</span></div>
-    <div class="res-row"><span class="res-lbl">❌ Salarios para 1 CBA</span><span class="res-val up">1.503 salarios</span></div>
-    <div class="res-row"><span class="res-lbl">📊 % CBA cubierto sal. mín.</span><span class="res-val up">0,07%</span></div>
+    <div class="res-row"><span class="res-lbl">❌ Salarios para 1 CBA</span><span class="res-val up">2.717 salarios</span></div>
+    <div class="res-row"><span class="res-lbl">📊 % CBA cubierto sal. mín.</span><span class="res-val up">0,04%</span></div>
     <div class="res-foot">🛒 <strong>Fuente:</strong> CENDAS-FVM · INE · INVESP · FUNDESTA. CBA en bolívares se recalcula con cada actualización del BCV.</div>
   </div>
 
@@ -678,6 +740,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
 <!-- ═══ GRÁFICA HISTÓRICA ═══ -->
 <span id="sec-graficas"></span>
+<div id="block-graficas">
 <div class="sec"><span class="ic">📈</span>Evolución histórica 2022–2026</div>
 <div class="card" style="margin-bottom:18px;">
   <h3>Dólar BCV Oficial vs. USDT Paralelo — Serie histórica mensual (Bs/USD)</h3>
@@ -706,7 +769,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   </div>
   <div class="card">
     <h3>Variación Mensual BCV — 2026</h3>
-    <p class="sub">Depreciación mes a mes del bolívar vs dólar oficial · *Mayo parcial al 12-may</p>
+    <p class="sub">Depreciación mes a mes del bolívar vs dólar oficial · *Mayo parcial al 14-may</p>
     <canvas id="cMn"></canvas>
   </div>
 </div>
@@ -743,8 +806,9 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     </div>
   </div>
 </div>
+</div><!-- /block-graficas -->
 
-<!-- ═══ CALCULADORA ═══ -->
+<!-- ═══ PETRÓLEO ═══ -->
 <span id="sec-petroleo"></span>
 <div class="sec" style="margin-top:6px;"><span class="ic">🛢️</span>Petróleo WTI — cotización y serie histórica</div>
 <div class="g2" style="margin-bottom:18px;">
@@ -771,6 +835,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   </div>
 </div>
 <span id="sec-calc"></span>
+<div id="block-calc">
 <div class="sec" style="margin-top:6px;"><span class="ic">🧮</span>Convertidor multiparidad — tasas en vivo</div>
 <div class="card" style="margin-bottom:18px;">
   <h3>Calculadora cambiaria · 6 pares activos</h3>
@@ -788,9 +853,11 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     </div>
   </div>
 </div>
+</div><!-- /block-calc -->
 
 <!-- ═══ ALERTAS + HISTORIAL ═══ -->
 <span id="sec-alertas"></span>
+<div id="block-alertas">
 <div class="g22" style="margin-bottom:18px;">
   <div class="card">
     <h3>🔔 Feed de alertas automáticas</h3>
@@ -814,20 +881,20 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
   <div class="c-card">
     <div class="c-head"><span class="flag">🇻🇪</span><div><h3>Venezuela Nacional</h3><p>Fuente: CENDAS-FVM · INE · INVESP · Mayo 2026</p></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Alimentos mínimos · familia de 5 personas</div></div><div class="c-rgt"><div class="usd">$387 USD</div><div class="bs">195.402 Bs (BCV)</div><div class="sal">⚠ 1.503 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">CBA + vivienda, servicios, educación, salud</div></div><div class="c-rgt"><div class="usd">$589 USD</div><div class="bs">297.391 Bs (BCV)</div><div class="sal">⚠ 2.287 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">💼 Salario mínimo mensual</div><div class="desc">Decreto gubernamental vigente 2026</div></div><div class="c-rgt"><div class="usd" style="color:var(--red);">$0,26 USD</div><div class="bs">130 Bs/mes</div><div class="sal">0,07% de la CBA</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🍗 Pollo (1 kg)</div><div class="desc">Promedio mercado nacional · may-2026</div></div><div class="c-rgt"><div class="usd">~$1,80</div><div class="bs">~909 Bs</div><div class="sal">7 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🥛 Leche en polvo (400g)</div><div class="desc">Supermercados · promedio nacional</div></div><div class="c-rgt"><div class="usd">~$2,50</div><div class="bs">~1.262 Bs</div><div class="sal">9,7 salarios mínimos</div></div></div>
-    <div class="c-alert red">⚠️ Con 130 Bs (~$0,26), un trabajador necesitaría <strong>1.503 meses — 125 años</strong> de salario mínimo para cubrir una canasta básica alimentaria mensual.</div>
+    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Alimentos mínimos · familia de 5 personas</div></div><div class="c-rgt"><div class="usd">$692 USD</div><div class="bs">353.267 Bs (BCV)</div><div class="sal">⚠ 2.717 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">CBA + vivienda, servicios, educación, salud</div></div><div class="c-rgt"><div class="usd">$1.200 USD</div><div class="bs">612.948 Bs (BCV)</div><div class="sal">⚠ 4.715 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">💼 Salario mínimo mensual</div><div class="desc">Decreto gubernamental vigente 2026</div></div><div class="c-rgt"><div class="usd" style="color:var(--red);">$0,26 USD</div><div class="bs">130 Bs/mes</div><div class="sal">0,04% de la CBA</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🍗 Pollo (1 kg)</div><div class="desc">Promedio mercado nacional · may-2026</div></div><div class="c-rgt"><div class="usd">~$4,50</div><div class="bs">~2.299 Bs</div><div class="sal">17,7 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🥛 Leche en polvo (400g)</div><div class="desc">Supermercados · promedio nacional</div></div><div class="c-rgt"><div class="usd">~$4,00</div><div class="bs">~2.043 Bs</div><div class="sal">15,7 salarios mínimos</div></div></div>
+    <div class="c-alert red">⚠️ Con 130 Bs (~$0,26), un trabajador necesitaría <strong>2.717 meses — 226 años</strong> de salario mínimo para cubrir una canasta básica alimentaria mensual.</div>
   </div>
 
   <div class="c-card">
     <div class="c-head"><span class="flag">🌄</span><div><h3>Estado Táchira</h3><p>Economía fronteriza Colombia-Venezuela · May 2026</p></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Precios +9% vs promedio nacional · frontera</div></div><div class="c-rgt"><div class="usd">$422 USD</div><div class="bs">213.072 Bs (BCV)</div><div class="sal">⚠ 1.639 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">Incluye transporte fronterizo y servicios</div></div><div class="c-rgt"><div class="usd">$641 USD</div><div class="bs">323.647 Bs (BCV)</div><div class="sal">⚠ 2.490 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Precios +9% vs promedio nacional · frontera</div></div><div class="c-rgt"><div class="usd">$755 USD</div><div class="bs">385.547 Bs (BCV)</div><div class="sal">⚠ 2.966 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">Incluye transporte fronterizo y servicios</div></div><div class="c-rgt"><div class="usd">$1.308 USD</div><div class="bs">668.113 Bs (BCV)</div><div class="sal">⚠ 5.139 salarios mínimos</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">💱 Economía bimoneda</div><div class="desc">COP y USD de uso cotidiano en Táchira</div></div><div class="c-rgt"><div class="usd">USD/COP</div><div class="bs">~0,19 Bs por COP</div><div class="sal">Mercado informal</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🍗 Pollo (1 kg) · Táchira</div><div class="desc">Mercado fronterizo · San Cristóbal</div></div><div class="c-rgt"><div class="usd">~$2,10</div><div class="bs">~1.060 Bs</div><div class="sal">8,2 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🍗 Pollo (1 kg) · Táchira</div><div class="desc">Mercado fronterizo · San Cristóbal</div></div><div class="c-rgt"><div class="usd">~$4,90</div><div class="bs">~2.503 Bs</div><div class="sal">19,3 salarios mínimos</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">🏥 Consulta médica privada</div><div class="desc">Clínica privada · San Cristóbal</div></div><div class="c-rgt"><div class="usd">$15–30</div><div class="bs">7.574–15.147 Bs</div><div class="sal">58–116 salarios mín.</div></div></div>
     <div class="c-alert blue">📍 <strong>Táchira</strong> tiene precios 9–12% más altos que el promedio nacional por su economía fronteriza. Muchos productos vienen de Colombia y se pagan en COP o USD, elevando el costo real de vida.</div>
   </div>
@@ -835,7 +902,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   <div class="c-card">
     <div class="c-head"><span class="flag">📊</span><div><h3>Comparación visual</h3><p>Canasta básica vs ingresos oficiales · USD</p></div></div>
     <canvas id="cCan"></canvas>
-    <div class="c-row" style="margin-top:12px;"><div class="c-lft"><div class="name">🎯 Salario necesario para CBA</div><div class="desc">Lo que debería ganar un venezolano</div></div><div class="c-rgt"><div class="usd" style="color:var(--grn);">$387/mes</div><div class="bs">1.503× el mínimo actual</div></div></div>
+    <div class="c-row" style="margin-top:12px;"><div class="c-lft"><div class="name">🎯 Salario necesario para CBA</div><div class="desc">Lo que debería ganar un venezolano</div></div><div class="c-rgt"><div class="usd" style="color:var(--grn);">$692/mes</div><div class="bs">2.717× el mínimo actual</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">📉 Pérdida poder adquisitivo</div><div class="desc">2024 vs 2026 en términos reales</div></div><div class="c-rgt"><div class="usd" style="color:var(--red);">−89%</div><div class="bs">En 2 años</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">💵 Ingreso real promedio</div><div class="desc">Trabajadores informales Venezuela</div></div><div class="c-rgt"><div class="usd" style="color:var(--grn);">$80–120</div><div class="bs">Por mes (estimado)</div></div></div>
   </div>
@@ -853,17 +920,17 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="over"><table>
       <thead><tr><th>Grupo alimenticio</th><th>Ítems principales</th><th>Costo aprox.</th><th>% de la CBA</th></tr></thead>
       <tbody>
-        <tr><td>🌾 Cereales y derivados</td><td>Harina de maíz, arroz, pasta, pan</td><td>~$62 USD</td><td><span class="tag t-y">16%</span></td></tr>
-        <tr><td>🍗 Proteínas animales</td><td>Pollo, res, cerdo, pescado, huevos</td><td>~$89 USD</td><td><span class="tag t-r">23%</span></td></tr>
-        <tr><td>🥛 Lácteos</td><td>Leche en polvo, queso, margarina</td><td>~$54 USD</td><td><span class="tag t-r">14%</span></td></tr>
-        <tr><td>🥦 Verduras y tubérculos</td><td>Papa, yuca, tomate, cebolla, zanahoria</td><td>~$42 USD</td><td><span class="tag t-y">11%</span></td></tr>
-        <tr><td>🍌 Frutas</td><td>Plátano, cambur, naranja, papaya</td><td>~$23 USD</td><td><span class="tag t-g">6%</span></td></tr>
-        <tr><td>🫘 Leguminosas</td><td>Caraotas negras, lentejas, arvejas</td><td>~$19 USD</td><td><span class="tag t-g">5%</span></td></tr>
-        <tr><td>🫙 Aceites y grasas</td><td>Aceite de girasol, mantequilla</td><td>~$31 USD</td><td><span class="tag t-y">8%</span></td></tr>
-        <tr><td>🍚 Azúcar y endulzantes</td><td>Azúcar blanca, papelón</td><td>~$15 USD</td><td><span class="tag t-g">4%</span></td></tr>
-        <tr><td>🧂 Condimentos y otros</td><td>Sal, café, mayonesa, salsa</td><td>~$27 USD</td><td><span class="tag t-y">7%</span></td></tr>
-        <tr><td>🥤 Bebidas</td><td>Jugos, agua, refrescos ocasionales</td><td>~$25 USD</td><td><span class="tag t-g">6%</span></td></tr>
-        <tr style="background:var(--blue-ll);font-weight:700;"><td colspan="2" style="color:var(--blue);">TOTAL CBA · Venezuela Nacional</td><td style="color:var(--blue);">$387 USD</td><td><span class="tag" style="background:var(--blue);color:#fff;">100%</span></td></tr>
+        <tr><td>🌾 Cereales y derivados</td><td>Harina de maíz, arroz, pasta, pan</td><td>~$111 USD</td><td><span class="tag t-y">16%</span></td></tr>
+        <tr><td>🍗 Proteínas animales</td><td>Pollo, res, cerdo, pescado, huevos</td><td>~$159 USD</td><td><span class="tag t-r">23%</span></td></tr>
+        <tr><td>🥛 Lácteos</td><td>Leche en polvo, queso, margarina</td><td>~$97 USD</td><td><span class="tag t-r">14%</span></td></tr>
+        <tr><td>🥦 Verduras y tubérculos</td><td>Papa, yuca, tomate, cebolla, zanahoria</td><td>~$76 USD</td><td><span class="tag t-y">11%</span></td></tr>
+        <tr><td>🍌 Frutas</td><td>Plátano, cambur, naranja, papaya</td><td>~$42 USD</td><td><span class="tag t-g">6%</span></td></tr>
+        <tr><td>🫘 Leguminosas</td><td>Caraotas negras, lentejas, arvejas</td><td>~$35 USD</td><td><span class="tag t-g">5%</span></td></tr>
+        <tr><td>🫙 Aceites y grasas</td><td>Aceite de girasol, mantequilla</td><td>~$55 USD</td><td><span class="tag t-y">8%</span></td></tr>
+        <tr><td>🍚 Azúcar y endulzantes</td><td>Azúcar blanca, papelón</td><td>~$28 USD</td><td><span class="tag t-g">4%</span></td></tr>
+        <tr><td>🧂 Condimentos y otros</td><td>Sal, café, mayonesa, salsa</td><td>~$48 USD</td><td><span class="tag t-y">7%</span></td></tr>
+        <tr><td>🥤 Bebidas</td><td>Jugos, agua, refrescos ocasionales</td><td>~$42 USD</td><td><span class="tag t-g">6%</span></td></tr>
+        <tr style="background:var(--blue-ll);font-weight:700;"><td colspan="2" style="color:var(--blue);">TOTAL CBA · Venezuela Nacional</td><td style="color:var(--blue);">$692 USD</td><td><span class="tag" style="background:var(--blue);color:#fff;">100%</span></td></tr>
       </tbody>
     </table></div>
   </div>
@@ -875,18 +942,18 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="over"><table>
       <thead><tr><th>Componente</th><th>Detalle</th><th>Costo aprox.</th><th>% de la CBN</th></tr></thead>
       <tbody>
-        <tr><td>🛒 Alimentación (CBA)</td><td>Ver tabla izquierda</td><td>$387 USD</td><td><span class="tag t-r">65,7%</span></td></tr>
-        <tr><td>🏠 Vivienda y servicios</td><td>Alquiler, electricidad, gas, agua</td><td>~$72 USD</td><td><span class="tag t-r">12,2%</span></td></tr>
-        <tr><td>👕 Vestuario y calzado</td><td>Ropa básica, zapatos, ropa interior</td><td>~$31 USD</td><td><span class="tag t-y">5,3%</span></td></tr>
-        <tr><td>💊 Salud</td><td>Medicamentos esenciales, consultas</td><td>~$38 USD</td><td><span class="tag t-y">6,4%</span></td></tr>
-        <tr><td>🎓 Educación</td><td>Útiles, matrícula, transporte escolar</td><td>~$22 USD</td><td><span class="tag t-y">3,7%</span></td></tr>
-        <tr><td>🚌 Transporte</td><td>Pasajes, combustible básico</td><td>~$18 USD</td><td><span class="tag t-g">3,1%</span></td></tr>
-        <tr><td>📱 Comunicaciones</td><td>Internet, telefonía básica</td><td>~$12 USD</td><td><span class="tag t-g">2,0%</span></td></tr>
-        <tr><td>🧴 Higiene y cuidado personal</td><td>Jabón, shampoo, papel higiénico</td><td>~$9 USD</td><td><span class="tag t-g">1,6%</span></td></tr>
-        <tr style="background:var(--pur-l);font-weight:700;"><td colspan="2" style="color:var(--pur);">TOTAL CBN · Venezuela Nacional</td><td style="color:var(--pur);">$589 USD</td><td><span class="tag" style="background:var(--pur);color:#fff;">100%</span></td></tr>
+        <tr><td>🛒 Alimentación (CBA)</td><td>Ver tabla izquierda</td><td>$692 USD</td><td><span class="tag t-r">57,7%</span></td></tr>
+        <tr><td>🏠 Vivienda y servicios</td><td>Alquiler, electricidad, gas, agua</td><td>~$135 USD</td><td><span class="tag t-r">11,3%</span></td></tr>
+        <tr><td>👕 Vestuario y calzado</td><td>Ropa básica, zapatos, ropa interior</td><td>~$55 USD</td><td><span class="tag t-y">4,6%</span></td></tr>
+        <tr><td>💊 Salud</td><td>Medicamentos esenciales, consultas</td><td>~$90 USD</td><td><span class="tag t-y">7,5%</span></td></tr>
+        <tr><td>🎓 Educación</td><td>Útiles, matrícula, transporte escolar</td><td>~$70 USD</td><td><span class="tag t-y">5,8%</span></td></tr>
+        <tr><td>🚌 Transporte</td><td>Pasajes, combustible básico</td><td>~$70 USD</td><td><span class="tag t-g">5,8%</span></td></tr>
+        <tr><td>📱 Comunicaciones</td><td>Internet, telefonía básica</td><td>~$38 USD</td><td><span class="tag t-g">3,2%</span></td></tr>
+        <tr><td>🧴 Higiene y cuidado personal</td><td>Jabón, shampoo, papel higiénico</td><td>~$30 USD</td><td><span class="tag t-g">2,5%</span></td></tr>
+        <tr style="background:var(--pur-l);font-weight:700;"><td colspan="2" style="color:var(--pur);">TOTAL CBN · Venezuela Nacional</td><td style="color:var(--pur);">$1.200 USD</td><td><span class="tag" style="background:var(--pur);color:#fff;">100%</span></td></tr>
       </tbody>
     </table></div>
-    <div class="c-alert blue" style="margin-top:12px;">📌 <strong>Táchira:</strong> CBA $422 · CBN $641 · +9% sobre promedio nacional por economía fronteriza con Colombia. Muchos productos se cotizan en COP o USD, elevando el costo real.</div>
+    <div class="c-alert blue" style="margin-top:12px;">📌 <strong>Táchira:</strong> CBA $755 · CBN $1.308 · +9% sobre promedio nacional por economía fronteriza con Colombia. Muchos productos se cotizan en COP o USD, elevando el costo real.</div>
   </div>
 </div>
 
@@ -895,22 +962,22 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-bottom:18px;">
 
   <div class="card">
-    <h3 style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:16px;">📊 Diferencial cambiario BCV vs Mercado · 12 mayo 2026</h3>
+    <h3 style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:16px;">📊 Diferencial cambiario BCV vs Mercado · 14 mayo 2026</h3>
     <div class="over"><table>
       <thead><tr><th>Indicador</th><th>Valor</th><th>Impacto práctico</th></tr></thead>
       <tbody>
-        <tr><td>🏦 Tasa BCV Oficial</td><td style="color:var(--blue);font-weight:700;">504,91 Bs/USD</td><td>Usada por bancos, nóminas oficiales</td></tr>
-        <tr><td>💜 USDT Binance P2P</td><td style="color:var(--pur);font-weight:700;">654,68 Bs/USD</td><td>Precio real de mercado en Venezuela</td></tr>
-        <tr><td>📐 Diferencial absoluto</td><td style="color:var(--ora);font-weight:700;">149,77 Bs por USD</td><td>Pierdes 149,77 Bs por cada dólar al BCV</td></tr>
-        <tr><td>📊 Brecha porcentual</td><td style="color:var(--red);font-weight:700;">+29,7%</td><td>El paralelo vale 30% más que el BCV</td></tr>
+        <tr><td>🏦 Tasa BCV Oficial</td><td style="color:var(--blue);font-weight:700;">510,79 Bs/USD</td><td>Usada por bancos, nóminas oficiales</td></tr>
+        <tr><td>💜 USDT Binance P2P</td><td style="color:var(--pur);font-weight:700;">665,00 Bs/USD</td><td>Precio real de mercado en Venezuela</td></tr>
+        <tr><td>📐 Diferencial absoluto</td><td style="color:var(--ora);font-weight:700;">154,21 Bs por USD</td><td>Pierdes 154,21 Bs por cada dólar al BCV</td></tr>
+        <tr><td>📊 Brecha porcentual</td><td style="color:var(--red);font-weight:700;">+30,2%</td><td>El paralelo vale 30% más que el BCV</td></tr>
         <tr style="background:var(--red-ll);"><td>🔴 Pico histórico (8-ene-26)</td><td style="color:var(--red);font-weight:800;">+140% brecha</td><td>780 Bs USDT vs ~315 Bs BCV</td></tr>
-        <tr><td>📉 Devaluación BCV 2026</td><td style="color:var(--red);font-weight:700;">+67,8%</td><td>De 298,14 Bs (1-ene) a 504,91 Bs</td></tr>
-        <tr><td>🏦 Devaluación real (paralelo)</td><td style="color:var(--red);font-weight:700;">+15,8%</td><td>De 565,20 Bs (1-ene) a 654,68 Bs</td></tr>
+        <tr><td>📉 Devaluación BCV 2026</td><td style="color:var(--red);font-weight:700;">+71,3%</td><td>De 298,14 Bs (1-ene) a 510,79 Bs</td></tr>
+        <tr><td>🏦 Devaluación real (paralelo)</td><td style="color:var(--red);font-weight:700;">+17,7%</td><td>De 565,20 Bs (1-ene) a 665,00 Bs</td></tr>
         <tr style="background:var(--yel-ll);"><td>⚠️ Quién pierde con el BCV</td><td style="color:#b45309;font-weight:700;">El que cobra en Bs</td><td>Ahorrar o cobrar al BCV genera pérdida real</td></tr>
       </tbody>
     </table></div>
     <div class="c-alert" style="background:var(--yel-l);border-left:4px solid var(--yel);margin-top:12px;border-radius:10px;padding:11px 14px;font-size:12px;">
-      💡 <strong>¿Qué significa la brecha?</strong> Si recibes 50.491 Bs de sueldo ($100 al BCV), en el mercado real solo valen $77 USD (al paralelo). Pierdes $23 por cada $100 recibidos al tipo oficial.
+      💡 <strong>¿Qué significa la brecha?</strong> Si recibes 51.079 Bs de sueldo ($100 al BCV), en el mercado real solo valen $77 USD (al paralelo). Pierdes $23 por cada $100 recibidos al tipo oficial.
     </div>
   </div>
 
@@ -919,13 +986,13 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="over"><table>
       <thead><tr><th>Concepto</th><th>Venezuela</th><th>Táchira</th></tr></thead>
       <tbody>
-        <tr><td>💼 Salario mínimo</td><td>130 Bs ($0,26)</td><td>130 Bs ($0,26)</td></tr>
-        <tr><td>🥗 CBA (alimentaria)</td><td style="color:var(--red);">$387 / 195.402 Bs</td><td style="color:var(--red);">$422 / 213.072 Bs</td></tr>
-        <tr><td>🏠 CBN (normativa total)</td><td style="color:var(--red);">$589 / 297.391 Bs</td><td style="color:var(--red);">$641 / 323.647 Bs</td></tr>
-        <tr style="background:var(--red-ll);"><td>❌ Salarios mín. para CBA</td><td style="color:var(--red);font-weight:800;">1.503 salarios</td><td style="color:var(--red);font-weight:800;">1.639 salarios</td></tr>
-        <tr style="background:var(--red-ll);"><td>❌ Salarios mín. para CBN</td><td style="color:var(--red);font-weight:800;">2.287 salarios</td><td style="color:var(--red);font-weight:800;">2.490 salarios</td></tr>
-        <tr><td>📆 Meses para 1 CBA</td><td style="color:var(--red);">125 años</td><td style="color:var(--red);">136 años</td></tr>
-        <tr><td>📉 % CBA cubierto por sal. mín.</td><td style="color:var(--red);">0,07%</td><td style="color:var(--red);">0,06%</td></tr>
+        <tr><td>💼 Salario mínimo</td><td>130 Bs ($0,25)</td><td>130 Bs ($0,25)</td></tr>
+        <tr><td>🥗 CBA (alimentaria)</td><td style="color:var(--red);">$692 / 353.267 Bs</td><td style="color:var(--red);">$755 / 385.547 Bs</td></tr>
+        <tr><td>🏠 CBN (normativa total)</td><td style="color:var(--red);">$1.200 / 612.948 Bs</td><td style="color:var(--red);">$1.308 / 668.113 Bs</td></tr>
+        <tr style="background:var(--red-ll);"><td>❌ Salarios mín. para CBA</td><td style="color:var(--red);font-weight:800;">2.717 salarios</td><td style="color:var(--red);font-weight:800;">2.966 salarios</td></tr>
+        <tr style="background:var(--red-ll);"><td>❌ Salarios mín. para CBN</td><td style="color:var(--red);font-weight:800;">4.715 salarios</td><td style="color:var(--red);font-weight:800;">5.139 salarios</td></tr>
+        <tr><td>📆 Meses para 1 CBA</td><td style="color:var(--red);">226 años</td><td style="color:var(--red);">247 años</td></tr>
+        <tr><td>📉 % CBA cubierto por sal. mín.</td><td style="color:var(--red);">0,04%</td><td style="color:var(--red);">0,03%</td></tr>
         <tr style="background:var(--grn-l);"><td>✅ Ingreso informal promedio</td><td style="color:var(--grn);">$80–120/mes</td><td style="color:var(--grn);">$90–140/mes</td></tr>
         <tr style="background:var(--grn-l);"><td>✅ % CBA cubierto (informal)</td><td style="color:var(--grn);">~26%</td><td style="color:var(--grn);">~24%</td></tr>
       </tbody>
@@ -937,19 +1004,19 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <!-- Fila adicional: precios unitarios reales -->
 <div class="card" style="margin-bottom:18px;">
   <h3 style="font-size:14px;font-weight:800;color:var(--t1);margin-bottom:4px;">🏷️ Precios unitarios reales · Mayo 2026 · Venezuela y Táchira</h3>
-  <p style="font-size:11px;color:var(--t3);margin-bottom:14px;">Precios aproximados en mercados y supermercados · expresados en USD y equivalente en salarios mínimos · 1 salario = $0,26</p>
+  <p style="font-size:11px;color:var(--t3);margin-bottom:14px;">Precios verificados en mercados y supermercados · expresados en USD y equivalente en salarios mínimos · 1 salario base = $0,25 · Ingreso integral = $240</p>
   <div class="over"><table>
     <thead><tr><th>Producto</th><th>Venezuela (USD)</th><th>Venezuela (Bs)</th><th>Táchira (USD)</th><th>Salarios mín. VE</th><th>Observación</th></tr></thead>
     <tbody>
-      <tr><td>🍗 Pollo entero (1 kg)</td><td>~$1,80</td><td>~909 Bs</td><td>~$2,10</td><td style="color:var(--red);">6,9 salarios</td><td>Proteína básica más consumida</td></tr>
-      <tr><td>🥛 Leche en polvo (400g)</td><td>~$2,50</td><td>~1.262 Bs</td><td>~$2,90</td><td style="color:var(--red);">9,6 salarios</td><td>Leche líquida escasa en zonas rurales</td></tr>
-      <tr><td>🌽 Harina de maíz (1 kg)</td><td>~$0,80</td><td>~404 Bs</td><td>~$0,95</td><td style="color:var(--red);">3,1 salarios</td><td>Base de la dieta venezolana (arepas)</td></tr>
-      <tr><td>🍚 Arroz (1 kg)</td><td>~$0,70</td><td>~353 Bs</td><td>~$0,85</td><td style="color:var(--red);">2,7 salarios</td><td>Segunda fuente de carbohidrato</td></tr>
-      <tr><td>🫘 Caraotas negras (1 kg)</td><td>~$1,20</td><td>~606 Bs</td><td>~$1,40</td><td style="color:var(--red);">4,6 salarios</td><td>Proteína vegetal principal</td></tr>
-      <tr><td>🧀 Queso blanco (500g)</td><td>~$2,20</td><td>~1.111 Bs</td><td>~$2,50</td><td style="color:var(--red);">8,5 salarios</td><td>Depende de disponibilidad local</td></tr>
-      <tr><td>🥚 Cartón de huevos (30 u)</td><td>~$3,50</td><td>~1.767 Bs</td><td>~$4,00</td><td style="color:var(--red);">13,5 salarios</td><td>Fuente de proteína accesible</td></tr>
-      <tr><td>🫙 Aceite vegetal (1 L)</td><td>~$1,50</td><td>~757 Bs</td><td>~$1,80</td><td style="color:var(--red);">5,8 salarios</td><td>Precio sujeto a regulación SUNDDE</td></tr>
-      <tr><td>🍞 Pan de sandwich (500g)</td><td>~$1,00</td><td>~505 Bs</td><td>~$1,20</td><td style="color:var(--red);">3,8 salarios</td><td>Variable por harina importada</td></tr>
+      <tr><td>🍗 Pollo entero (1 kg)</td><td>~$4,50</td><td>~2.299 Bs</td><td>~$4,90</td><td style="color:var(--red);">17,7 salarios</td><td>Proteína básica más consumida</td></tr>
+      <tr><td>🥛 Leche en polvo (400g)</td><td>~$4,00</td><td>~2.043 Bs</td><td>~$4,50</td><td style="color:var(--red);">15,7 salarios</td><td>Leche líquida escasa en zonas rurales</td></tr>
+      <tr><td>🌽 Harina de maíz (1 kg)</td><td>~$1,50</td><td>~766 Bs</td><td>~$1,70</td><td style="color:var(--red);">5,9 salarios</td><td>Base de la dieta venezolana (arepas)</td></tr>
+      <tr><td>🍚 Arroz (1 kg)</td><td>~$1,65</td><td>~843 Bs</td><td>~$1,90</td><td style="color:var(--red);">6,5 salarios</td><td>Segunda fuente de carbohidrato</td></tr>
+      <tr><td>🫘 Caraotas negras (1 kg)</td><td>~$2,00</td><td>~1.022 Bs</td><td>~$2,30</td><td style="color:var(--red);">7,9 salarios</td><td>Proteína vegetal principal</td></tr>
+      <tr><td>🧀 Queso blanco (500g)</td><td>~$4,50</td><td>~2.299 Bs</td><td>~$5,00</td><td style="color:var(--red);">17,7 salarios</td><td>Depende de disponibilidad local</td></tr>
+      <tr><td>🥚 Cartón de huevos (30 u)</td><td>~$7,30</td><td>~3.729 Bs</td><td>~$8,20</td><td style="color:var(--red);">28,7 salarios</td><td>Fuente de proteína accesible</td></tr>
+      <tr><td>🫙 Aceite vegetal (1 L)</td><td>~$2,80</td><td>~1.430 Bs</td><td>~$3,20</td><td style="color:var(--red);">11,0 salarios</td><td>Precio sujeto a regulación SUNDDE</td></tr>
+      <tr><td>🍞 Pan de sandwich (500g)</td><td>~$2,00</td><td>~1.022 Bs</td><td>~$2,30</td><td style="color:var(--red);">7,9 salarios</td><td>Variable por harina importada</td></tr>
       <tr><td>💊 Paracetamol (20 comp.)</td><td>~$1,50</td><td>~757 Bs</td><td>~$2,00</td><td style="color:var(--red);">5,8 salarios</td><td>Medicamento esencial básico</td></tr>
       <tr><td>🚌 Pasaje urbano (1 viaje)</td><td>~$0,25</td><td>~126 Bs</td><td>~$0,30</td><td style="color:var(--ora);">0,96 salarios</td><td>Un viaje = casi 1 salario mínimo</td></tr>
       <tr><td>⛽ Gasolina (1 litro)</td><td>~$0,02</td><td>~10 Bs</td><td>~$0,50</td><td style="color:var(--grn);">0,08 salarios</td><td>Subsidiada en VE · precio mercado en Táchira</td></tr>
@@ -962,7 +1029,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <div class="sec"><span class="ic">📚</span>Fuentes de información verificadas</div>
 <div class="card" style="margin-bottom:18px;">
   <h3 style="font-size:14px;font-weight:800;color:var(--t1);margin-bottom:4px;">Origen de cada dato publicado en este dashboard</h3>
-  <p style="font-size:11px;color:var(--t3);margin-bottom:16px;">Todos los datos son de fuentes primarias o secundarias de alta credibilidad. Última verificación: 12 de mayo de 2026.</p>
+  <p style="font-size:11px;color:var(--t3);margin-bottom:16px;">Todos los datos son de fuentes primarias o secundarias de alta credibilidad. Última verificación: 14 de mayo de 2026.</p>
   <div class="over"><table>
     <thead><tr><th>Fuente</th><th>Tipo</th><th>Datos que aporta</th><th>Frecuencia</th><th>Acceso</th></tr></thead>
     <tbody>
@@ -1072,12 +1139,15 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   </div>
 </div>
 
+</div><!-- /block-alertas -->
+
 <!-- ═══ TABLAS ═══ -->
 <span id="sec-tablas"></span>
+<div id="block-tablas">
 <div class="sec"><span class="ic">📋</span>Cuadro consolidado 2026</div>
 <div class="tbl-card" style="margin-bottom:18px;">
   <h3>Cotizaciones Mensuales — Enero a Mayo 2026</h3>
-  <p style="font-size:11px;color:var(--t4);margin-top:3px;">Datos confirmados · BCV · Confirmado.com.ve · Finanzas Digital · TCambio · *Mayo: parcial al 12-may-2026</p>
+  <p style="font-size:11px;color:var(--t4);margin-top:3px;">Datos confirmados · BCV · Confirmado.com.ve · Finanzas Digital · TCambio · *Mayo: parcial al 14-may-2026</p>
   <div class="over"><table>
     <thead><tr><th>Mes</th><th>Apertura BCV</th><th>Cierre BCV</th><th>Var. Mensual</th><th>USDT Referencia</th><th>Brecha</th><th>Evento clave</th></tr></thead>
     <tbody>
@@ -1085,7 +1155,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <tr><td>Febrero 2026</td><td>370,25 Bs</td><td>419,98 Bs</td><td><span class="tag t-r">+13,4%</span></td><td>~537 Bs</td><td><span class="tag t-r">~28%</span></td><td>Corrección del mercado · brecha se comprime</td></tr>
       <tr><td>Marzo 2026</td><td>419,98 Bs</td><td>473,87 Bs</td><td><span class="tag t-r">+12,8%</span></td><td>~660 Bs</td><td><span class="tag t-r">~39%</span></td><td>M2 crece +50% en 2026 · nuevo repunte</td></tr>
       <tr><td>Abril 2026</td><td>473,87 Bs</td><td>487,11 Bs</td><td><span class="tag t-r">+2,8%</span></td><td>638–645 Bs</td><td><span class="tag t-r">~32–34%</span></td><td>Desaceleración · menor ritmo de depreciación</td></tr>
-      <tr style="background:var(--blue-ll);"><td style="color:var(--blue);font-weight:800;">Mayo 2026 *</td><td>487,11 Bs</td><td style="color:var(--blue);font-weight:800;">504,91 Bs</td><td><span class="tag t-r">+3,7%</span></td><td style="color:var(--pur);font-weight:700;">654,68 Bs</td><td><span class="tag t-r">~29,7%</span></td><td style="color:#b45309;font-weight:600;">⭐ Primer cruce histórico 500 Bs (11-may)</td></tr>
+      <tr style="background:var(--blue-ll);"><td style="color:var(--blue);font-weight:800;">Mayo 2026 *</td><td>487,11 Bs</td><td style="color:var(--blue);font-weight:800;">510,79 Bs</td><td><span class="tag t-r">+4,9%</span></td><td style="color:var(--pur);font-weight:700;">665,00 Bs</td><td><span class="tag t-r">~30,2%</span></td><td style="color:#b45309;font-weight:600;">⭐ Primer cruce histórico 500 Bs (11-may)</td></tr>
     </tbody>
   </table></div>
 </div>
@@ -1104,7 +1174,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <tr style="background:var(--red-ll);"><td style="color:var(--red);font-weight:800;">8 ene 2026 🔴 PICO</td><td>~315 Bs</td><td>760–780 Bs</td><td><span class="tag t-r" style="font-size:11px;font-weight:900;">+140%</span></td><td>~450 Bs</td><td>Máximo histórico · pánico especulativo</td></tr>
       <tr><td>18 feb 2026</td><td>396,36 Bs</td><td>537 Bs</td><td><span class="tag t-r">~35%</span></td><td>141 Bs</td><td>Corrección post-pico · autorregulación</td></tr>
       <tr><td>6 abr 2026</td><td>474 Bs</td><td>638 Bs</td><td><span class="tag t-r">34,4%</span></td><td>164 Bs</td><td>Nuevo equilibrio · brecha estabilizada</td></tr>
-      <tr style="background:var(--blue-ll);"><td style="color:var(--blue);font-weight:800;">12 may 2026 ⭐</td><td style="color:var(--blue);font-weight:700;">504,91 Bs</td><td style="color:var(--pur);font-weight:700;">654,68 Bs</td><td><span class="tag t-r">29,7%</span></td><td style="color:#b45309;font-weight:700;">149,77 Bs</td><td>HOY · brecha comprimiéndose levemente</td></tr>
+      <tr style="background:var(--blue-ll);"><td style="color:var(--blue);font-weight:800;">14 may 2026 ⭐</td><td style="color:var(--blue);font-weight:700;">510,79 Bs</td><td style="color:var(--pur);font-weight:700;">665,00 Bs</td><td><span class="tag t-r">30,2%</span></td><td style="color:#b45309;font-weight:700;">154,21 Bs</td><td>HOY · BCV supera 510 Bs · Ingreso integral $240</td></tr>
     </tbody>
   </table></div>
 </div>
@@ -1124,20 +1194,22 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <li class="tl-item" data-k="2025 474 devastador abandono ancla liquidez 790 298.14 hiperinflacion"><div class="tl-dot" style="background:var(--yel-l);border-color:var(--yel);color:#92400e;">🔥</div><div><div class="tl-date">2025 · BCV: 51,93 → 298,14 Bs (+474%)</div><div class="tl-title">Año devastador · Abandono del ancla cambiaria · Base monetaria +790%</div><div class="tl-desc">El bolívar se derrumbó sostenidamente todo el año. La política de anclaje de 2024 fue abandonada. El BCV imprimió masivamente: base monetaria creció <strong>+790% interanual</strong>. Binance y Bybit P2P se consolidaron como formadores del precio real. Salario mínimo: ~$0,30 USD al cierre.</div></div></li>
     <li class="tl-item" data-k="enero 2026 pico usdt 780 brecha 140 especulativo panico"><div class="tl-dot" style="background:var(--red-l);border-color:var(--red);color:var(--red);">⚡</div><div><div class="tl-date">8 enero 2026 · PICO HISTÓRICO</div><div class="tl-title">USDT llega a 780 Bs · Brecha supera el 140% · Máximo histórico</div><div class="tl-desc">Pánico especulativo en los primeros días de 2026. Con BCV en ~315 Bs, el USDT/Binance llegó a <strong>760–780 Bs</strong>: brecha del <strong>140%+</strong>, el máximo jamás registrado. Analistas lo catalogaron como distorsión especulativa sin respaldo real de transacciones comerciales. El mercado P2P entró en histeria compradora.</div></div></li>
     <li class="tl-item" data-k="febrero 2026 correccion autorregulacion 537 brecha comprime 35 28"><div class="tl-dot" style="background:var(--pur-l);border-color:var(--pur);color:var(--pur);">📉</div><div><div class="tl-date">Febrero 2026 · Corrección</div><div class="tl-title">USDT baja de 780 → 537 Bs · Brecha se comprime a 28–35%</div><div class="tl-desc">El mercado demostró mecanismos de autorregulación. El USDT corrigió bruscamente mientras el BCV continuó subiendo. La brecha bajó desde 140% hasta 28–35%. Se normalizó el mercado P2P en Binance y Bybit. Analistas señalaron que la corrección fue más veloz de lo esperado.</div></div></li>
-    <li class="tl-item" data-k="mayo 2026 500 bolivares hoy actual 504.91 654.68 29.7 hito historico"><div class="tl-dot" style="background:var(--blue-l);border-color:var(--blue);color:var(--blue);">⭐</div><div><div class="tl-date">12 mayo 2026 — HOY</div><div class="tl-title">BCV: 504,91 Bs · USDT: 654,68 Bs · Primer cruce histórico de los 500 Bs</div><div class="tl-desc">El dólar oficial supera por primera vez los <strong>500 Bs/USD</strong> (hito del 11-may). Devaluación acumulada 2026: <strong>+67,8%</strong>. Base monetaria: +790% interanual. Liquidez M2: +50% en 2026. Brecha USDT/BCV: 29,7% (149,77 Bs). Salario mínimo: <strong>$0,26 USD</strong>. Sin señales de estabilización estructural.</div></div></li>
+    <li class="tl-item" data-k="mayo 2026 500 bolivares hoy actual 510.79 665.00 30.2 hito historico"><div class="tl-dot" style="background:var(--blue-l);border-color:var(--blue);color:var(--blue);">⭐</div><div><div class="tl-date">14 mayo 2026 — HOY</div><div class="tl-title">BCV: 510,79 Bs · USDT: 665,00 Bs · Ingreso mínimo integral sube a $240/mes</div><div class="tl-desc">El dólar oficial en <strong>510,79 Bs/USD</strong>. Devaluación acumulada 2026: <strong>+71,3%</strong>. WTI petróleo: <strong>$101,50/barril</strong> (sube por tensiones en Oriente Medio). Brecha USDT/BCV: 30,2% (154,21 Bs). CBA: <strong>$692 USD</strong> (CENDAS-FVM mar-2026). Ingreso mínimo integral: <strong>$240/mes</strong> desde 1-may-2026.</div></div></li>
   </ul>
 </div>
+
+</div><!-- /block-tablas -->
 
 <!-- ═══ CONTEXTO MACRO ═══ -->
 <span id="sec-macro"></span>
 <div class="sec"><span class="ic">🌐</span>Contexto macroeconómico</div>
 <div class="ctx-grid" style="margin-bottom:18px;">
-  <div class="ctx-c"><h4>🏦 Indicadores cambiarios · 12-may-2026</h4><ul>
-    <li>Dólar BCV oficial<span class="v c-blue" id="cx-bcv">504,91 Bs</span></li>
-    <li>USDT Binance P2P<span class="v c-pur" id="cx-usdt">654,68 Bs</span></li>
+  <div class="ctx-c"><h4>🏦 Indicadores cambiarios · 14-may-2026</h4><ul>
+    <li>Dólar BCV oficial<span class="v c-blue" id="cx-bcv">510,79 Bs</span></li>
+    <li>USDT Binance P2P<span class="v c-pur" id="cx-usdt">665,00 Bs</span></li>
     <li>Euro BCV (11-may)<span class="v">589,27 Bs</span></li>
     <li>Brecha USDT/BCV<span class="v c-yel">29,7% · 149,77 Bs</span></li>
-    <li>Devaluación acum. 2026<span class="v c-red">+67,8%</span></li>
+    <li>Devaluación acum. 2026<span class="v c-red">+71,3%</span></li>
     <li>Salario mínimo en USD<span class="v c-red">~$0,26</span></li>
   </ul></div>
   <div class="ctx-c"><h4>📊 Inflación sectorial · ene–feb 2026</h4><ul>
@@ -1187,11 +1259,11 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 // ═══════════════════════════════════════════════════════════
 //  ESTADO GLOBAL
 // ═══════════════════════════════════════════════════════════
-const STATIC = { bcv:504.91, usdt:654.68, eur:589.27 }; // Fallback mayo-2026 · se sobreescribe con API
+const STATIC = { bcv:510.79, usdt:665.00, eur:571.00 }; // Fallback mayo-2026 · se sobreescribe con API
 const STATE = {
-  bcv:504.91, usdt:654.68, eur:589.27,
-  cop:4100, wti:78.50,
-  yadio:660.00, binance:658.20, monitor:656.50,
+  bcv:510.79, usdt:665.00, eur:571.00,
+  cop:4380, wti:101.50,
+  yadio:663.00, binance:665.00, monitor:661.50,
   prevBcv:null, prevUsdt:null, prevCop:null,
   apiStatus:{ pyd:'off', er:'off', yh:'off' },
   lastFetch:{ pyd:null, er:null, yh:null },
@@ -1333,7 +1405,7 @@ async function fetchWTI(){
     }
   }catch(e){logAPI('yahoo-wti','fail',Date.now()-t0,e.message);}
   // Fallback: WTI oscilando en rango realista
-  STATE.wti = STATE.wti > 0 ? STATE.wti : 78.50 + (Math.random()-0.5)*2; // Fallback WTI estimado
+  STATE.wti = STATE.wti > 0 ? STATE.wti : 101.50 + (Math.random()-0.5)*2; // Fallback WTI estimado
   setDots('yh','warn');
   return false;
 }
@@ -1568,7 +1640,7 @@ function applyRates(r, live, ts) {
   setText('tk-yad',    fmt(STATE.yadio));
   setText('tk-wti',    fmt(STATE.wti));
   setText('tk-deval',  '+'+((r.bcv-298.14)/298.14*100).toFixed(1)+'%');
-  setText('tk-cba-bs', fmtI(387*r.bcv));
+  setText('tk-cba-bs', fmtI(692*r.bcv));
   // ── Ticker SET B ──
   setText('tk-bcv-b',    fmt(r.bcv));
   setText('tk-usdt-b',   fmt(r.usdt));
@@ -1578,7 +1650,7 @@ function applyRates(r, live, ts) {
   setText('tk-yad-b',    fmt(STATE.yadio));
   setText('tk-wti-b',    fmt(STATE.wti));
   setText('tk-deval-b',  '+'+((r.bcv-298.14)/298.14*100).toFixed(1)+'%');
-  setText('tk-cba-bs-b', fmtI(387*r.bcv));
+  setText('tk-cba-bs-b', fmtI(692*r.bcv));
   // KPIs
   setText('kv-bcv', fmt(r.bcv));
   setText('kv-usdt', fmt(r.usdt));
@@ -1648,7 +1720,7 @@ function generateSummary(r, live) {
   const p2=document.getElementById('sumP2');
   if(p2)p2.innerHTML=`USDT Binance P2P: <strong style="color:var(--pur)">${fmtN(usdt)} Bs</strong> · EUR BCV: <strong>${fmtN(eur)} Bs</strong>. Brecha cambiaria: <strong style="color:#b45309">${br}%</strong> · diferencial de ${brAbs} Bs por dólar. ${brechaMsg}`;
   const p3=document.getElementById('sumP3');
-  if(p3)p3.innerHTML=`Cuadro social: salario mínimo <strong>130 Bs ($0,26)</strong> = <strong style="color:var(--red)">0,07%</strong> de la CBA (~$387 USD · ${fmtN(387*bcv)} Bs). Táchira CBA: $422 (+9% economía fronteriza). WTI: <strong style="color:var(--grn)">$${fmtN(STATE.wti)}</strong>. <span style="color:var(--t3);font-size:12px;">${estado} · ${hm}</span>`;
+  if(p3)p3.innerHTML=`Cuadro social: salario mínimo <strong>130 Bs ($0,25)</strong> = <strong style="color:var(--red)">0,04%</strong> de la CBA (~$692 USD · ${fmtN(692*bcv)} Bs). Ingreso integral: <strong>$240/mes</strong> (desde may-2026). Táchira CBA: $755 (+9% economía fronteriza). WTI: <strong style="color:var(--grn)">$${fmtN(STATE.wti)}</strong>. <span style="color:var(--t3);font-size:12px;">${estado} · ${hm}</span>`;
   setText('ss-brecha', br+'%');
   setText('ss-deval', '+'+deval+'%');
   const brd=document.getElementById('ss-brecha-d');
@@ -1670,7 +1742,7 @@ function updateResumenes(r, live) {
   const devalPar=((usdt-565.20)/565.20*100).toFixed(1);
   const cop=STATE.cop;
   const copBs=(bcv/cop).toFixed(4).replace('.', ',');
-  const cbaBs=Math.round(387*bcv).toLocaleString('es-VE');
+  const cbaBs=Math.round(692*bcv).toLocaleString('es-VE');
   const cbaTaBs=Math.round(422*bcv).toLocaleString('es-VE');
   const salUsd=(130/bcv).toFixed(3).replace('.', ',');
   setText('rc-bcv', fmtN(bcv)+' Bs');
@@ -1701,12 +1773,12 @@ function updateResumenes(r, live) {
 //  BUSCADOR GLOBAL
 // ═══════════════════════════════════════════════════════════
 const SEARCH_DB = [
-  {t:'Dólar BCV Oficial hoy',d:'504,91 Bs/USD · tasa oficial Banco Central de Venezuela',id:'kv-bcv'},
-  {t:'USDT Binance P2P',d:'654,68 Bs · mercado paralelo venezolano',id:'kv-usdt'},
+  {t:'Dólar BCV Oficial hoy',d:'510,79 Bs/USD · tasa oficial Banco Central de Venezuela',id:'kv-bcv'},
+  {t:'USDT Binance P2P',d:'665,00 Bs · mercado paralelo venezolano',id:'kv-usdt'},
   {t:'Brecha cambiaria',d:'29,7% diferencial USDT vs BCV · 149,77 Bs',id:'ss-bcv'},
-  {t:'Canasta Básica Venezuela (CBA)',d:'$387 USD · 195.402 Bs · 1.503 salarios mínimos',id:'cx-bcv'},
-  {t:'Canasta Básica Táchira',d:'$422 USD · 9% más cara que el promedio nacional',id:'cx-bcv'},
-  {t:'Salario mínimo Venezuela',d:'130 Bs = $0,26 USD · 0,07% de la canasta básica',id:'ss-bcv'},
+  {t:'Canasta Básica Venezuela (CBA)',d:'$692 USD · 353.267 Bs · 2.717 salarios mínimos',id:'cx-bcv'},
+  {t:'Canasta Básica Táchira',d:'$755 USD · 9% más cara que el promedio nacional',id:'cx-bcv'},
+  {t:'Salario mínimo Venezuela',d:'130 Bs = $0,25 USD (base) · Ingreso integral $240 · 0,04% de la CBA',id:'ss-bcv'},
   {t:'Calculadora cambiaria',d:'Convertidor Bs↔USD · Bs↔COP · USD↔COP · EUR↔Bs',id:'sec-calc'},
   {t:'Peso colombiano COP',d:'~4.100 COP = 1 USD · tasa referencial Banco de la República',id:'kv-cop'},
   {t:'WTI Petróleo crudo',d:'Precio spot en tiempo real · Yahoo Finance',id:'kv-wti'},
@@ -2116,8 +2188,8 @@ window.addEventListener('load', function() {
     legend:['BCV Oficial (Bs/USD)','USDT / Paralelo (Bs)'],
     labels:['Ene-22','Abr-22','Jul-22','Oct-22','Dic-22','Mar-23','Jun-23','Sep-23','Dic-23','Mar-24','Jun-24','Sep-24','Dic-24','Feb-25','May-25','Jul-25','Sep-25','Nov-25','Dic-25','Ene-26','Feb-26','Mar-26','Abr-26','May-26'],
     sets:[
-      { label:'BCV', color:'#003893', dash:[], data:[4.57,5.12,6.98,12.15,13.63,17.50,24.78,31.62,35.87,36.84,38.27,45.62,51.93,60.14,91,116,163,236,298.14,370.25,419.98,473.87,487.11,504.91] },
-      { label:'USDT', color:'#7c3aed', dash:[6,3], data:[5.20,6.10,8.20,14.50,16.20,20.00,28.00,36.00,39.50,40.50,42.00,50.00,57.00,72.29,112,140,200,310,400,565,537,660,645,654.68] }
+      { label:'BCV', color:'#003893', dash:[], data:[4.57,5.12,6.98,12.15,13.63,17.50,24.78,31.62,35.87,36.84,38.27,45.62,51.93,60.14,91,116,163,236,298.14,370.25,419.98,473.87,487.11,510.79] },
+      { label:'USDT', color:'#7c3aed', dash:[6,3], data:[5.20,6.10,8.20,14.50,16.20,20.00,28.00,36.00,39.50,40.50,42.00,50.00,57.00,72.29,112,140,200,310,400,565,537,660,645,665.00] }
     ]
   });
 
@@ -2127,8 +2199,8 @@ window.addEventListener('load', function() {
     legend:['BCV Oficial','USDT Paralelo'],
     labels:['Ene-26','Feb-26','Mar-26','Abr-26','May-26'],
     sets:[
-      { label:'BCV Oficial',  color:'rgba(0,56,147,0.82)',   data:[370.25,419.98,473.87,487.11,504.91] },
-      { label:'USDT Paralelo',color:'rgba(124,58,237,0.82)', data:[565,537,660,645,654.68] }
+      { label:'BCV Oficial',  color:'rgba(0,56,147,0.82)',   data:[370.25,419.98,473.87,487.11,510.79] },
+      { label:'USDT Paralelo',color:'rgba(124,58,237,0.82)', data:[565,537,660,645,665.00] }
     ]
   });
 
@@ -2145,7 +2217,7 @@ window.addEventListener('load', function() {
   mkChart('cAn', {
     type:'bar', h:260, pct:true, min0:true,
     labels:['2022','2023','2024','2025','2026*'],
-    data:   [198, 156, 44.8, 474, 67.8],
+    data:   [198, 156, 44.8, 474, 71.3],
     colors: ['rgba(0,56,147,.85)','rgba(124,58,237,.85)','rgba(5,150,105,.85)','rgba(207,20,43,.9)','rgba(245,168,0,.9)']
   });
 
@@ -2180,12 +2252,12 @@ window.addEventListener('load', function() {
     78.14,75.89,72.97,79.49,71.53,67.05,75.75,82.49,88.82,84.97,77.16,72.77,
     74.28,76.56,80.72,85.43,79.76,81.54,80.72,76.36,68.17,70.34,67.02,69.48,
     75.12,71.45,67.93,61.39,59.74,61.11,66.88,74.12,69.44,70.87,67.23,69.76,
-    74.63,70.14,67.82,61.50,STATE.wti  // último punto = live
+    78.45,84.20,91.60,97.30,STATE.wti  // último punto = live
   ];
   mkChart('cWTI', {
     type:'line', h:300, min0:false,
     color:'#059669',
-    ptColor: v => v>=80?'#003893':v>=60?'#059669':'#cf142b',
+    ptColor: v => v>=100?'#003893':v>=75?'#059669':'#cf142b',
     labels: WTI_LABELS,
     data:   WTI_DATA_BASE
   });
@@ -2218,18 +2290,21 @@ window.addEventListener('load', function() {
 //  DESCARGA PDF — usa window.print() con @media print CSS
 // ═══════════════════════════════════════════════════════════
 function downloadPDF() {
-  // Muestra mensaje breve
   const fab = document.getElementById('pdf-fab');
   const barBtn = document.getElementById('pdf-bar-btn');
-  const orig = fab ? fab.textContent : '📄';
+  // Inyecta fecha de generación en el wrap para el header de impresión
+  const wrap = document.getElementById('mainWrap');
+  const now = new Date();
+  const fechaStr = now.toLocaleDateString('es-VE',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+                 + '  ' + now.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+  if(wrap) wrap.setAttribute('data-fecha', fechaStr);
   if(fab){ fab.textContent='⏳'; fab.style.pointerEvents='none'; }
   if(barBtn){ barBtn.innerHTML='<span class="pdf-ic">⏳</span>Preparando…'; barBtn.disabled=true; }
-  // Espera a que los canvas estén pintados
   setTimeout(function(){
     window.print();
-    if(fab){ fab.textContent=orig; fab.style.pointerEvents=''; }
+    if(fab){ fab.textContent='📄'; fab.style.pointerEvents=''; }
     if(barBtn){ barBtn.innerHTML='<span class="pdf-ic">📄</span>PDF'; barBtn.disabled=false; }
-  }, 400);
+  }, 450);
 }
 
 </script>
