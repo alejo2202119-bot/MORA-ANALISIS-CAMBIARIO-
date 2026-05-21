@@ -601,8 +601,6 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,25</span><span class="unit">USD/mes</span></div>
       <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$692</span><span class="unit">· 2.717 salarios</span></div>
       <div class="tk"><span class="lbl">🌄 CBA Táchira</span><span class="val chg-up">$755</span><span class="unit">· frontera +9%</span></div>
-      <div class="tk"><span class="lbl">🌉 COP Frontera compra</span><span class="val" style="color:var(--grn);">3.550</span><span class="unit">COP/USD · Táchira</span></div>
-      <div class="tk"><span class="lbl">🌉 COP Frontera venta</span><span class="val" style="color:var(--red);">3.600</span><span class="unit">COP/USD · Táchira</span></div>
       <!-- ══ SET B — duplicado para loop continuo ══ -->
       <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv-b">510,79</span><span class="unit">Bs/USD</span></div>
       <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt-b">665,00</span><span class="unit">Bs</span></div>
@@ -619,8 +617,6 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,25</span><span class="unit">USD/mes</span></div>
       <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$692</span><span class="unit">· 2.717 salarios</span></div>
       <div class="tk"><span class="lbl">🌄 CBA Táchira</span><span class="val chg-up">$755</span><span class="unit">· frontera +9%</span></div>
-      <div class="tk"><span class="lbl">🌉 COP Frontera compra</span><span class="val" style="color:var(--grn);">3.550</span><span class="unit">COP/USD · Táchira</span></div>
-      <div class="tk"><span class="lbl">🌉 COP Frontera venta</span><span class="val" style="color:var(--red);">3.600</span><span class="unit">COP/USD · Táchira</span></div>
     </div>
   </div>
   <div id="tickerCtrl">
@@ -690,12 +686,12 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     </div>
     <div class="res-row"><span class="res-lbl">🏦 Dólar BCV oficial</span><span class="res-val blue" id="rc-bcv">—</span></div>
     <div class="res-row"><span class="res-lbl">💜 Dólar paralelo (USDT)</span><span class="res-val pur" id="rc-usdt">—</span></div>
-    <div class="res-row"><span class="res-lbl">💶 Euro BCV oficial</span><span class="res-val" id="rc-eur">—</span></div>
-    <div class="res-row"><span class="res-lbl">🇨🇴 Peso COP / USD</span><span class="res-val" id="rc-cop">~4.100 COP</span></div>
+    <div class="res-row"><span class="res-lbl">💶 Euro BCV oficial</span><span class="res-val" style="color:var(--grn);" id="rc-eur">—</span></div>
+    <div class="res-row"><span class="res-lbl">🔵 Binance P2P</span><span class="res-val pur" id="rc-bin">—</span></div>
+    <div class="res-row"><span class="res-lbl">🟡 Yadio.io</span><span class="res-val yel" id="rc-yad">—</span></div>
+    <div class="res-row"><span class="res-lbl">🇨🇴 Peso COP / USD</span><span class="res-val" id="rc-cop">~4.380 COP</span></div>
     <div class="res-row"><span class="res-lbl">🇨🇴 1 COP en Bolívares</span><span class="res-val" id="rc-cop-bs">—</span></div>
-    <div class="res-row"><span class="res-lbl">🌄 COP frontera Táchira (compra)</span><span class="res-val dn">3.550 COP/USD</span></div>
-    <div class="res-row"><span class="res-lbl">🌄 COP frontera Táchira (venta)</span><span class="res-val up">3.600 COP/USD</span></div>
-    <div class="res-foot">📊 Datos en vivo desde <strong>ve.dolarapi.com</strong> · BCV · Binance P2P · Banco República Colombia. Tasas fronterizas según casas de cambio en San Antonio del Táchira.</div>
+    <div class="res-foot">📊 Datos en vivo desde <strong>ve.dolarapi.com</strong> · BCV · Binance P2P · Banco República Colombia · open.er-api.com (EUR).</div>
   </div>
 
   <!-- TARJETA 2: BRECHA CAMBIARIA -->
@@ -1748,6 +1744,8 @@ function updateResumenes(r, live) {
   setText('rc-bcv', fmtN(bcv)+' Bs');
   setText('rc-usdt', fmtN(usdt)+' Bs');
   setText('rc-eur', fmtN(eur)+' Bs');
+  setText('rc-bin', fmtN(STATE.binance)+' Bs');
+  setText('rc-yad', fmtN(STATE.yadio)+' Bs');
   setText('rc-cop', cop.toLocaleString('es-VE')+' COP');
   setText('rc-cop-bs', '~'+copBs+' Bs');
   setText('rc-brecha', br+'%');
