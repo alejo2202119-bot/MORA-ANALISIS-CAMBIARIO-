@@ -646,6 +646,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   <div class="sum-stats">
     <div class="ss"><div class="sl">BCV Oficial hoy</div><div class="sv c-blue" id="ss-bcv">—</div><div class="sd">Bs por 1 USD · <span id="ss-fecha">—</span></div></div>
     <div class="ss"><div class="sl">USDT Paralelo</div><div class="sv c-pur" id="ss-usdt">—</div><div class="sd">Binance P2P · hoy</div></div>
+    <div class="ss"><div class="sl">Euro BCV oficial</div><div class="sv" id="ss-eur" style="color:var(--grn);">—</div><div class="sd">Bs por 1 EUR · BCV oficial</div></div>
     <div class="ss"><div class="sl">Brecha cambiaria</div><div class="sv c-yel" id="ss-brecha">—</div><div class="sd" id="ss-brecha-d">Diferencial BCV vs mercado</div></div>
     <div class="ss"><div class="sl">Devaluación 2026</div><div class="sv c-red" id="ss-deval">—</div><div class="sd">Desde 1-ene-2026 · 298,14 Bs</div></div>
     <div class="ss"><div class="sl">Peso Colombiano</div><div class="sv" id="ss-cop" style="color:var(--grn);">~4.380 COP</div><div class="sd">por 1 USD · ref. Banco República</div></div>
@@ -1665,6 +1666,7 @@ function applyRates(r, live, ts) {
   // Summary / KPI
   ['ss-bcv','cx-bcv'].forEach(id => setText(id, fmt(r.bcv)+' Bs'));
   ['ss-usdt','cx-usdt'].forEach(id => setText(id, fmt(r.usdt)+' Bs'));
+  setText('ss-eur', fmt(r.eur)+' Bs');
   // COP en stats
   const copN = STATE.cop;
   setText('ss-cop', copN.toLocaleString('es-VE')+' COP = 1 USD');
