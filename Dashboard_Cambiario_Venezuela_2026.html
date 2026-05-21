@@ -650,7 +650,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="ss"><div class="sl">Brecha cambiaria</div><div class="sv c-yel" id="ss-brecha">—</div><div class="sd" id="ss-brecha-d">Diferencial BCV vs mercado</div></div>
     <div class="ss"><div class="sl">Devaluación 2026</div><div class="sv c-red" id="ss-deval">—</div><div class="sd">Desde 1-ene-2026 · 298,14 Bs</div></div>
     <div class="ss"><div class="sl">Peso Colombiano</div><div class="sv" id="ss-cop" style="color:var(--grn);">~4.380 COP</div><div class="sd">por 1 USD · ref. Banco República</div></div>
-    <div class="ss"><div class="sl">1 COP en Bolívares</div><div class="sv" id="ss-cop-bs" style="color:var(--grn);">~0,1167 Bs</div><div class="sd">tasa implícita BCV/COP</div></div>
+    <div class="ss"><div class="sl">1 USD en Bolívares (paralelo)</div><div class="sv c-pur" id="ss-cop-bs">~709 Bs</div><div class="sd">Binance P2P · mercado real</div></div>
     <div class="ss"><div class="sl">Salario mín. en USD</div><div class="sv c-red">$0,25</div><div class="sd">130 Bs/mes (base) · Ingreso integral $240</div></div>
     <div class="ss"><div class="sl">Canasta básica CBA</div><div class="sv c-red">~$692</div><div class="sd">2.717 salarios mínimos · CENDAS-FVM</div></div>
   </div>
@@ -1670,7 +1670,7 @@ function applyRates(r, live, ts) {
   // COP en stats
   const copN = STATE.cop;
   setText('ss-cop', copN.toLocaleString('es-VE')+' COP = 1 USD');
-  setText('ss-cop-bs', '~'+(r.bcv/copN).toFixed(4).replace('.',',')+' Bs por 1 COP');
+  setText('ss-cop-bs', fmtN(r.usdt)+' Bs');
   // COP ticker
   setText('tk-cop', copN.toLocaleString('es-VE'));
   setText('tk-cop-b', copN.toLocaleString('es-VE'));
