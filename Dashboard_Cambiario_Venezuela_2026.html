@@ -741,10 +741,10 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
   <!-- FILA 1: Tasas principales -->
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;">
-    <div class="ss" style="border-top:3px solid var(--blue);"><div class="sl">🏦 BCV Oficial</div><div class="sv c-blue" id="ss-bcv">—</div><div class="sd">Bs/USD · <span id="ss-fecha">—</span></div></div>
-    <div class="ss" style="border-top:3px solid var(--pur);"><div class="sl">💜 USDT Paralelo</div><div class="sv c-pur" id="ss-usdt">—</div><div class="sd">Binance P2P · hoy</div></div>
-    <div class="ss" style="border-top:3px solid var(--grn);"><div class="sl">💶 Euro BCV</div><div class="sv" id="ss-eur" style="color:var(--grn);">—</div><div class="sd">Bs/EUR · BCV oficial</div></div>
-    <div class="ss" style="border-top:3px solid var(--yel);"><div class="sl">📐 Brecha BCV/Mercado</div><div class="sv c-yel" id="ss-brecha">—</div><div class="sd" id="ss-brecha-d">Diferencial abs.</div></div>
+    <div class="ss" style="border-top:3px solid var(--blue);"><div class="sl">🏦 Dólar oficial (BCV)</div><div class="sv c-blue" id="ss-bcv">—</div><div class="sd">Bolívares por dólar · precio fijado por el gobierno</div></div>
+    <div class="ss" style="border-top:3px solid var(--pur);"><div class="sl">💜 Dólar paralelo (USDT)</div><div class="sv c-pur" id="ss-usdt">—</div><div class="sd">Precio real en el mercado libre · Binance P2P</div></div>
+    <div class="ss" style="border-top:3px solid var(--grn);"><div class="sl">💶 Euro (BCV oficial)</div><div class="sv" id="ss-eur" style="color:var(--grn);">—</div><div class="sd">Bolívares por euro · precio oficial del BCV</div></div>
+    <div class="ss" style="border-top:3px solid var(--yel);"><div class="sl">📐 Brecha cambiaria</div><div class="sv c-yel" id="ss-brecha">—</div><div class="sd">% que el paralelo supera al oficial hoy</div></div>
   </div>
 
   <!-- FILA 2: Incrementos compactos -->
@@ -775,10 +775,10 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
   <!-- FILA 3: Datos sociales y contexto -->
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
-    <div class="ss"><div class="sl">🇨🇴 COP / USD</div><div class="sv" id="ss-cop" style="color:#0ea5e9;">—</div><div class="sd">Peso colombiano · Banco República</div></div>
-    <div class="ss"><div class="sl">💼 Salario mín. real</div><div class="sv c-red" id="ss-salario-usd">$0,24 USD</div><div class="sd">130 Bs · Ingreso integral $240</div></div>
-    <div class="ss"><div class="sl">🛒 Canasta básica (CBA)</div><div class="sv c-red">$730</div><div class="sd">3.055 salarios mín. · CENDAS abr-26</div></div>
-    <div class="ss"><div class="sl">🛢️ WTI Petróleo</div><div class="sv" id="ss-wti" style="color:var(--grn);">—</div><div class="sd">USD/barril · precio spot</div></div>
+    <div class="ss"><div class="sl">🇨🇴 Peso colombiano hoy</div><div class="sv" id="ss-cop" style="color:#0ea5e9;">—</div><div class="sd">Pesos por 1 dólar · Banco de la República Colombia</div></div>
+    <div class="ss"><div class="sl">💼 Salario mínimo en dólares</div><div class="sv c-red" id="ss-salario-usd">$0,24 USD</div><div class="sd">El ingreso mínimo con bonos es $240/mes desde mayo 2026</div></div>
+    <div class="ss"><div class="sl">🛒 Canasta básica familiar</div><div class="sv c-red">$730 USD</div><div class="sd">Lo que cuesta alimentar una familia al mes · CENDAS abr-2026</div></div>
+    <div class="ss"><div class="sl">🛢️ Petróleo WTI hoy</div><div class="sv" id="ss-wti" style="color:var(--grn);">—</div><div class="sd">Dólares por barril · principal ingreso de Venezuela</div></div>
   </div>
 
   <!-- INFORME ESCRITO COMPLETO -->
@@ -801,17 +801,17 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <span id="sec-indicadores"></span>
 <div class="sec"><span class="ic">📊</span>Precios en tiempo real · <span class="dyn-date-full"></span></div>
 <div class="kpi-grid">
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#001f5b,var(--blue));"></div><div class="kpi-ico">🏦</div><div class="kpi-lbl">Dólar BCV Oficial</div><div class="kpi-val c-blue" id="kv-bcv">544,57</div><div class="kpi-sub" id="kv-bcv-sub">↑ En vivo · Bs/USD · <span id="kv-bcv-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#4c1d95,var(--pur));"></div><div class="kpi-ico">💜</div><div class="kpi-lbl">USDT Paralelo</div><div class="kpi-val c-pur" id="kv-usdt">744,00</div><div class="kpi-sub" id="kv-usdt-sub">↑ Binance P2P · <span id="kv-usdt-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,var(--yel));"></div><div class="kpi-ico">📐</div><div class="kpi-lbl">Brecha Cambiaria</div><div class="kpi-val c-yel" id="kv-brecha">36,6%</div><div class="kpi-sub">USDT vs BCV · diferencial</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7f1d1d,var(--red));"></div><div class="kpi-ico">📉</div><div class="kpi-lbl">Devaluación 2026</div><div class="kpi-val c-red" id="kv-deval">+82,7%</div><div class="kpi-sub" id="kv-deval-sub">Desde 298,14 Bs · 1-ene-26</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a5c,#0ea5e9);"></div><div class="kpi-ico">🇨🇴</div><div class="kpi-lbl">Peso COP / USD</div><div class="kpi-val" style="color:#0ea5e9;" id="kv-cop">3.644</div><div class="kpi-sub">1 COP = <span id="kv-cop-bs">—</span> Bs · <span id="kv-cop-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a1a,#059669);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">WTI Crudo</div><div class="kpi-val" style="color:var(--grn);" id="kv-wti">90,35</div><div class="kpi-sub">USD/barril · <span id="kv-wti-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a2e1a,#16a34a);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">Brent Crudo</div><div class="kpi-val" style="color:#16a34a;" id="kv-brent">—</div><div class="kpi-sub">USD/barril · ICE · <span id="kv-brent-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#78350f,#f59e0b);"></div><div class="kpi-ico">₿</div><div class="kpi-lbl">Bitcoin BTC/USD</div><div class="kpi-val" style="color:#f59e0b;" id="kv-btc">—</div><div class="kpi-sub">Precio spot · <span id="kv-btc-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,#d97706);"></div><div class="kpi-ico">🥇</div><div class="kpi-lbl">Oro / Gold</div><div class="kpi-val" style="color:#d97706;" id="kv-gold">—</div><div class="kpi-sub">USD/oz · <span id="kv-gold-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7c2d12,var(--ora));"></div><div class="kpi-ico">🔥</div><div class="kpi-lbl">Devaluación 2025</div><div class="kpi-val c-ora">+474%</div><div class="kpi-sub">51,93 → 298,14 Bs</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#14532d,var(--grn));"></div><div class="kpi-ico">🔴</div><div class="kpi-lbl">Pico USDT 2026</div><div class="kpi-val" style="color:#991b1b;">780 Bs</div><div class="kpi-sub">8-ene · brecha 140%</div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#001f5b,var(--blue));"></div><div class="kpi-ico">🏦</div><div class="kpi-lbl">Dólar BCV Oficial</div><div class="kpi-val c-blue" id="kv-bcv">544,57</div><div class="kpi-sub">Precio fijado por el gobierno · Bs por USD · <span id="kv-bcv-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#4c1d95,var(--pur));"></div><div class="kpi-ico">💜</div><div class="kpi-lbl">Dólar Paralelo (USDT)</div><div class="kpi-val c-pur" id="kv-usdt">744,00</div><div class="kpi-sub">Precio real en el mercado libre · Binance P2P · <span id="kv-usdt-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,var(--yel));"></div><div class="kpi-ico">📐</div><div class="kpi-lbl">Brecha Cambiaria</div><div class="kpi-val c-yel" id="kv-brecha">36,6%</div><div class="kpi-sub">Diferencia entre precio oficial y precio real del dólar</div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7f1d1d,var(--red));"></div><div class="kpi-ico">📉</div><div class="kpi-lbl">Pérdida del Bolívar 2026</div><div class="kpi-val c-red" id="kv-deval">+82,7%</div><div class="kpi-sub" id="kv-deval-sub">Cuánto ha subido el dólar desde el 1 de enero de 2026</div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a5c,#0ea5e9);"></div><div class="kpi-ico">🇨🇴</div><div class="kpi-lbl">Peso Colombiano (COP)</div><div class="kpi-val" style="color:#0ea5e9;" id="kv-cop">3.644</div><div class="kpi-sub">Pesos colombianos por 1 dólar · 1 COP = <span id="kv-cop-bs">—</span> Bs</div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a1a,#059669);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">Petróleo WTI</div><div class="kpi-val" style="color:var(--grn);" id="kv-wti">90,35</div><div class="kpi-sub">Precio del barril en dólares · afecta ingresos de Venezuela · <span id="kv-wti-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a2e1a,#16a34a);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">Petróleo Brent</div><div class="kpi-val" style="color:#16a34a;" id="kv-brent">—</div><div class="kpi-sub">Referencia mundial del barril de crudo · <span id="kv-brent-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#78350f,#f59e0b);"></div><div class="kpi-ico">₿</div><div class="kpi-lbl">Bitcoin (BTC)</div><div class="kpi-val" style="color:#f59e0b;" id="kv-btc">—</div><div class="kpi-sub">Precio del Bitcoin en dólares · <span id="kv-btc-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,#d97706);"></div><div class="kpi-ico">🥇</div><div class="kpi-lbl">Oro (por onza)</div><div class="kpi-val" style="color:#d97706;" id="kv-gold">—</div><div class="kpi-sub">Precio de la onza troy de oro en dólares · <span id="kv-gold-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7c2d12,var(--ora));"></div><div class="kpi-ico">🔥</div><div class="kpi-lbl">Pérdida del Bolívar 2025</div><div class="kpi-val c-ora">+474%</div><div class="kpi-sub">El dólar pasó de 51,93 a 298,14 Bs en todo el año 2025</div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#14532d,var(--grn));"></div><div class="kpi-ico">📌</div><div class="kpi-lbl">Máximo Histórico 2026</div><div class="kpi-val" style="color:#991b1b;">780 Bs</div><div class="kpi-sub">El dólar paralelo llegó a 780 Bs el 8 de enero · brecha fue 140%</div></div>
 </div>
 
 
@@ -833,8 +833,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="res-head">
       <div class="res-ico">💱</div>
       <div>
-        <div class="res-title">Resumen de Tasas Cambiarias</div>
-        <div class="res-sub">Cotizaciones del día · todas las monedas</div>
+        <div class="res-title">¿A cuánto está el dólar hoy?</div>
+        <div class="res-sub">Precio oficial BCV + precio real del mercado libre · actualizado cada 30 seg</div>
       </div>
     </div>
     <div class="res-row"><span class="res-lbl">🏦 Dólar BCV oficial</span><span class="res-val blue" id="rc-bcv">—</span></div>
@@ -852,18 +852,18 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="res-head">
       <div class="res-ico">📐</div>
       <div>
-        <div class="res-title">Resumen de Brecha Cambiaria</div>
-        <div class="res-sub">Diferencial BCV vs mercado paralelo</div>
+        <div class="res-title">¿Cuánto se pierde usando el precio oficial?</div>
+        <div class="res-sub">Diferencia entre el dólar del gobierno y el precio real del mercado</div>
       </div>
     </div>
-    <div class="res-row"><span class="res-lbl">📊 Brecha porcentual hoy</span><span class="res-val yel" id="rc-brecha">—</span></div>
-    <div class="res-row"><span class="res-lbl">💵 Diferencial absoluto</span><span class="res-val up" id="rc-brecha-abs">—</span></div>
-    <div class="res-row"><span class="res-lbl">📉 Devaluación BCV 2026</span><span class="res-val up" id="rc-deval-bcv">—</span></div>
-    <div class="res-row"><span class="res-lbl">📉 Devaluación paralelo 2026</span><span class="res-val up" id="rc-deval-par">—</span></div>
-    <div class="res-row"><span class="res-lbl">🔴 Pico histórico 2026</span><span class="res-val up">+140% · 8-ene-26</span></div>
-    <div class="res-row"><span class="res-lbl">📈 Tendencia 7 días</span><span class="res-val" id="rc-tendencia">Estable</span></div>
-    <div class="res-row"><span class="res-lbl">⚖️ Estado del mercado</span><span class="res-val" id="rc-estado">—</span></div>
-    <div class="res-foot" id="rc-brecha-int">⚡ <strong>Interpretación:</strong> calculando con tasas en vivo...</div>
+    <div class="res-row"><span class="res-lbl">📊 Diferencia hoy (%)</span><span class="res-val yel" id="rc-brecha">—</span></div>
+    <div class="res-row"><span class="res-lbl">💵 Diferencia en bolívares</span><span class="res-val up" id="rc-brecha-abs">— Bs más caro el paralelo</span></div>
+    <div class="res-row"><span class="res-lbl">📉 Subida del dólar oficial en 2026</span><span class="res-val up" id="rc-deval-bcv">—</span></div>
+    <div class="res-row"><span class="res-lbl">📉 Subida del dólar paralelo en 2026</span><span class="res-val up" id="rc-deval-par">—</span></div>
+    <div class="res-row"><span class="res-lbl">🔴 Máxima brecha del año</span><span class="res-val up">+140% el 8 de enero de 2026</span></div>
+    <div class="res-row"><span class="res-lbl">📈 Tendencia reciente</span><span class="res-val" id="rc-tendencia">Estable</span></div>
+    <div class="res-row"><span class="res-lbl">⚖️ Situación del mercado</span><span class="res-val" id="rc-estado">—</span></div>
+    <div class="res-foot" id="rc-brecha-int">⚡ <strong>Qué significa:</strong> calculando con tasas en vivo...</div>
   </div>
 
   <!-- TARJETA 3: CANASTA BÁSICA -->
@@ -871,18 +871,18 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="res-head">
       <div class="res-ico">🛒</div>
       <div>
-        <div class="res-title">Resumen Canasta Básica</div>
-        <div class="res-sub">Poder adquisitivo en tiempo real</div>
+        <div class="res-title">¿Alcanza el salario para vivir?</div>
+        <div class="res-sub">Costo real de vida vs salario mínimo en Venezuela · CENDAS abr-2026</div>
       </div>
     </div>
-    <div class="res-row"><span class="res-lbl">🥗 CBA Venezuela (USD)</span><span class="res-val up">$692 USD</span></div>
-    <div class="res-row"><span class="res-lbl">🥗 CBA Venezuela (Bs hoy)</span><span class="res-val up" id="rc-cba-bs">—</span></div>
-    <div class="res-row"><span class="res-lbl">🌄 CBA Táchira (+9% frontera)</span><span class="res-val up" id="rc-cba-tachira">$755 USD</span></div>
-    <div class="res-row"><span class="res-lbl">🏠 CBN Venezuela</span><span class="res-val up">$1.200 USD</span></div>
-    <div class="res-row"><span class="res-lbl">💼 Salario mínimo en USD</span><span class="res-val up" id="rc-salario-usd">$0,26 USD</span></div>
-    <div class="res-row"><span class="res-lbl">❌ Salarios para 1 CBA</span><span class="res-val up">2.717 salarios</span></div>
-    <div class="res-row"><span class="res-lbl">📊 % CBA cubierto sal. mín.</span><span class="res-val up">0,04%</span></div>
-    <div class="res-foot">🛒 <strong>Fuente:</strong> CENDAS-FVM · INE · INVESP · FUNDESTA. CBA en bolívares se recalcula con cada actualización del BCV.</div>
+    <div class="res-row"><span class="res-lbl">🥗 Canasta Básica Alimentaria</span><span class="res-val up">$730 USD</span></div>
+    <div class="res-row"><span class="res-lbl">🥗 Canasta en Bolívares (hoy)</span><span class="res-val up" id="rc-cba-bs">—</span></div>
+    <div class="res-row"><span class="res-lbl">🌄 En Táchira (frontera +9%)</span><span class="res-val up">$797 USD</span></div>
+    <div class="res-row"><span class="res-lbl">🏠 Canasta completa (con vivienda)</span><span class="res-val up">$1.265 USD</span></div>
+    <div class="res-row"><span class="res-lbl">💼 Salario mínimo mensual</span><span class="res-val up" id="rc-salario-usd">$0,24 USD</span></div>
+    <div class="res-row"><span class="res-lbl">❌ Salarios que se necesitan</span><span class="res-val up">3.055 salarios mínimos</span></div>
+    <div class="res-row"><span class="res-lbl">📊 El salario cubre solo el</span><span class="res-val up">0,03% de la canasta</span></div>
+    <div class="res-foot">🛒 <strong>Fuente:</strong> CENDAS-FVM abr-2026 · INE · INVESP. Los bolívares se recalculan automáticamente con el tipo de cambio BCV del día.</div>
   </div>
 
 </div>
