@@ -183,8 +183,19 @@ tbody td:first-child{color:var(--t1);font-weight:600;}
 #chartTooltip .tt-val{font-weight:700;margin-left:auto;padding-left:8px;}
 
 /* ── RESPONSIVE ─────────────────────────── */
+
+/* Ocultar historial de actualizaciones — lógica interna sigue activa */
+#block-alertas{display:none!important;}
+
+/* Nav horizontal scroll en lugar de wrap — nunca se rompe */
+.header-right nav{flex-wrap:nowrap!important;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px;}
+.header-right nav::-webkit-scrollbar{display:none;}
+
 @media(max-width:1400px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
-@media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.ctx-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:1200px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+  .ctx-grid{grid-template-columns:repeat(2,1fr);}
+}
 
 /* ── TABLET (≤900px) ──────────────────────────── */
 @media(max-width:900px){
@@ -194,10 +205,12 @@ tbody td:first-child{color:var(--t1);font-weight:600;}
   .summary{grid-template-columns:1fr;}
   .wrap{padding:16px 14px;}
   .header{padding:12px 14px;gap:10px;}
-  .search-box input{width:180px;}
-  .search-box input:focus{width:210px;}
+  .search-box input{width:160px;}
+  .search-box input:focus{width:190px;}
   .calc-grid{grid-template-columns:1fr;}
   #refreshBar{left:0;}
+  /* Grids inline del resumen ejecutivo */
+  div[style*="grid-template-columns:repeat(4,1fr)"]{grid-template-columns:repeat(2,1fr)!important;}
 }
 
 /* ── MÓVIL (≤600px) ──────────────────────────── */
@@ -205,22 +218,32 @@ tbody td:first-child{color:var(--t1);font-weight:600;}
   #topbar{padding:5px 12px;font-size:10px;}
   #topbar .srcs{display:none;}
   #topbar .live{font-size:10px;}
+  /* Header: logo arriba, controles abajo */
   .header{padding:10px 12px;flex-direction:column;align-items:flex-start;gap:8px;}
-  .brand h1{font-size:15px;}
+  .brand h1{font-size:16px;}
   .brand p{font-size:9.5px;}
-  .header-right{width:100%;justify-content:space-between;}
-  .header-right nav{display:flex;gap:2px;flex-wrap:wrap;width:100%;margin-top:4px;}
-  .nav-lnk{font-size:10px;padding:4px 7px;}
+  .header-right{width:100%;flex-direction:column;gap:8px;}
+  .header-right nav{width:100%;gap:4px;}
+  .nav-lnk{font-size:11px;padding:6px 10px;min-height:36px;display:inline-flex;align-items:center;}
+  /* Buscador a ancho completo */
   .search-box{width:100%;}
-  .search-box input{width:100% !important;font-size:12px;}
-  #ticker{height:38px;}
+  .search-box input{width:100%!important;font-size:13px;}
+  /* Badge live compacto */
+  .badge-live{font-size:10px;padding:3px 8px;}
+  .api-dots{display:none;}
+  /* Ticker */
+  #ticker{height:40px;}
   .tk{padding:0 14px;}
   .tk .lbl{font-size:8px;}
-  .tk .val{font-size:13px;}
+  .tk .val{font-size:14px;}
+  /* KPIs: 2 columnas siempre */
   .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;}
-  .kpi{padding:12px 10px;}
-  .kpi-val{font-size:19px;}
+  .kpi{padding:14px 12px;}
+  .kpi-val{font-size:20px;}
+  .kpi-lbl{font-size:10px;}
+  /* Sección wrap */
   .wrap{padding:10px 10px;}
+  /* Cards y grids */
   .res-grid{grid-template-columns:1fr;}
   .g2,.g22,.g3{grid-template-columns:1fr;}
   .calc-grid{grid-template-columns:1fr;}
@@ -233,18 +256,30 @@ tbody td:first-child{color:var(--t1);font-weight:600;}
   tbody td{padding:8px 8px;}
   .c-card{padding:14px;}
   .tl-card{padding:14px;}
+  /* Grids inline 4-col → 2-col en móvil */
+  div[style*="grid-template-columns:repeat(4,1fr)"]{grid-template-columns:1fr 1fr!important;}
+  /* Sección título más compacto */
+  .sec{font-size:13px;padding:10px 14px;}
+  /* Footer */
   .footer{padding:14px 12px;font-size:9.5px;flex-direction:column;gap:8px;}
   .footer .apis{gap:8px;}
+  /* PDF */
   .pdf-btn{width:100%;justify-content:center;}
-  #pdf-fab{display:none;}
-  #pdf-bar-btn{display:flex !important;}
+  #pdf-fab{bottom:16px;right:16px;width:46px;height:46px;font-size:18px;}
+  /* Panorama */
+  .panorama-card{padding:16px 14px;border-radius:0 12px 12px 0;}
+  /* Fuentes grid */
+  .lnk-grid{grid-template-columns:1fr!important;}
+  /* KPI cards sección mundial/táchira */
+  .kpi-card{padding:14px 12px;}
 }
 
 /* ── TELÉFONO MUY PEQUEÑO (≤380px) ──────────── */
 @media(max-width:380px){
-  .kpi-grid{grid-template-columns:1fr;}
-  .kpi-val{font-size:22px;}
-  .nav-lnk{font-size:9px;padding:3px 6px;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .kpi-val{font-size:18px;}
+  .nav-lnk{font-size:10px;padding:5px 8px;}
+  .brand h1{font-size:14px;}
 }
 
 
