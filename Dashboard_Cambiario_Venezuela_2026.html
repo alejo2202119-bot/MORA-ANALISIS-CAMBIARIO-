@@ -720,56 +720,30 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="ss" style="border-top:3px solid var(--yel);"><div class="sl">📐 Brecha BCV/Mercado</div><div class="sv c-yel" id="ss-brecha">—</div><div class="sd" id="ss-brecha-d">Diferencial abs.</div></div>
   </div>
 
-  <!-- FILA 2: Incrementos mensuales (NUEVO) -->
-  <div style="background:var(--red-ll);border:1.5px solid #fca5a5;border-radius:12px;padding:12px 14px;margin-bottom:10px;">
-    <div style="font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">📅 Incrementos del mes en curso · <span id="ss-mes-label" style="text-transform:capitalize;">mayo 2026</span></div>
-    <!-- CAMBIO HOY VS AYER -->
-    <div id="ss-hoy-banner" style="display:none;background:linear-gradient(135deg,#7f1d1d,#b91c1c);border-radius:10px;padding:10px 16px;margin-bottom:10px;color:#fff;">
-      <div style="font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;opacity:.8;margin-bottom:6px;">🔴 Cambio de hoy vs ayer</div>
-      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;">
-        <div>🏦 BCV: <strong id="ss-hoy-bcv-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-bcv-pct" style="font-size:11px;opacity:.85;">—</span></div>
-        <div>💜 USDT: <strong id="ss-hoy-usdt-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-usdt-pct" style="font-size:11px;opacity:.85;">—</span></div>
-        <div style="font-size:10.5px;opacity:.75;" id="ss-hoy-ref">—</div>
-      </div>
+  <!-- FILA 2: Incrementos compactos -->
+  <div id="ss-hoy-banner" style="display:none;background:linear-gradient(135deg,#7f1d1d,#b91c1c);border-radius:10px;padding:10px 16px;margin-bottom:10px;color:#fff;">
+    <div style="font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;opacity:.8;margin-bottom:6px;">🔴 Cambio de hoy vs ayer</div>
+    <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;">
+      <div>🏦 BCV: <strong id="ss-hoy-bcv-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-bcv-pct" style="font-size:11px;opacity:.85;">—</span></div>
+      <div>💜 USDT: <strong id="ss-hoy-usdt-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-usdt-pct" style="font-size:11px;opacity:.85;">—</span></div>
+      <div style="font-size:10.5px;opacity:.75;" id="ss-hoy-ref">—</div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-      <!-- BCV este mes -->
-      <div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #fca5a5;">
-        <div style="font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">↑ BCV este mes</div>
-        <div style="font-size:20px;font-weight:900;color:var(--red);line-height:1;" id="ss-mes-bcv-pct">—</div>
-        <div style="font-size:10.5px;color:var(--t3);margin-top:3px;" id="ss-mes-bcv-bs">— Bs subió</div>
-        <div style="font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px dashed #fca5a5;">Año: <strong id="ss-ano-bcv-pct" style="color:var(--red);">—</strong></div>
-      </div>
-      <!-- USDT este mes -->
-      <div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #fca5a5;">
-        <div style="font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">↑ USDT este mes</div>
-        <div style="font-size:20px;font-weight:900;color:var(--pur);line-height:1;" id="ss-mes-usdt-pct">—</div>
-        <div style="font-size:10.5px;color:var(--t3);margin-top:3px;" id="ss-mes-usdt-bs">— Bs subió</div>
-        <div style="font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px dashed #fca5a5;">Año: <strong id="ss-ano-usdt-pct" style="color:var(--pur);">—</strong></div>
-      </div>
-      <!-- BCV sube por día -->
-      <div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #fca5a5;">
-        <div style="font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">📈 BCV · prom./día <span id="ss-dia-mes-lbl" style="text-transform:capitalize;font-weight:600;color:var(--red);">este mes</span></div>
-        <div style="font-size:20px;font-weight:900;color:var(--red);line-height:1;" id="ss-dia-bcv-bs">—</div>
-        <div style="font-size:10.5px;color:var(--t3);margin-top:3px;" id="ss-dia-bcv-pct">— % promedio</div>
-        <div style="font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px dashed #fca5a5;">Prom. año: <strong id="ss-dia-ano-bs" style="color:var(--red);">—</strong></div>
-      </div>
-      <!-- Devaluación 2026 -->
-      <div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #fca5a5;">
-        <div style="font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">🔥 Devaluación 2026</div>
-        <div style="font-size:20px;font-weight:900;color:var(--red);line-height:1;" id="ss-deval">—</div>
-        <div style="font-size:10.5px;color:var(--t3);margin-top:3px;">Desde 298,14 Bs · 1-ene</div>
-        <div style="font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px dashed #fca5a5;">+<strong id="ss-deval-bs-total" style="color:var(--red);">—</strong> Bs en total</div>
-      </div>
-    </div>
-    <!-- Resumen anual compacto -->
-    <div style="margin-top:8px;padding:9px 14px;background:rgba(239,68,68,0.07);border-radius:8px;font-size:11.5px;color:var(--t2);line-height:1.8;">
-      <strong style="color:var(--red);">📊 Año 2026 completo:</strong>
-      &nbsp;BCV: subió <strong id="ss-ano-bcv-total" style="color:var(--red);">—</strong> en total · promedio <strong id="ss-ano-bcv-dia" style="color:var(--red);">—</strong>/día
-      &nbsp;·&nbsp;
-      USDT: subió <strong id="ss-ano-usdt-total" style="color:var(--pur);">—</strong> · promedio <strong id="ss-ano-usdt-dia" style="color:var(--pur);">—</strong>/día
-      &nbsp;<span style="color:var(--t3);font-size:10.5px;">· desde el 1-ene-2026</span>
-    </div>
+  </div>
+  <div style="background:var(--red-ll);border:1px solid #fca5a5;border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--t2);display:flex;flex-wrap:wrap;gap:16px;align-items:center;">
+    <span style="font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:1px;">📅 <span id="ss-mes-label">Mayo 2026</span></span>
+    <span>BCV: <strong id="ss-mes-bcv-pct" style="color:var(--red);">—</strong> <span id="ss-mes-bcv-bs" style="color:var(--t3);font-size:11px;"></span></span>
+    <span>USDT: <strong id="ss-mes-usdt-pct" style="color:var(--pur);">—</strong> <span id="ss-mes-usdt-bs" style="color:var(--t3);font-size:11px;"></span></span>
+    <span>Prom/día BCV: <strong id="ss-dia-bcv-bs" style="color:var(--red);">—</strong> <span id="ss-dia-bcv-pct" style="color:var(--t3);font-size:11px;"></span></span>
+    <span>🔥 Deval. 2026: <strong id="ss-deval" style="color:var(--red);">—</strong></span>
+    <span style="color:var(--t3);font-size:11px;margin-left:auto;">Año: BCV <strong id="ss-ano-bcv-pct" style="color:var(--red);">—</strong> · USDT <strong id="ss-ano-usdt-pct" style="color:var(--pur);">—</strong></span>
+    <!-- hidden IDs still needed by JS -->
+    <span style="display:none;" id="ss-deval-bs-total"></span>
+    <span style="display:none;" id="ss-dia-mes-lbl"></span>
+    <span style="display:none;" id="ss-dia-ano-bs"></span>
+    <span style="display:none;" id="ss-ano-bcv-total"></span>
+    <span style="display:none;" id="ss-ano-bcv-dia"></span>
+    <span style="display:none;" id="ss-ano-usdt-total"></span>
+    <span style="display:none;" id="ss-ano-usdt-dia"></span>
   </div>
 
   <!-- FILA 3: Datos sociales y contexto -->
@@ -2562,48 +2536,7 @@ ${hoySeccionInforme}
   </div>
 </div>
 
-${(()=>{
-  const DIAS_S=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-  const hist=getMonthHistory(yr,mo);
-  const known=hist.filter(r=>r.bcv!==null);
-  if(known.length===0) return '<div style="font-size:11px;color:var(--t3);margin-top:10px;padding-top:10px;border-top:1px solid var(--bdr);">💡 El registro diario de este mes se irá completando automáticamente con cada visita.</div>';
-  const rowsHTML=hist.map((rec,i)=>{
-    const prev=hist.slice(0,i).reverse().find(r=>r.bcv!==null)||null;
-    const deltaBcv=(prev&&rec.bcv)?(rec.bcv-prev.bcv):null;
-    const deltaUsdt=(prev&&rec.usdt&&prev.usdt)?(rec.usdt-prev.usdt):null;
-    const dCol=deltaBcv===null?'var(--t3)':deltaBcv>0?'var(--red)':deltaBcv<0?'#059669':'var(--t3)';
-    const uCol=deltaUsdt===null?'var(--t3)':deltaUsdt>0?'var(--red)':deltaUsdt<0?'#059669':'var(--t3)';
-    const isToday=rec.day===now.getDate()&&mo===now.getMonth()&&yr===now.getFullYear();
-    const dow=DIAS_S[new Date(rec.ds+'T12:00:00').getDay()];
-    const noData=!rec.bcv;
-    if(noData) return `<tr style="border-bottom:1px solid var(--bdr);opacity:.35;"><td style="padding:4px 8px;font-size:11px;">${rec.day}/${String(mo+1).padStart(2,'0')} <span style="color:var(--t3);font-size:10px;">${dow}</span></td><td colspan="4" style="padding:4px 8px;text-align:center;font-size:10px;color:var(--t3);">sin registro</td></tr>`;
-    return `<tr style="border-bottom:1px solid var(--bdr);${isToday?'background:var(--yel-ll);font-weight:700;':''}">
-      <td style="padding:5px 8px;font-size:11.5px;">${isToday?'▶ ':''}<strong>${rec.day}</strong>/${String(mo+1).padStart(2,'0')} <span style="color:var(--t3);font-size:10px;">${dow}</span></td>
-      <td style="padding:5px 8px;text-align:right;font-size:12px;color:var(--blue);">${fmtN(rec.bcv)}</td>
-      <td style="padding:5px 8px;text-align:right;font-size:12px;font-weight:700;color:${dCol};">${deltaBcv===null?'inicio':(deltaBcv>=0?'+':'')+deltaBcv.toFixed(4).replace('.',',')+' Bs'}</td>
-      <td style="padding:5px 8px;text-align:right;font-size:12px;color:var(--pur);">${rec.usdt?fmtN(rec.usdt):'—'}</td>
-      <td style="padding:5px 8px;text-align:right;font-size:12px;font-weight:700;color:${uCol};">${deltaUsdt===null?(!rec.usdt?'—':'inicio'):(deltaUsdt>=0?'+':'')+deltaUsdt.toFixed(2).replace('.',',')+' Bs'}</td>
-    </tr>`;
-  }).join('');
-  return `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--bdr);">
-    <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:8px;">
-      📅 Registro diario — ${mesLabel}
-      <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--t3);margin-left:8px;">${known.length} de ${now.getDate()} días registrados · se completa automáticamente cada día</span>
-    </div>
-    <div style="overflow-x:auto;">
-      <table style="width:100%;border-collapse:collapse;">
-        <thead><tr style="background:var(--blue-ll);">
-          <th style="padding:6px 8px;text-align:left;color:var(--blue);font-size:10.5px;font-weight:800;">FECHA</th>
-          <th style="padding:6px 8px;text-align:right;color:var(--blue);font-size:10.5px;font-weight:800;">BCV (Bs/USD)</th>
-          <th style="padding:6px 8px;text-align:right;color:var(--red);font-size:10.5px;font-weight:800;">Δ DÍA BCV</th>
-          <th style="padding:6px 8px;text-align:right;color:var(--pur);font-size:10.5px;font-weight:800;">USDT (Bs)</th>
-          <th style="padding:6px 8px;text-align:right;color:var(--pur);font-size:10.5px;font-weight:800;">Δ DÍA USDT</th>
-        </tr></thead>
-        <tbody>${rowsHTML}</tbody>
-      </table>
-    </div>
-  </div>`;
-})()}`;
+`;
   document.querySelectorAll('.dyn-date-full').forEach(el=>el.textContent=hoyCorto);
   document.querySelectorAll('.dyn-date-short').forEach(el=>el.textContent=`${MESES[now.getMonth()]} parcial al ${now.getDate()}-${MESES[now.getMonth()].slice(0,3)}`);
 }
