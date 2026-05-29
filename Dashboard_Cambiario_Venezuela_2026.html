@@ -402,6 +402,17 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 .res-pulse{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--grn);font-weight:700;margin-left:auto;}
 .res-pulse::before{content:'';width:7px;height:7px;background:var(--grn);border-radius:50%;animation:blink 1.4s infinite;}
 
+/* ── PANORAMA ECONÓMICO ── */
+.panorama-card{background:var(--surf);border:1px solid var(--bdr);border-left:4px solid var(--yel);border-radius:0 16px 16px 0;padding:20px 24px;margin-bottom:24px;box-shadow:var(--sh);position:relative;}
+.panorama-card::before{content:'📰';position:absolute;top:14px;right:18px;font-size:22px;opacity:.18;}
+
+/* ── BADGES DE CAMBIO EN KPIs ── */
+@keyframes badgePop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes badgeFade{0%{opacity:1}80%{opacity:1}100%{opacity:0;pointer-events:none}}
+.chg-badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:800;padding:3px 7px;border-radius:20px;animation:badgePop .35s ease,badgeFade 30s forwards;z-index:10;white-space:nowrap;}
+.chg-badge.up{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}
+.chg-badge.dn{background:rgba(5,150,105,.15);color:var(--grn);border:1px solid rgba(5,150,105,.3);}
+
 @media(max-width:1000px){.res-grid{grid-template-columns:1fr;}}
 
 
@@ -604,6 +615,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <nav style="display:flex;gap:2px;flex-wrap:wrap;">
       <a href="#sec-resumen"     class="nav-lnk">Inicio</a>
       <a href="#sec-indicadores" class="nav-lnk">Indicadores</a>
+      <a href="#sec-panorama"    class="nav-lnk" style="color:var(--yel);font-weight:800;">📰 Análisis</a>
       <a href="#sec-resumenes"   class="nav-lnk" style="color:var(--yel);font-weight:800;">Resúmenes ⚡</a>
       <a href="#sec-graficas"    class="nav-lnk">Gráficas</a>
       <a href="#sec-petroleo"    class="nav-lnk">🛢️ Petróleo</a>
@@ -801,6 +813,14 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#14532d,var(--grn));"></div><div class="kpi-ico">🔴</div><div class="kpi-lbl">Pico USDT 2026</div><div class="kpi-val" style="color:#991b1b;">780 Bs</div><div class="kpi-sub">8-ene · brecha 140%</div></div>
 </div>
 
+
+<!-- ═══ PANORAMA ECONÓMICO DEL DÍA ═══ -->
+<span id="sec-panorama"></span>
+<div class="panorama-card">
+  <div id="panorama-text">
+    <div style="text-align:center;padding:18px;color:var(--t3);font-size:12px;">Generando panorama económico…</div>
+  </div>
+</div>
 
 <!-- ═══ RESÚMENES CONSOLIDADOS EN VIVO ═══ -->
 <span id="sec-resumenes"></span>
@@ -2343,6 +2363,15 @@ function applyRates(r, live, ts) {
   setText('tk-cop-bs-b', '~'+(r.bcv/copN).toFixed(4).replace('.',','));
   // Resumen dinámico del día
   generateSummary(r, live);
+  buildPanorama(r, live);
+  // Badges de cambio
+  showChangeBadge('kv-bcv',  r.bcv,  'BCV');
+  showChangeBadge('kv-usdt', r.usdt, 'USDT');
+  showChangeBadge('kv-cop',  STATE.cop, 'COP');
+  showChangeBadge('kv-wti',  STATE.wti, 'WTI');
+  showChangeBadge('kv-brent',STATE.brent,'Brent');
+  showChangeBadge('kv-btc',  STATE.btc, 'BTC');
+  showChangeBadge('kv-gold', STATE.gold, 'Oro');
   updateResumenes(r, live);
   // Badge y ticker
   const now = new Date();
@@ -2577,6 +2606,90 @@ ${(()=>{
 })()}`;
   document.querySelectorAll('.dyn-date-full').forEach(el=>el.textContent=hoyCorto);
   document.querySelectorAll('.dyn-date-short').forEach(el=>el.textContent=`${MESES[now.getMonth()]} parcial al ${now.getDate()}-${MESES[now.getMonth()].slice(0,3)}`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PANORAMA ECONÓMICO DEL DÍA
+// ═══════════════════════════════════════════════════════════
+function buildPanorama(r, live) {
+  const el = document.getElementById('panorama-text');
+  if (!el) return;
+  const bcv = r.bcv, usdt = r.usdt, eur = r.eur;
+  const brecha = ((usdt - bcv) / bcv * 100).toFixed(1);
+  const brechaAbs = (usdt - bcv).toFixed(2).replace('.', ',');
+  const deval = ((bcv - 298.14) / 298.14 * 100).toFixed(1);
+  const now = new Date();
+  const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const fechaHoy = `${DIAS[now.getDay()]} ${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
+  const hm = hhmm(now);
+  const estado = live ? '<span style="color:var(--grn);">📡 Datos en vivo</span>' : '<span style="color:var(--yel);">📦 Último registro conocido</span>';
+  const cop = STATE.cop > 0 ? STATE.cop : 4100;
+  const copBs = (bcv / cop * 1000).toFixed(3).replace('.', ',');
+  const cbaBs = fmtI(730 * bcv);
+  const brechaColor = parseFloat(brecha) > 25 ? 'var(--red)' : parseFloat(brecha) > 15 ? 'var(--yel)' : 'var(--grn)';
+  const brechaComentario = parseFloat(brecha) > 25
+    ? ' <strong style="color:var(--red);">La brecha supera el umbral crítico del 25%, señal de presión inflacionaria.</strong>'
+    : parseFloat(brecha) > 15
+    ? ' La brecha se mantiene en niveles de alerta moderada.'
+    : ' La brecha se encuentra en niveles manejables.';
+  const devalAlerta = parseFloat(deval) > 50
+    ? ' <strong style="color:var(--red);">⚠️ Se recomienda atención especial a las operaciones comerciales binacionales ante la aceleración cambiaria.</strong>'
+    : '';
+  const mundoPetroleo = STATE.wti > 0
+    ? `El petróleo WTI cotiza a <strong>$${fmtN(STATE.wti)} USD/barril</strong>${STATE.brent > 0 ? `, y el Brent a <strong>$${fmtN(STATE.brent)}/bbl</strong>` : ''}.`
+    : 'Los mercados de materias primas operan con volatilidad moderada.';
+  const mundoExtras = [
+    STATE.gold > 0 ? `El oro se ubica en <strong>$${fmtN(STATE.gold)} USD/oz</strong>.` : '',
+    STATE.sp500 > 0 ? `El S&amp;P 500 cotiza en <strong>${STATE.sp500.toLocaleString('es-VE',{maximumFractionDigits:0})} puntos</strong>.` : '',
+    STATE.dxy > 0 ? `El índice dólar (DXY) en <strong>${fmtN(STATE.dxy)}</strong>.` : '',
+  ].filter(Boolean).join(' ');
+
+  el.innerHTML = `
+<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--bdr);">
+  <div>
+    <div style="font-size:15px;font-weight:900;color:var(--t1);">🗞️ Panorama Económico del Día</div>
+    <div style="font-size:11.5px;color:var(--t3);margin-top:3px;">${fechaHoy} · Última actualización: <strong>${hm}</strong> VET · ${estado}</div>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+    <span style="background:rgba(37,99,235,.1);color:var(--blue);font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🌎 MUNDO</span>
+    <span style="background:rgba(207,20,43,.1);color:var(--red);font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🇻🇪 VENEZUELA</span>
+    <span style="background:rgba(245,168,0,.15);color:#92400e;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🏔️ TÁCHIRA</span>
+  </div>
+</div>
+<div style="font-size:13.5px;line-height:2.0;color:var(--t2);">
+  <p style="margin-bottom:12px;"><strong style="color:var(--blue-m);">🌎 MUNDO —</strong> ${mundoPetroleo} ${mundoExtras} Los mercados internacionales operan bajo vigilancia por las tensiones arancelarias globales y la política monetaria de la Reserva Federal de EE.UU.</p>
+  <p style="margin-bottom:12px;"><strong style="color:var(--red);">🇻🇪 VENEZUELA —</strong> El Banco Central de Venezuela (BCV) fijó el dólar oficial en <strong style="color:var(--blue);font-size:15px;">Bs ${fmtN(bcv)}</strong>. El mercado paralelo (USDT Binance P2P) cotiza en <strong style="color:var(--pur);font-size:15px;">Bs ${fmtN(usdt)}</strong>, generando una brecha cambiaria de <strong style="color:${brechaColor};">${brecha}%</strong> (${brechaAbs} Bs de diferencial).${brechaComentario} El euro BCV se cotiza en <strong>Bs ${fmtN(eur)}</strong>. Respecto al inicio del año (Bs 298,14), el bolívar acumula una devaluación de <strong style="color:var(--red);">+${deval}%</strong>.</p>
+  <p style="margin-bottom:0;"><strong style="color:#92400e;">🏔️ TÁCHIRA —</strong> En la frontera con Colombia, el peso equivale a <strong>Bs ${copBs} por cada 1.000 COP</strong> (TRM Banrep: <strong>${cop.toLocaleString('es-VE')} COP/USD</strong>). Las casas de cambio de San Antonio del Táchira operan con el paralelo como referencia principal. La canasta básica (CENDAS) se estima en <strong>$730 USD</strong> — equivalente a <strong>Bs ${cbaBs}</strong> al cambio oficial de hoy.${devalAlerta}</p>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  BADGES DE CAMBIO EN KPIs
+// ═══════════════════════════════════════════════════════════
+const _prevKpi = {};
+function showChangeBadge(cardId, newVal, label) {
+  if (!newVal || newVal <= 0) return;
+  const prev = _prevKpi[cardId];
+  if (prev && prev > 0) {
+    const pct = (newVal - prev) / prev * 100;
+    if (Math.abs(pct) >= 0.5) {
+      const card = document.getElementById(cardId);
+      if (card) {
+        const parent = card.closest ? card.closest('.kpi') : null;
+        if (parent) {
+          const old = parent.querySelector('.chg-badge');
+          if (old) old.remove();
+          const badge = document.createElement('div');
+          badge.className = 'chg-badge ' + (pct > 0 ? 'up' : 'dn');
+          badge.textContent = (pct > 0 ? '▲ +' : '▼ ') + Math.abs(pct).toFixed(2) + '%';
+          parent.appendChild(badge);
+          setTimeout(() => badge.remove(), 31000);
+        }
+      }
+    }
+  }
+  _prevKpi[cardId] = newVal;
 }
 
 // ═══════════════════════════════════════════════════════════
