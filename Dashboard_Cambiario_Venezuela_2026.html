@@ -612,6 +612,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <a href="#sec-canasta"     class="nav-lnk">Canasta Básica</a>
       <a href="#sec-tablas"      class="nav-lnk">Tablas</a>
       <a href="#sec-macro"       class="nav-lnk">Macro</a>
+      <a href="#sec-mundial"     class="nav-lnk">🌐 Mundial</a>
+      <a href="#sec-tachira"     class="nav-lnk">🏔 Táchira</a>
       <a href="#sec-fuentes"     class="nav-lnk">Fuentes</a>
       <a href="#sec-repo"        class="nav-lnk" style="color:var(--yel);font-weight:800;">📂 Repositorio</a>
     </nav>
@@ -1402,6 +1404,90 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   </ul></div>
 </div>
 
+<!-- ═══ ECONOMÍA MUNDIAL ═══ -->
+<span id="sec-mundial"></span>
+<div class="sec"><span class="ic">🌐</span>Economía Mundial · FMI / BM / OCDE / OMC</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:18px;">
+  <div class="kpi-card"><div class="kpi-lbl">PIB Mundial 2025</div><div class="kpi-val c-grn">3,3%</div><div class="kpi-sub">FMI WEO Abr 2025 · Crecimiento proyectado</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">Inflación Global</div><div class="kpi-val c-red">4,2%</div><div class="kpi-sub">FMI WEO 2025 · Promedio mundial</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">Comercio Mundial</div><div class="kpi-val c-blue">3,0%</div><div class="kpi-sub">OMC 2025 · Volumen esperado</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">USD Index (DXY)</div><div class="kpi-val" id="mx-dxy">—</div><div class="kpi-sub">Fortaleza dólar vs. cesta de divisas</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">PIB EE.UU. 2025</div><div class="kpi-val c-grn">2,1%</div><div class="kpi-sub">FMI WEO · Proyección anual</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">PIB China 2025</div><div class="kpi-val c-grn">4,5%</div><div class="kpi-sub">FMI WEO · Desaceleración controlada</div></div>
+</div>
+<div class="ctx-grid" style="margin-bottom:10px;">
+  <div class="ctx-c"><h4>📊 Perspectivas FMI 2025</h4><ul>
+    <li>Crecimiento global<span class="v c-grn">+3,3%</span></li>
+    <li>Economías avanzadas<span class="v">+1,8%</span></li>
+    <li>Economías emergentes<span class="v c-grn">+4,3%</span></li>
+    <li>América Latina<span class="v">+2,5%</span></li>
+    <li>Inflación avanzadas<span class="v c-yel">2,4%</span></li>
+    <li>Inflación emergentes<span class="v c-red">5,9%</span></li>
+  </ul></div>
+  <div class="ctx-c"><h4>🏦 Banco Mundial · GEP 2025</h4><ul>
+    <li>Crecimiento global<span class="v c-grn">+2,7%</span></li>
+    <li>Mercados frontera<span class="v">+4,8%</span></li>
+    <li>Inversión global (caída)<span class="v c-red">−0,4%</span></li>
+    <li>Deuda pública mundial<span class="v c-red">93% PIB</span></li>
+    <li>Comercio bienes<span class="v">+2,8%</span></li>
+    <li>Pobreza extrema &lt;$2,15<span class="v c-red">~700 M</span></li>
+  </ul></div>
+  <div class="ctx-c"><h4>📦 OMC · Comercio Internacional</h4><ul>
+    <li>Volumen comercio 2025<span class="v c-grn">+3,0%</span></li>
+    <li>Exportaciones bienes<span class="v">+2,7%</span></li>
+    <li>Exportaciones servicios<span class="v c-grn">+5,1%</span></li>
+    <li>Tensión arancelaria EEUU<span class="v c-red">Alta</span></li>
+    <li>Comercio AL/Caribe<span class="v">+2,2%</span></li>
+    <li>Cadenas suministro<span class="v c-yel">Fragmentadas</span></li>
+  </ul></div>
+  <div class="ctx-c"><h4>🔬 OCDE · Economías Desarrolladas</h4><ul>
+    <li>PIB zona OCDE 2025<span class="v c-grn">+1,9%</span></li>
+    <li>Inflación OCDE<span class="v c-yel">3,1%</span></li>
+    <li>Tasa empleo OCDE<span class="v c-grn">69,8%</span></li>
+    <li>Tasa fed funds (rango)<span class="v">4,25–4,50%</span></li>
+    <li>Tasa BCE<span class="v">2,50%</span></li>
+    <li>Inversión productiva<span class="v c-red">Estancada</span></li>
+  </ul></div>
+</div>
+<div style="margin-bottom:8px;font-size:12px;color:#666;">Fuentes principales de esta sección:</div>
+<div class="lnk-grid" id="mundialSourceGrid" style="margin-bottom:24px;"></div>
+
+<!-- ═══ TÁCHIRA / FRONTERA ═══ -->
+<span id="sec-tachira"></span>
+<div class="sec"><span class="ic">🏔</span>Táchira · Frontera Venezuela–Colombia</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:18px;">
+  <div class="kpi-card"><div class="kpi-lbl">TRM COP/USD</div><div class="kpi-val c-blue" id="tx-cop">—</div><div class="kpi-sub">Banrep · Tasa representativa del mercado</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">Bs / 1.000 COP</div><div class="kpi-val" id="tx-bscop">—</div><div class="kpi-sub">Cruce BCV ÷ TRM · cálculo propio</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">Inflación Colombia</div><div class="kpi-val c-yel">5,1%</div><div class="kpi-sub">DANE · Acumulado anual 2025</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">PIB Colombia 2025</div><div class="kpi-val c-grn">2,5%</div><div class="kpi-sub">DANE / FMI · Proyección anual</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">Éxodo Venezolano</div><div class="kpi-val c-red">7,7 M</div><div class="kpi-sub">ACNUR / OIM 2025 · Total global</div></div>
+  <div class="kpi-card"><div class="kpi-lbl">En Colombia</div><div class="kpi-val c-red">2,9 M</div><div class="kpi-sub">R4V 2025 · Venezolanos registrados</div></div>
+</div>
+<div class="ctx-grid" style="margin-bottom:16px;">
+  <div class="ctx-c" style="grid-column:span 2;"><h4>🛤️ Corredor fronterizo Táchira – Norte de Santander</h4>
+    <p style="font-size:13px;line-height:1.6;margin:0 0 8px;">El eje <strong>San Cristóbal – Cúcuta</strong> es el corredor comercial binacional más activo de Venezuela. El Puente Internacional Simón Bolívar y el Puente Francisco de Paula Santander canalizan un flujo diario de miles de personas, mercancías y divisas. La economía de Táchira está fuertemente dolarizada y su referencia principal de precios es el <strong>USDT paralelo + TRM COP</strong>.</p>
+    <p style="font-size:13px;line-height:1.6;margin:0;"><strong>Economía informal fronteriza:</strong> El arbitraje de precios entre bolívares y pesos colombianos genera un mercado de divisas informal activo en la zona. La "bachaquera" (reventa de productos subsidiados) históricamente benefició al comercio de Cúcuta. Hoy el flujo es mixto: venezolanos compran en Colombia con USD/USDT, y colombianos aprovechan servicios más baratos en Venezuela.</p>
+  </div>
+  <div class="ctx-c"><h4>🇨🇴 Colombia · Indicadores clave</h4><ul>
+    <li>TRM oficial hoy<span class="v c-blue" id="tx-cop2">—</span></li>
+    <li>Reservas internacionales<span class="v">$59,3 MM USD</span></li>
+    <li>Tasa Banrep<span class="v c-yel">9,25%</span></li>
+    <li>Desempleo Colombia<span class="v">10,2%</span></li>
+    <li>Exportaciones petróleo<span class="v">&gt;40% total</span></li>
+    <li>Acuerdo PA Venezuela<span class="v c-grn">Activo</span></li>
+  </ul></div>
+  <div class="ctx-c"><h4>🚶 Migración venezolana</h4><ul>
+    <li>Total en el mundo<span class="v c-red">7,7 M</span></li>
+    <li>En Colombia<span class="v c-red">2,9 M</span></li>
+    <li>Permiso Protección Temp.<span class="v c-grn">2,5 M</span></li>
+    <li>Flujo diario frontera<span class="v">~50.000</span></li>
+    <li>Remesas a Venezuela<span class="v c-grn">~$4,3 MM</span></li>
+    <li>Principal punto entrada<span class="v">Cúcuta / Táchira</span></li>
+  </ul></div>
+</div>
+<div style="margin-bottom:8px;font-size:12px;color:#666;">Fuentes Táchira, Colombia y migración:</div>
+<div class="lnk-grid" id="tachiraSourceGrid" style="margin-bottom:24px;"></div>
+
 </div><!-- /wrap -->
 
 <footer class="footer">
@@ -1973,7 +2059,16 @@ function applyExtras() {
   // DXY
   if (STATE.dxy > 0) {
     const v = fmtN(STATE.dxy);
-    ['tk-dxy','tk-dxy-b'].forEach(id => setText(id, v));
+    ['tk-dxy','tk-dxy-b','mx-dxy'].forEach(id => setText(id, v));
+  }
+  // Táchira cross-rates
+  if (STATE.cop > 0) {
+    const copFmt = STATE.cop.toLocaleString('es-VE',{minimumFractionDigits:0,maximumFractionDigits:0});
+    ['tx-cop','tx-cop2'].forEach(id => setText(id, copFmt+' COP'));
+    if (STATE.bcv > 0) {
+      const bsCop = (STATE.bcv / STATE.cop * 1000).toFixed(3);
+      setText('tx-bscop', bsCop+' Bs');
+    }
   }
 }
 
@@ -3216,6 +3311,20 @@ function exportarLinks() {
   if(document.getElementById('repoGrid')) initRepo();
   else setTimeout(waitRepo, 100);
 })();
+
+// Grids de fuentes por sección
+function initMundialRepo() {
+  const g = document.getElementById('mundialSourceGrid');
+  if(!g) return;
+  g.innerHTML = REPO_LINKS.filter(l => l.cat === 'mundial').map(repoLinkCard).join('');
+}
+function initTachiraRepo() {
+  const g = document.getElementById('tachiraSourceGrid');
+  if(!g) return;
+  g.innerHTML = REPO_LINKS.filter(l => l.cat === 'tachira' || l.cat === 'colombia' || l.cat === 'social').map(repoLinkCard).join('');
+}
+initMundialRepo();
+initTachiraRepo();
 
 </script>
 </body>
