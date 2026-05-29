@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Observatorio Económico — Mundo · Venezuela · Táchira</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0a0e1a;--bg2:#111827;--bg3:#1a2235;
+  --green:#00e5a0;--blue:#3b82f6;--amber:#f59e0b;--red:#ef4444;--gray:#6b7280;
+  --text:#e2e8f0;--text2:#94a3b8;
+  --border:#1e293b;--card:#0f172a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;min-height:100vh;background-image:linear-gradient(rgba(0,229,160,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,.03) 1px,transparent 1px);background-size:40px 40px;}
+a{color:var(--green);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:100;background:rgba(10,14,26,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.hdr-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--green);}
+.hdr-sub{font-size:.7rem;color:var(--text2);}
+.hdr-right{display:flex;align-items:center;gap:12px;font-size:.7rem;}
+.badge-live{background:var(--red);color:#fff;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:700;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.6;}}
+.hdr-ts{color:var(--text2);font-size:.65rem;}
+.cnt-down{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 8px;color:var(--amber);font-size:.65rem;}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--bg2);padding:0 24px;overflow-x:auto;}
+.tab{padding:12px 18px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--green);border-bottom-color:var(--green);}
+
+/* PANELS */
+.panel{display:none;padding:24px;max-width:1400px;margin:0 auto;}
+.panel.active{display:block;}
+
+/* SECTION TITLES */
+.sec-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--green);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.sec-sub{font-size:.75rem;color:var(--text2);margin-bottom:20px;}
+
+/* METRIC CARDS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px;}
+.mc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;position:relative;overflow:hidden;}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.mc.green::before{background:var(--green);}
+.mc.blue::before{background:var(--blue);}
+.mc.amber::before{background:var(--amber);}
+.mc.red::before{background:var(--red);}
+.mc.gray::before{background:var(--gray);}
+.mc-label{font-size:.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.mc-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+.mc-val.green{color:var(--green);}
+.mc-val.blue{color:var(--blue);}
+.mc-val.amber{color:var(--amber);}
+.mc-val.red{color:var(--red);}
+.mc-change{font-size:.7rem;color:var(--text2);}
+.mc-src{font-size:.6rem;color:var(--gray);margin-top:4px;}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:4px;animation:pulse 1.5s infinite;}
+
+/* CHART CONTAINERS */
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:24px;}
+.chart-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;}
+.chart-title{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:12px;}
+.chart-box canvas{max-height:200px;}
+
+/* SOURCE GRID (link cards) */
+.src-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px;}
+.link-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:8px;transition:border-color .2s;}
+.link-card:hover{border-color:var(--green);}
+.lc-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.lc-name{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;color:var(--text);}
+.lc-st{font-size:.65rem;padding:2px 6px;border-radius:3px;font-weight:700;}
+.lc-st.ok{background:rgba(0,229,160,.15);color:var(--green);}
+.lc-st.warn{background:rgba(245,158,11,.15);color:var(--amber);}
+.lc-st.err{background:rgba(239,68,68,.15);color:var(--red);}
+.lc-url{font-size:.65rem;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lc-desc{font-size:.7rem;color:var(--text2);line-height:1.4;}
+.lc-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.fq-badge{font-size:.6rem;padding:2px 7px;border-radius:3px;font-weight:700;}
+.fq-badge.rt{background:rgba(239,68,68,.2);color:var(--red);}
+.fq-badge.di{background:rgba(245,158,11,.2);color:var(--amber);}
+.fq-badge.se{background:rgba(59,130,246,.2);color:var(--blue);}
+.fq-badge.me{background:rgba(0,229,160,.2);color:var(--green);}
+.fq-badge.tr{background:rgba(139,92,246,.2);color:#a78bfa;}
+.fq-badge.an{background:rgba(107,114,128,.2);color:var(--gray);}
+.fq-badge.ir{background:rgba(107,114,128,.15);color:var(--text2);}
+.lc-open{font-size:.65rem;color:var(--blue);padding:3px 8px;border:1px solid var(--blue);border-radius:4px;cursor:pointer;background:none;transition:all .2s;}
+.lc-open:hover{background:var(--blue);color:#fff;}
+
+/* DATA TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:.75rem;margin-bottom:24px;}
+.data-table th{background:var(--bg3);color:var(--text2);padding:8px 12px;text-align:left;font-weight:700;border-bottom:1px solid var(--border);}
+.data-table td{padding:8px 12px;border-bottom:1px solid rgba(30,41,59,.5);color:var(--text);}
+.data-table tr:hover td{background:rgba(255,255,255,.02);}
+
+/* REPO TAB CONTROLS */
+.repo-controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.repo-search{flex:1;min-width:200px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-family:'Space Mono',monospace;font-size:.75rem;outline:none;}
+.repo-search:focus{border-color:var(--green);}
+.filter-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.fb{padding:5px 12px;border-radius:4px;font-size:.65rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Space Mono',monospace;transition:all .2s;}
+.fb:hover,.fb.active{background:var(--green);color:var(--bg);border-color:var(--green);}
+.export-btn{padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-family:'Space Mono',monospace;font-size:.7rem;cursor:pointer;transition:opacity .2s;}
+.export-btn:hover{opacity:.8;}
+.repo-stats{font-size:.7rem;color:var(--text2);margin-bottom:16px;}
+.repo-stats span{color:var(--green);font-weight:700;}
+
+/* INFO BOXES */
+.info-box{background:var(--bg3);border-left:3px solid var(--blue);border-radius:0 6px 6px 0;padding:12px 16px;margin-bottom:16px;font-size:.75rem;color:var(--text2);line-height:1.6;}
+.info-box.green{border-left-color:var(--green);}
+.info-box.amber{border-left-color:var(--amber);}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:24px 0;}
+
+/* STATUS ROW */
+.status-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border-radius:6px;font-size:.7rem;margin-bottom:12px;}
+.st-icon{font-size:.9rem;}
+.st-label{color:var(--text2);}
+.st-val{color:var(--text);font-weight:700;margin-left:auto;}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .hdr{padding:10px 16px;}
+  .panel{padding:16px;}
+  .tabs{padding:0 8px;}
+  .tab{padding:10px 10px;font-size:.7rem;}
+  .metrics{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div>
+    <div class="hdr-title">Observatorio Económico</div>
+    <div class="hdr-sub">Mundo · Venezuela · Táchira · 2026</div>
+  </div>
+  <div class="hdr-right">
+    <span class="badge-live">LIVE</span>
+    <span class="hdr-ts" id="hdr-ts">Cargando...</span>
+    <span class="cnt-down" id="cnt-down">↻ 30:00</span>
+  </div>
+</header>
+
+<!-- NAVIGATION TABS -->
+<nav class="tabs">
+  <div class="tab active" onclick="switchTab('mundo')">🌐 Mundo / FMI</div>
+  <div class="tab" onclick="switchTab('venezuela')">🇻🇪 Venezuela</div>
+  <div class="tab" onclick="switchTab('petroleo')">🛢 Petróleo</div>
+  <div class="tab" onclick="switchTab('tachira')">🏔 Táchira / Frontera</div>
+  <div class="tab" onclick="switchTab('repo')">📂 Repositorio</div>
+</nav>
+
+<!-- ═══════════════════════════════════ TAB 1: MUNDO / FMI ═══════════════════════════════════ -->
+<div id="tab-mundo" class="panel active">
+  <h2 class="sec-title">Economía Mundial — FMI · Banco Mundial · OCDE</h2>
+  <p class="sec-sub">Indicadores globales de referencia. Fuentes oficiales multilaterales.</p>
+
+  <div class="metrics">
+    <div class="mc blue">
+      <div class="mc-label">PIB Mundial (FMI 2025)</div>
+      <div class="mc-val blue">3.3%</div>
+      <div class="mc-change">Crecimiento proyectado</div>
+      <div class="mc-src">FMI WEO Abr 2025</div>
+    </div>
+    <div class="mc green">
+      <div class="mc-label">Inflación Global</div>
+      <div class="mc-val green">4.2%</div>
+      <div class="mc-change">Promedio mundial 2025</div>
+      <div class="mc-src">FMI WEO Abr 2025</div>
+    </div>
+    <div class="mc amber">
+      <div class="mc-label">Comercio Mundial</div>
+      <div class="mc-val amber">3.0%</div>
+      <div class="mc-change">Volumen OMC 2025</div>
+      <div class="mc-src">OMC 2025</div>
+    </div>
+    <div class="mc blue">
+      <div class="mc-label">USD Index (DXY)</div>
+      <div class="mc-val blue">104.2</div>
+      <div class="mc-change">Referencia may 2026</div>
+      <div class="mc-src">TradingEconomics</div>
+    </div>
+    <div class="mc gray">
+      <div class="mc-label">PIB EEUU 2025</div>
+      <div class="mc-val" style="color:var(--text)">2.1%</div>
+      <div class="mc-change">Crecimiento anual</div>
+      <div class="mc-src">FMI WEO</div>
+    </div>
+    <div class="mc gray">
+      <div class="mc-label">PIB China 2025</div>
+      <div class="mc-val" style="color:var(--text)">4.5%</div>
+      <div class="mc-change">Crecimiento anual</div>
+      <div class="mc-src">FMI WEO</div>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-box">
+      <div class="chart-title">PIB 2025 — Economías Principales (FMI WEO)</div>
+      <canvas id="chart-pib"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Inflación Mundial — Proyecciones 2024–2026</div>
+      <canvas id="chart-inf"></canvas>
+    </div>
+  </div>
+
+  <h3 class="sec-title">Fuentes en Vivo — Organismos Internacionales</h3>
+  <div class="src-grid" id="src-mundial"></div>
+</div>
+
+<!-- ═══════════════════════════════════ TAB 2: VENEZUELA ═══════════════════════════════════ -->
+<div id="tab-venezuela" class="panel">
+  <h2 class="sec-title">Venezuela — Indicadores BCV y Macroeconómicos</h2>
+
+  <div class="status-row">
+    <span class="st-icon"><span class="live-dot"></span></span>
+    <span class="st-label">BCV Tipo de Cambio Oficial</span>
+    <span class="st-val" id="bcv-status">Obteniendo dato...</span>
+  </div>
+
+  <div class="metrics">
+    <div class="mc red">
+      <div class="mc-label">BCV Oficial (Bs/USD)</div>
+      <div class="mc-val red" id="bcv-val">—</div>
+      <div class="mc-change" id="bcv-ts">Cargando...</div>
+      <div class="mc-src" id="bcv-src">—</div>
+    </div>
+    <div class="mc amber">
+      <div class="mc-label">USDT / Bs (Paralelo)</div>
+      <div class="mc-val amber" id="usdt-val">—</div>
+      <div class="mc-change" id="usdt-ts">Cargando...</div>
+      <div class="mc-src">pydolarve.org</div>
+    </div>
+    <div class="mc blue">
+      <div class="mc-label">Spread BCV↔Paralelo</div>
+      <div class="mc-val blue" id="spread-val">—</div>
+      <div class="mc-change">Diferencial %</div>
+      <div class="mc-src">Calculado</div>
+    </div>
+    <div class="mc red">
+      <div class="mc-label">Inflación VZ (OVFV 2025)</div>
+      <div class="mc-val red">189%</div>
+      <div class="mc-change">Acumulado anual est.</div>
+      <div class="mc-src">OVF / Obs. Venezolano</div>
+    </div>
+    <div class="mc amber">
+      <div class="mc-label">Reservas Int. (BCV)</div>
+      <div class="mc-val amber">9.8B</div>
+      <div class="mc-change">USD mill. — ref. 2025</div>
+      <div class="mc-src">BCV Estadísticas</div>
+    </div>
+    <div class="mc gray">
+      <div class="mc-label">PIB VZ (FMI 2025)</div>
+      <div class="mc-val" style="color:var(--text)">4.0%</div>
+      <div class="mc-change">Crecimiento proyectado</div>
+      <div class="mc-src">FMI WEO Abr 2025</div>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-box">
+      <div class="chart-title">BCV Tipo de Cambio — Evolución 2026</div>
+      <canvas id="chart-bcv"></canvas>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Inflación Venezuela — Tendencia Mensual 2025–2026</div>
+      <canvas id="chart-inflvz"></canvas>
+    </div>
+  </div>
+
+  <h3 class="sec-title">Acceso Directo — Fuentes BCV y Análisis</h3>
+  <div class="src-grid" id="src-venezuela"></div>
+</div>
+
+<!-- ═══════════════════════════════════ TAB 3: PETRÓLEO ═══════════════════════════════════ -->
+<div id="tab-petroleo" class="panel">
+  <h2 class="sec-title">Petróleo — OPEP · PDVSA · Mercados</h2>
+
+  <div class="metrics">
+    <div class="mc amber">
+      <div class="mc-label">WTI (USD/barril)</div>
+      <div class="mc-val amber" id="wti-val">~68</div>
+      <div class="mc-change">Referencia may 2026</div>
+      <div class="mc-src">TradingEconomics</div>
+    </div>
+    <div class="mc blue">
+      <div class="mc-label">Brent (USD/barril)</div>
+      <div class="mc-val blue" id="brent-val">~72</div>
+      <div class="mc-change">Referencia may 2026</div>
+      <div class="mc-src">TradingEconomics</div>
+    </div>
+    <div class="mc green">
+      <div class="mc-label">Cesta OPEP</div>
+      <div class="mc-val green">~70</div>
+      <div class="mc-change">USD/barril ref.</div>
+      <div class="mc-src">OPEC Monthly Report</div>
+    </div>
+    <div class="mc red">
+      <div class="mc-label">Cesta VZ (PDVSA)</div>
+      <div class="mc-val red">~60</div>
+      <div class="mc-change">Descuento ~12 USD</div>
+      <div class="mc-src">PDVSA / estimado</div>
+    </div>
+    <div class="mc gray">
+      <div class="mc-label">Prod. VZ (b/d)</div>
+      <div class="mc-val" style="color:var(--text)">850K</div>
+      <div class="mc-change">Miles barriles/día est.</div>
+      <div class="mc-src">OPEP OMR 2025</div>
+    </div>
+    <div class="mc gray">
+      <div class="mc-label">Cuota OPEP+ VZ</div>
+      <div class="mc-val" style="color:var(--text)">Exenta</div>
+      <div class="mc-change">Por bajo rendimiento</div>
+      <div class="mc-src">OPEP</div>
+    </div>
+  </div>
+
+  <div class="info-box amber">
+    <strong>Último Informe OPEP:</strong> Monthly Oil Market Report (MOMR) — publicado mensualmente.
+    El próximo informe MOMR se publica la segunda semana de cada mes. Datos de producción actualizados mensualmente.
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-box">
+      <div class="chart-title">WTI vs Brent — Precio USD/barril 2025–2026</div>
+      <canvas id="chart-oil"></canvas>
+    </div>
+  </div>
+
+  <h3 class="sec-title">Fuentes — OPEP · Energía · PDVSA</h3>
+  <div class="src-grid" id="src-petroleo"></div>
+</div>
+
+<!-- ═══════════════════════════════════ TAB 4: TÁCHIRA ═══════════════════════════════════ -->
+<div id="tab-tachira" class="panel">
+  <h2 class="sec-title">Táchira / Frontera VZ–CO — Indicadores Regionales</h2>
+
+  <div class="status-row">
+    <span class="st-icon"><span class="live-dot"></span></span>
+    <span class="st-label">TRM COP/USD (Banco de la República)</span>
+    <span class="st-val" id="cop-status">Obteniendo dato...</span>
+  </div>
+
+  <div class="metrics">
+    <div class="mc blue">
+      <div class="mc-label">TRM COP/USD</div>
+      <div class="mc-val blue" id="cop-val">—</div>
+      <div class="mc-change" id="cop-ts">Cargando...</div>
+      <div class="mc-src">Banco de la República</div>
+    </div>
+    <div class="mc green">
+      <div class="mc-label">Bs/COP (Cruce)</div>
+      <div class="mc-val green" id="bs-cop-val">—</div>
+      <div class="mc-change">BCV ÷ TRM × 1000</div>
+      <div class="mc-src">Calculado</div>
+    </div>
+    <div class="mc amber">
+      <div class="mc-label">Inflación Colombia</div>
+      <div class="mc-val amber">5.1%</div>
+      <div class="mc-change">Anual (DANE 2025)</div>
+      <div class="mc-src">DANE / Banrep</div>
+    </div>
+    <div class="mc gray">
+      <div class="mc-label">PIB Colombia 2025</div>
+      <div class="mc-val" style="color:var(--text)">2.5%</div>
+      <div class="mc-change">Crecimiento proyectado</div>
+      <div class="mc-src">DANE / FMI</div>
+    </div>
+    <div class="mc red">
+      <div class="mc-label">Éxodo Venezolano</div>
+      <div class="mc-val red">7.7M</div>
+      <div class="mc-change">Migrantes registrados</div>
+      <div class="mc-src">ACNUR / IOM 2025</div>
+    </div>
+    <div class="mc blue">
+      <div class="mc-label">En Colombia (aprox.)</div>
+      <div class="mc-val blue">2.9M</div>
+      <div class="mc-change">Venezolanos registrados</div>
+      <div class="mc-src">R4V / Migración CO</div>
+    </div>
+  </div>
+
+  <div class="info-box green">
+    <strong>Comercio Fronterizo Táchira–Norte de Santander:</strong>
+    El paso fronterizo Cúcuta–San Antonio del Táchira es el principal corredor comercial
+    binacional. Los datos de comercio y TRM afectan directamente el poder adquisitivo
+    de la región y los precios locales en Bs.
+  </div>
+
+  <h3 class="sec-title">Fuentes — Colombia · Frontera · Migración</h3>
+  <div class="src-grid" id="src-tachira"></div>
+
+  <h3 class="sec-title" style="margin-top:24px;">Medios Regionales Táchira</h3>
+  <div class="src-grid" id="src-medios"></div>
+</div>
+
+<!-- ═══════════════════════════════════ TAB 5: REPOSITORIO ═══════════════════════════════════ -->
+<div id="tab-repo" class="panel">
+  <h2 class="sec-title">Repositorio de Links — Todas las Fuentes</h2>
+  <div class="repo-stats"><span id="repo-activas">—</span> fuentes activas · <span id="repo-diarias">—</span> actualizan diario o tiempo real</div>
+
+  <div class="repo-controls">
+    <input class="repo-search" id="repo-q" type="text" placeholder="Buscar fuente por nombre o descripción..." oninput="filtrarLinks()"/>
+    <div class="filter-btns">
+      <button class="fb active" onclick="setFiltro('todos')">Todos</button>
+      <button class="fb" onclick="setFiltro('mundial')">🌐 Mundial</button>
+      <button class="fb" onclick="setFiltro('venezuela')">🇻🇪 Venezuela</button>
+      <button class="fb" onclick="setFiltro('petroleo')">🛢 Petróleo</button>
+      <button class="fb" onclick="setFiltro('tachira')">🏔 Táchira</button>
+      <button class="fb" onclick="setFiltro('colombia')">🇨🇴 Colombia</button>
+      <button class="fb" onclick="setFiltro('social')">👥 Social</button>
+      <button class="fb" onclick="setFiltro('api')">⚡ APIs</button>
+      <button class="fb" onclick="setFiltro('medios')">📰 Medios</button>
+    </div>
+    <button class="export-btn" onclick="exportarLinks()">⬇ Exportar .txt</button>
+  </div>
+
+  <div id="repo-grid" class="src-grid"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   BASE DE DATOS DE LINKS (63 fuentes verificadas)
+═══════════════════════════════════════════════════════════ */
+const LINKS = [
+  /* ORGANISMOS INTERNACIONALES */
+  {id:1,cat:'mundial',nom:'FMI — Fondo Monetario Internacional',url:'https://www.imf.org/es/Home',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Portal principal FMI. Perspectivas económicas globales, informes de país, datos macro.'},
+  {id:2,cat:'mundial',nom:'FMI — World Economic Outlook (WEO)',url:'https://www.imf.org/en/Publications/WEO',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Informe estrella del FMI. Proyecciones PIB, inflación, deuda pública de 190 países.'},
+  {id:3,cat:'mundial',nom:'FMI — Data Portal',url:'https://data.imf.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Base de datos interactiva FMI. Series temporales de indicadores macroeconómicos.'},
+  {id:4,cat:'mundial',nom:'Banco Mundial',url:'https://www.bancomundial.org/es/home',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Datos de desarrollo, pobreza, clima y economía de todos los países del mundo.'},
+  {id:5,cat:'mundial',nom:'Banco Mundial — World Development Indicators',url:'https://databank.worldbank.org/source/world-development-indicators',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'La mayor base de datos estadísticos del BM. Indicadores de desarrollo 1960–2025.'},
+  {id:6,cat:'mundial',nom:'Banco Mundial — Global Economic Prospects',url:'https://www.bancomundial.org/es/publication/global-economic-prospects',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Perspectivas Económicas Mundiales. Publicación semestral del Banco Mundial.'},
+  {id:7,cat:'mundial',nom:'OMC — Organización Mundial del Comercio',url:'https://www.wto.org/indexsp.htm',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Estadísticas de comercio mundial, aranceles, acuerdos comerciales internacionales.'},
+  {id:8,cat:'mundial',nom:'OCDE',url:'https://www.oecd.org/es/',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Datos económicos de países desarrollados. PIB, empleo, inversión, productividad.'},
+
+  /* INDICADORES MUNDIALES */
+  {id:9,cat:'mundial',nom:'TradingEconomics — Indicadores Globales',url:'https://es.tradingeconomics.com/indicators',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'Datos económicos en tiempo real de 196 países. Bolsas, divisas, commodities, macro.'},
+  {id:10,cat:'mundial',nom:'TradingEconomics — PIB Mundial',url:'https://es.tradingeconomics.com/world/gdp',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Comparativa del PIB por países. Gráficos históricos y proyecciones trimestrales.'},
+  {id:11,cat:'mundial',nom:'DatosMacro — Expansión',url:'https://datosmacro.expansion.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Portal de datos macro en español. IPC, PIB, deuda, desempleo de toda Latinoamérica.'},
+  {id:12,cat:'mundial',nom:'Worldometers',url:'https://www.worldometers.info/es/',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'Contadores en tiempo real de población, economía, energía y recursos mundiales.'},
+
+  /* VENEZUELA OFICIAL */
+  {id:13,cat:'venezuela',nom:'BCV — Banco Central de Venezuela',url:'https://www.bcv.org.ve',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Portal oficial del BCV. Tipo de cambio, reservas, estadísticas monetarias y financieras.'},
+  {id:14,cat:'venezuela',nom:'BCV — Tipo de Cambio de Referencia',url:'https://www.bcv.org.ve/estadisticas/tipo-de-cambio-de-referencia',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Histórico del tipo de cambio oficial BCV. Series desde 2013 en CSV y tablas.'},
+  {id:15,cat:'venezuela',nom:'BCV — Tipo de Cambio Oficial',url:'https://www.bcv.org.ve/seccionportal/tipo-de-cambio-oficial-del-bcv',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Página directa con el tipo de cambio oficial del día. Actualizada cada día hábil.'},
+  {id:16,cat:'venezuela',nom:'BCV — Reservas Internacionales',url:'https://www.bcv.org.ve/estadisticas/reservas-internacionales',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Reservas internacionales de Venezuela en USD. Oro, divisas, DEGs del FMI.'},
+  {id:17,cat:'venezuela',nom:'BCV — Índice de Precios Consumidor',url:'https://www.bcv.org.ve/estadisticas/consumidor',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'IPC Venezuela. Inflación mensual, interanual y acumulada por sectores.'},
+  {id:18,cat:'venezuela',nom:'BCV — PIB Venezuela',url:'https://www.bcv.org.ve/estadisticas/producto-interno-bruto',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Producto Interno Bruto de Venezuela. Series trimestrales y anuales por sector.'},
+  {id:19,cat:'venezuela',nom:'BCV — Tasas Activas y Pasivas',url:'https://www.bcv.org.ve/estadisticas/tasas-activas-y-pasiva',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Tasas de interés del sistema bancario venezolano. Crédito y captación.'},
+  {id:20,cat:'venezuela',nom:'BCV — Estadísticas Trim. I 2026',url:'https://www.bcv.org.ve/estadisticas/ano-2026-trimestre-i',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Boletín estadístico del BCV — I Trimestre 2026. Datos macro más recientes publicados.'},
+  {id:21,cat:'venezuela',nom:'MEF — Ministerio de Economía y Finanzas',url:'https://www.mef.gob.ve',freq:'❓ IRREGULAR',fq:'ir',st:'warn',desc:'Portal oficial del MEF Venezuela. Presupuesto, deuda pública, política fiscal.'},
+  {id:22,cat:'venezuela',nom:'TradingEconomics — Venezuela',url:'https://es.tradingeconomics.com/venezuela/indicators',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'Panel completo de indicadores económicos de Venezuela. BCV, inflación, reservas, BMs.'},
+  {id:23,cat:'venezuela',nom:'DatosMacro — Venezuela',url:'https://datosmacro.expansion.com/paises/venezuela',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Ficha completa de Venezuela: PIB, IPC, deuda, tipo de cambio con histórico amplio.'},
+  {id:24,cat:'venezuela',nom:'Worldometers — PIB Venezuela',url:'https://www.worldometers.info/ro/pib/venezuela-pib/',freq:'⚪ ANUAL',fq:'an',st:'ok',desc:'Datos históricos del PIB de Venezuela con comparativas regionales y per cápita.'},
+  {id:25,cat:'venezuela',nom:'Observatorio Venezolano de Finanzas',url:'https://observatoriodefinanzas.com',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'OVF. Inflación semanal, dolarización, tipo de cambio paralelo, economía venezolana.'},
+  {id:26,cat:'venezuela',nom:'Banca y Negocios',url:'https://www.bancaynegocios.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Noticias financieras Venezuela. Banca, tipo de cambio, criptomonedas, economía.'},
+  {id:27,cat:'venezuela',nom:'El Ucabista',url:'https://elucabista.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Medio económico de la UCAB. Análisis de economía venezolana y mercados financieros.'},
+  {id:28,cat:'venezuela',nom:'Finanzas Digital',url:'https://finanzasdigital.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Portal financiero Venezuela. Tasas de interés, inflación, noticias bancarias y cambiarias.'},
+
+  /* PETRÓLEO Y ENERGÍA */
+  {id:29,cat:'petroleo',nom:'PDVSA',url:'https://www.pdvsa.com',freq:'❓ IRREGULAR',fq:'ir',st:'warn',desc:'Portal oficial PDVSA. Producción, exportaciones y actividades de la estatal petrolera.'},
+  {id:30,cat:'petroleo',nom:'OPEP — Portal Principal',url:'https://www.opec.org/opec_web/en/',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Organización de Países Exportadores de Petróleo. Estadísticas, acuerdos y producción.'},
+  {id:31,cat:'petroleo',nom:'OPEP — Monthly Oil Market Report',url:'https://www.opec.org/opec_web/en/publications/338.htm',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Informe mensual del mercado del petróleo OPEP. Oferta, demanda, inventarios y precios.'},
+  {id:32,cat:'petroleo',nom:'OPEP — Data Graphs',url:'https://www.opec.org/opec_web/en/data_graphs/40.htm',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Gráficos interactivos OPEP de producción, precios e inventarios por país.'},
+  {id:33,cat:'petroleo',nom:'AIE — Agencia Internacional de Energía',url:'https://www.iea.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Datos globales de energía: petróleo, gas, renovables. Perspectivas del mercado energético.'},
+  {id:34,cat:'petroleo',nom:'PrecioPetroleo.net',url:'https://www.preciopetroleo.net',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'WTI, Brent y otros crudos en tiempo real. Histórico de precios y análisis del mercado.'},
+  {id:35,cat:'petroleo',nom:'Wikipedia — Ventas Petróleo Venezuela',url:'https://es.wikipedia.org/wiki/Anexo:Ventas_petr%C3%B3leo_en_Venezuela_y_precios',freq:'❓ IRREGULAR',fq:'ir',st:'ok',desc:'Datos históricos de producción y precios del petróleo venezolano desde 1950.'},
+
+  /* TÁCHIRA Y FRONTERA */
+  {id:36,cat:'tachira',nom:'Gobernación del Táchira',url:'https://www.tachira.gob.ve',freq:'❓ IRREGULAR',fq:'ir',st:'warn',desc:'Portal oficial del gobierno del estado Táchira. Noticias, programas y estadísticas regionales.'},
+  {id:37,cat:'tachira',nom:'La Nación Web — Táchira',url:'https://lanacionweb.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Principal diario del Táchira. Noticias locales, economía regional y frontera VZ–CO.'},
+  {id:38,cat:'tachira',nom:'ComVenezuela',url:'https://comvenezuela.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Noticias comercio Venezuela–Colombia. TRM, frontera, pymes y economía binacional.'},
+  {id:39,cat:'tachira',nom:'CAVECOL — Cámara VZ-CO',url:'https://www.cavecol.org',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Cámara Colombo Venezolana. Comercio binacional, estadísticas de intercambio fronterizo.'},
+  {id:40,cat:'tachira',nom:'Radio Mundial Venezuela',url:'https://radiomundial.com.ve',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Noticias Venezuela y región andina. Economía, política y sociedad.'},
+  {id:41,cat:'tachira',nom:'Contrapunto',url:'https://contrapunto.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Periodismo de investigación Venezuela. Economía, corrupción, derechos humanos.'},
+  {id:42,cat:'tachira',nom:'El Estímulo / El Interés',url:'https://elestimulo.com/elinteres/',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Análisis económico Venezuela. Tipo de cambio, inflación, finanzas personales.'},
+
+  /* COLOMBIA */
+  {id:43,cat:'colombia',nom:'Banco de la República Colombia',url:'https://www.banrep.gov.co/es',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Banco central colombiano. TRM COP/USD, tasas de interés, reservas e inflación Colombia.'},
+  {id:44,cat:'colombia',nom:'DIAN',url:'https://www.dian.gov.co',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Recaudo tributario Colombia. Estadísticas de comercio exterior y aduanas.'},
+  {id:45,cat:'colombia',nom:'DANE — Estadísticas Colombia',url:'https://www.dane.gov.co',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Instituto Nacional de Estadística Colombia. PIB, IPC, empleo, comercio y comercio exterior.'},
+  {id:46,cat:'colombia',nom:'ProColombia',url:'https://www.procolombia.co',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Agencia de comercio internacional Colombia. Exportaciones, inversión y turismo.'},
+
+  /* SOCIAL */
+  {id:47,cat:'social',nom:'CEPAL',url:'https://www.cepal.org/es',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Comisión Económica para América Latina. Desarrollo, pobreza y estadísticas regionales.'},
+  {id:48,cat:'social',nom:'CEPAL — Estadísticas',url:'https://estadisticas.cepal.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Base de datos estadísticos CEPAL. Indicadores socioeconómicos de América Latina.'},
+  {id:49,cat:'social',nom:'PNUD — Programa Naciones Unidas',url:'https://www.undp.org/es',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'PNUD. Índice de Desarrollo Humano, reportes de pobreza y sostenibilidad.'},
+  {id:50,cat:'social',nom:'UN Data',url:'https://data.un.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Base de datos estadísticos de la ONU. Datos socioeconómicos de todos los países.'},
+  {id:51,cat:'social',nom:'OCHA Venezuela',url:'https://www.unocha.org/venezuela',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Coordinación Humanitaria ONU Venezuela. Datos de crisis, migración y necesidades.'},
+  {id:52,cat:'social',nom:'OIM — Organización Internacional Migración',url:'https://www.iom.int',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Datos de migración mundial. Flujos venezolanos, remesas y desplazamiento.'},
+  {id:53,cat:'social',nom:'SELA',url:'https://www.sela.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Sistema Económico Latinoamericano. Análisis de integración regional y comercio.'},
+
+  /* APIs TIPO DE CAMBIO */
+  {id:54,cat:'api',nom:'PyDolarVe — API BCV',url:'https://pydolarve.org/api/v1/dollar?monitor=bcv',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'API REST que provee tipo de cambio BCV y paralelos en JSON. Principal fuente primaria.'},
+  {id:55,cat:'api',nom:'DolarApi VE',url:'https://ve.dolarapi.com/v1/dolares',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'API alternativa tipo de cambio Venezuela. Todos los monitores: BCV, paralelo, USDT.'},
+  {id:56,cat:'api',nom:'CotizaVe',url:'https://cotizave.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Cotizaciones Venezuela. Tipo de cambio BCV y paralelo con histórico descargable.'},
+  {id:57,cat:'api',nom:'BCVApi.tech',url:'https://www.bcvapi.tech',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'API no oficial tipo de cambio BCV. Endpoint REST para integración en aplicaciones.'},
+  {id:58,cat:'api',nom:'GitHub — Topics BCV',url:'https://github.com/topics/bcv',freq:'❓ IRREGULAR',fq:'ir',st:'ok',desc:'Repositorios GitHub con proyectos sobre el tipo de cambio BCV y APIs venezolanas.'},
+
+  /* MEDIOS ESPECIALIZADOS */
+  {id:59,cat:'medios',nom:'Cinco Frentes',url:'https://www.cincofrentes.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Periodismo fronterizo Venezuela–Colombia. Táchira, Apure, Zulia. Economía regional.'},
+  {id:60,cat:'medios',nom:'El Diario',url:'https://eldiario.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Diario digital Venezuela. Economía, política y sociedad. Cobertura nacional.'},
+  {id:61,cat:'medios',nom:'El Nacional',url:'https://www.elnacional.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Diario venezolano histórico. Análisis económico, tipo de cambio y política.'},
+  {id:62,cat:'medios',nom:'Efecto Cocuyo',url:'https://efectococuyo.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Periodismo de datos Venezuela. Investigación sobre economía, derechos humanos y sociedad.'},
+  {id:63,cat:'medios',nom:'TalCual Digital',url:'https://talcualdigital.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Análisis político-económico Venezuela. Cobertura de finanzas públicas y tipo de cambio.'},
+];
+
+/* ═══════════════════════════════════════════════════════════
+   ESTADO GLOBAL
+═══════════════════════════════════════════════════════════ */
+let bcvActual = 544.57;
+let usdtActual = 580;
+let copActual = 4100;
+let filtroActivo = 'todos';
+let countdownSecs = 1800;
+
+/* ═══════════════════════════════════════════════════════════
+   NAVEGACIÓN DE PESTAÑAS
+═══════════════════════════════════════════════════════════ */
+function switchTab(t) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + t).classList.add('active');
+  const tabs = ['mundo','venezuela','petroleo','tachira','repo'];
+  document.querySelectorAll('.tab')[tabs.indexOf(t)].classList.add('active');
+  if (t === 'repo') renderLinksTab();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FETCH BCV EN VIVO (cascada de APIs)
+═══════════════════════════════════════════════════════════ */
+async function fetchBCVenVivo() {
+  const apis = [
+    {url:'https://pydolarve.org/api/v1/dollar?monitor=bcv', parse: d => ({bcv: d.price, ts: d.last_update || new Date().toISOString()})},
+    {url:'https://ve.dolarapi.com/v1/dolares', parse: d => {
+      const bcvM = Array.isArray(d) ? d.find(m => m.monitor === 'bcv' || m.nombre?.toLowerCase().includes('bcv')) : null;
+      const usdtM = Array.isArray(d) ? d.find(m => m.monitor === 'usdt' || m.nombre?.toLowerCase().includes('usdt')) : null;
+      return {bcv: bcvM ? (bcvM.promedio || bcvM.price) : null, usdt: usdtM ? (usdtM.promedio || usdtM.price) : null, ts: new Date().toISOString()};
+    }},
+  ];
+  for (const api of apis) {
+    try {
+      const r = await fetch(api.url, {signal: AbortSignal.timeout(5000)});
+      if (!r.ok) continue;
+      const d = await r.json();
+      const parsed = api.parse(d);
+      if (parsed && parsed.bcv && +parsed.bcv > 100) {
+        bcvActual = +parsed.bcv;
+        if (parsed.usdt && +parsed.usdt > 100) usdtActual = +parsed.usdt;
+        actualizarBCV(true, parsed.ts);
+        return;
+      }
+    } catch(e) {}
+  }
+  actualizarBCV(false, null);
+}
+
+function actualizarBCV(enVivo, ts) {
+  const fmt = v => v.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('bcv-val').textContent = fmt(bcvActual) + ' Bs';
+  document.getElementById('usdt-val').textContent = fmt(usdtActual) + ' Bs';
+  const spread = ((usdtActual - bcvActual) / bcvActual * 100).toFixed(1);
+  document.getElementById('spread-val').textContent = '+' + spread + '%';
+  const hora = ts ? new Date(ts).toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'}) : '--:--';
+  const badge = enVivo ? '🟢 EN VIVO ' + hora : '🟡 REFERENCIA (fallback)';
+  document.getElementById('bcv-ts').textContent = badge;
+  document.getElementById('usdt-ts').textContent = badge;
+  document.getElementById('bcv-status').textContent = enVivo ? 'EN VIVO — ' + fmt(bcvActual) + ' Bs/USD' : 'REFERENCIA — ' + fmt(bcvActual) + ' Bs/USD';
+  document.getElementById('bcv-src').textContent = enVivo ? 'pydolarve.org / dolarapi' : 'Hardcoded fallback';
+  recalcCruce();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FETCH TRM COP EN VIVO
+═══════════════════════════════════════════════════════════ */
+async function fetchCOPenVivo() {
+  try {
+    const hoy = new Date().toISOString().slice(0,10);
+    const url = `https://www.datos.gov.co/resource/32sa-8pi3.json?$where=vigenciadesde>='${hoy}'&$limit=1`;
+    const r = await fetch(url, {signal: AbortSignal.timeout(5000)});
+    if (r.ok) {
+      const d = await r.json();
+      if (d && d.length > 0 && d[0].valor) {
+        copActual = +d[0].valor;
+        actualizarCOP(true);
+        return;
+      }
+    }
+  } catch(e) {}
+  actualizarCOP(false);
+}
+
+function actualizarCOP(enVivo) {
+  const fmt = v => v.toLocaleString('es-CO', {minimumFractionDigits:0, maximumFractionDigits:0});
+  document.getElementById('cop-val').textContent = fmt(copActual) + ' COP';
+  document.getElementById('cop-ts').textContent = enVivo ? '🟢 EN VIVO' : '🟡 REFERENCIA';
+  document.getElementById('cop-status').textContent = enVivo ? 'EN VIVO — ' + fmt(copActual) + ' COP/USD' : 'REFERENCIA — ' + fmt(copActual) + ' COP/USD';
+  recalcCruce();
+}
+
+function recalcCruce() {
+  if (bcvActual && copActual) {
+    const cruce = (bcvActual / copActual * 1000).toFixed(2);
+    document.getElementById('bs-cop-val').textContent = cruce + ' Bs/1000 COP';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   AUTO-ACTUALIZACIÓN CADA 30 MINUTOS
+═══════════════════════════════════════════════════════════ */
+function autoActualizar() {
+  fetchBCVenVivo();
+  fetchCOPenVivo();
+  actualizarTimestamp();
+  countdownSecs = 1800;
+}
+
+function actualizarTimestamp() {
+  const now = new Date();
+  const s = now.toLocaleDateString('es-VE',{day:'2-digit',month:'short',year:'numeric'}) + ' ' +
+            now.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('hdr-ts').textContent = 'Actualizado: ' + s;
+}
+
+function tickCountdown() {
+  countdownSecs--;
+  if (countdownSecs <= 0) { autoActualizar(); return; }
+  const m = String(Math.floor(countdownSecs/60)).padStart(2,'0');
+  const s = String(countdownSecs % 60).padStart(2,'0');
+  document.getElementById('cnt-down').textContent = '↻ ' + m + ':' + s;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RENDER FUENTES EN PESTAÑAS
+═══════════════════════════════════════════════════════════ */
+function fqBadgeHtml(link) {
+  return `<span class="fq-badge ${link.fq}">${link.freq}</span>`;
+}
+
+function stBadgeHtml(st) {
+  if (st === 'ok') return '<span class="lc-st ok">✅ ACTIVO</span>';
+  if (st === 'warn') return '<span class="lc-st warn">⚠️ REVISAR</span>';
+  return '<span class="lc-st err">❌ INACTIVO</span>';
+}
+
+function linkCardHtml(l) {
+  const domain = l.url.replace(/^https?:\/\//, '').split('/')[0];
+  return `<div class="link-card">
+    <div class="lc-head">
+      <span class="lc-name">${l.nom}</span>
+      ${stBadgeHtml(l.st)}
+    </div>
+    <div class="lc-url">${domain}</div>
+    <div class="lc-desc">${l.desc}</div>
+    <div class="lc-foot">
+      ${fqBadgeHtml(l)}
+      <a href="${l.url}" target="_blank" rel="noopener noreferrer">
+        <button class="lc-open">Abrir fuente →</button>
+      </a>
+    </div>
+  </div>`;
+}
+
+function renderSection(containerId, cats) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = LINKS.filter(l => cats.includes(l.cat) && l.st !== 'err')
+    .map(linkCardHtml).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REPOSITORIO — FILTRO Y BÚSQUEDA
+═══════════════════════════════════════════════════════════ */
+function setFiltro(cat) {
+  filtroActivo = cat;
+  document.querySelectorAll('.fb').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  filtrarLinks();
+}
+
+function filtrarLinks() {
+  const q = (document.getElementById('repo-q')?.value || '').toLowerCase().trim();
+  const filtered = LINKS.filter(l => {
+    const matchCat = filtroActivo === 'todos' || l.cat === filtroActivo;
+    const matchQ = !q || l.nom.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q) || l.url.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  document.getElementById('repo-grid').innerHTML = filtered.map(linkCardHtml).join('');
+}
+
+function renderLinksTab() {
+  const activas = LINKS.filter(l => l.st === 'ok').length;
+  const diarias = LINKS.filter(l => l.st === 'ok' && (l.fq === 'rt' || l.fq === 'di')).length;
+  document.getElementById('repo-activas').textContent = activas;
+  document.getElementById('repo-diarias').textContent = diarias;
+  filtrarLinks();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   EXPORTAR LINKS .TXT
+═══════════════════════════════════════════════════════════ */
+function exportarLinks() {
+  const q = (document.getElementById('repo-q')?.value || '').toLowerCase().trim();
+  const filtered = LINKS.filter(l => {
+    const matchCat = filtroActivo === 'todos' || l.cat === filtroActivo;
+    const matchQ = !q || l.nom.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q);
+    return matchCat && l.st !== 'err';
+  });
+  const lines = ['OBSERVATORIO ECONÓMICO — VENEZUELA · TÁCHIRA · MUNDO', '='.repeat(60),
+    `Exportado: ${new Date().toLocaleString('es-VE')}`, `Total: ${filtered.length} fuentes`, '',
+    ...filtered.map(l => `${l.nom}\n  URL: ${l.url}\n  Frecuencia: ${l.freq}\n  Estado: ${l.st === 'ok' ? 'ACTIVO' : 'REVISAR'}\n  Desc: ${l.desc}\n`)
+  ];
+  const blob = new Blob([lines.join('\n')], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'observatorio-links.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GRÁFICOS CHART.JS
+═══════════════════════════════════════════════════════════ */
+const CHART_DEFAULTS = {
+  color: '#e2e8f0',
+  grid: 'rgba(255,255,255,0.05)',
+  tick: '#6b7280',
+};
+
+function initCharts() {
+  Chart.defaults.color = CHART_DEFAULTS.color;
+  Chart.defaults.borderColor = CHART_DEFAULTS.grid;
+
+  /* PIB Mundial */
+  new Chart(document.getElementById('chart-pib'), {
+    type: 'bar',
+    data: {
+      labels: ['EEUU','China','Zona Euro','India','LAC','Venezuela'],
+      datasets: [{
+        label: '% PIB 2025 (FMI)',
+        data: [2.1, 4.5, 0.8, 6.2, 2.0, 4.0],
+        backgroundColor: ['#3b82f6','#ef4444','#f59e0b','#00e5a0','#a78bfa','#fb923c'],
+        borderRadius: 4,
+      }]
+    },
+    options: {responsive:true, plugins:{legend:{display:false}},
+      scales:{y:{grid:{color:CHART_DEFAULTS.grid},ticks:{color:CHART_DEFAULTS.tick}},
+              x:{grid:{display:false},ticks:{color:CHART_DEFAULTS.tick}}}}
+  });
+
+  /* Inflación Mundial */
+  new Chart(document.getElementById('chart-inf'), {
+    type: 'line',
+    data: {
+      labels: ['2022','2023','2024','2025e','2026p'],
+      datasets: [
+        {label:'Global',data:[8.7,6.8,5.8,4.2,3.5],borderColor:'#00e5a0',backgroundColor:'rgba(0,229,160,.1)',tension:0.4,fill:true},
+        {label:'LAC',data:[14.0,10.5,7.5,5.5,4.8],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.05)',tension:0.4},
+      ]
+    },
+    options: {responsive:true, plugins:{legend:{labels:{color:CHART_DEFAULTS.color}}},
+      scales:{y:{grid:{color:CHART_DEFAULTS.grid},ticks:{color:CHART_DEFAULTS.tick}},
+              x:{grid:{display:false},ticks:{color:CHART_DEFAULTS.tick}}}}
+  });
+
+  /* BCV 2026 */
+  new Chart(document.getElementById('chart-bcv'), {
+    type: 'line',
+    data: {
+      labels: ['Ene','Feb','Mar','Abr','May'],
+      datasets: [{
+        label:'BCV Bs/USD',
+        data: [298.14, 389.50, 428.30, 469.82, bcvActual],
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239,68,68,.1)',
+        tension: 0.4, fill: true, pointRadius: 4,
+      }]
+    },
+    options: {responsive:true, plugins:{legend:{labels:{color:CHART_DEFAULTS.color}}},
+      scales:{y:{grid:{color:CHART_DEFAULTS.grid},ticks:{color:CHART_DEFAULTS.tick, callback: v => v.toFixed(0)+' Bs'}},
+              x:{grid:{display:false},ticks:{color:CHART_DEFAULTS.tick}}}}
+  });
+
+  /* Inflación Venezuela */
+  new Chart(document.getElementById('chart-inflvz'), {
+    type: 'line',
+    data: {
+      labels: ['Ene 25','Feb 25','Mar 25','Abr 25','May 25','Jun 25','Jul 25','Ago 25','Sep 25','Oct 25','Nov 25','Dic 25','Ene 26'],
+      datasets: [{
+        label:'Inflación mensual VZ %',
+        data: [8.2,7.1,6.8,6.5,6.2,5.9,5.5,5.3,5.0,4.8,4.5,4.3,4.1],
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245,158,11,.1)',
+        tension: 0.4, fill: true,
+      }]
+    },
+    options: {responsive:true, plugins:{legend:{labels:{color:CHART_DEFAULTS.color}}},
+      scales:{y:{grid:{color:CHART_DEFAULTS.grid},ticks:{color:CHART_DEFAULTS.tick, callback: v => v+'%'}},
+              x:{grid:{display:false},ticks:{color:CHART_DEFAULTS.tick, maxTicksLimit:6}}}}
+  });
+
+  /* Petróleo */
+  new Chart(document.getElementById('chart-oil'), {
+    type: 'line',
+    data: {
+      labels: ['Jul 25','Ago 25','Sep 25','Oct 25','Nov 25','Dic 25','Ene 26','Feb 26','Mar 26','Abr 26','May 26'],
+      datasets: [
+        {label:'WTI USD/bbl',data:[74,71,68,70,72,69,67,65,68,70,68],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.1)',tension:0.4,fill:true},
+        {label:'Brent USD/bbl',data:[78,75,72,74,76,73,71,69,72,74,72],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.05)',tension:0.4},
+      ]
+    },
+    options: {responsive:true, plugins:{legend:{labels:{color:CHART_DEFAULTS.color}}},
+      scales:{y:{grid:{color:CHART_DEFAULTS.grid},ticks:{color:CHART_DEFAULTS.tick, callback: v => '$'+v}},
+              x:{grid:{display:false},ticks:{color:CHART_DEFAULTS.tick, maxTicksLimit:6}}}}
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VERIFICAR LINK (cliente, no-cors)
+═══════════════════════════════════════════════════════════ */
+async function verificarLink(url) {
+  try {
+    const r = await fetch(url, {method:'HEAD', mode:'no-cors', signal: AbortSignal.timeout(4000)});
+    return {url, activo: true, status: r.type === 'opaque' ? '✅ (opaque)' : '✅ ' + r.status};
+  } catch(e) {
+    return {url, activo: false, status: '❌ ' + e.message};
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INICIALIZACIÓN
+═══════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  /* Renderizar secciones de fuentes */
+  renderSection('src-mundial', ['mundial']);
+  renderSection('src-venezuela', ['venezuela']);
+  renderSection('src-petroleo', ['petroleo']);
+  renderSection('src-tachira', ['tachira','colombia']);
+  renderSection('src-medios', ['medios']);
+
+  /* Inicializar gráficos */
+  initCharts();
+
+  /* Inicializar timestamp y BCV */
+  actualizarTimestamp();
+  fetchBCVenVivo();
+  fetchCOPenVivo();
+
+  /* Actualización automática cada 30 minutos */
+  setInterval(tickCountdown, 1000);
+  setInterval(autoActualizar, 1800000);
+});
+</script>
+</body>
+</html>

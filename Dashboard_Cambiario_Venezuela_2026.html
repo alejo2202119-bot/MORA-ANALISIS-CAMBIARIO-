@@ -259,7 +259,7 @@ tbody td:first-child{color:var(--t1);font-weight:600;}
   /* ── Ocultar UI chrome ── */
   #pwOverlay,#topbar,.header,#ticker,#refreshBar,#pdf-fab,#pdf-bar-btn,
   .btn-refresh,.search-box,#chartTooltip,
-  #block-graficas,#block-calc,#block-alertas,#block-tablas{display:none!important;}
+  #block-graficas,#block-calc,#block-alertas,#block-tablas,#block-repo{display:none!important;}
 
   /* ── Base ── */
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
@@ -458,6 +458,44 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 .pfill.warn{background:linear-gradient(90deg,var(--yel),var(--red));}
 .pfill.grn{background:linear-gradient(90deg,var(--grn),#059669);}
 .pfill.blue{background:linear-gradient(90deg,var(--blue),var(--blue-m));}
+
+/* ── REPOSITORIO DE LINKS ─────────────────── */
+.repo-sec-hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+.repo-stats-bar{font-size:11px;color:var(--t3);display:flex;gap:14px;flex-wrap:wrap;}
+.repo-stats-bar b{color:var(--t1);}
+.repo-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.repo-q{flex:1;min-width:200px;border:1.5px solid var(--bdr);border-radius:10px;padding:8px 14px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--t1);background:var(--surf2);outline:none;transition:border-color .2s;}
+.repo-q:focus{border-color:var(--blue-m);box-shadow:0 0 0 3px var(--blue-ll);}
+.repo-fbns{display:flex;gap:6px;flex-wrap:wrap;}
+.repo-fb{padding:5px 11px;border-radius:999px;font-size:10.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--bdr);background:var(--surf2);color:var(--t3);font-family:'Inter',sans-serif;transition:all .15s;}
+.repo-fb:hover{border-color:var(--blue-m);color:var(--blue);}
+.repo-fb.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+.repo-exp{padding:6px 14px;background:var(--grn);color:#fff;border:none;border-radius:9px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+.repo-exp:hover{opacity:.85;}
+.lnk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;margin-bottom:0;}
+.lnk-card{background:var(--surf);border:1px solid var(--bdr);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:7px;transition:box-shadow .2s,border-color .2s;}
+.lnk-card:hover{box-shadow:var(--sh2);border-color:var(--blue-m);}
+.lnk-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.lnk-name{font-size:11.5px;font-weight:800;color:var(--t1);line-height:1.35;}
+.lnk-st{font-size:9.5px;padding:2px 7px;border-radius:999px;font-weight:700;flex-shrink:0;}
+.lnk-st.ok{background:var(--grn-l);color:var(--grn);}
+.lnk-st.warn{background:var(--yel-l);color:#92400e;}
+.lnk-st.err{background:var(--red-l);color:var(--red);}
+.lnk-url{font-size:10px;color:var(--t4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lnk-desc{font-size:10.5px;color:var(--t3);line-height:1.5;}
+.lnk-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-top:2px;}
+.lnk-fq{font-size:9.5px;padding:2px 8px;border-radius:999px;font-weight:700;}
+.lnk-fq.rt{background:var(--red-l);color:var(--red);}
+.lnk-fq.di{background:var(--yel-l);color:#92400e;}
+.lnk-fq.se{background:var(--blue-l);color:var(--blue);}
+.lnk-fq.me{background:var(--grn-l);color:var(--grn);}
+.lnk-fq.tr{background:var(--pur-l);color:var(--pur);}
+.lnk-fq.an{background:var(--surf2);color:var(--t4);border:1px solid var(--bdr);}
+.lnk-fq.ir{background:var(--surf2);color:var(--t4);border:1px solid var(--bdr);}
+.lnk-open{font-size:10px;color:var(--blue);padding:3px 9px;border:1px solid var(--blue-m);border-radius:7px;cursor:pointer;background:none;font-family:'Inter',sans-serif;font-weight:700;transition:all .15s;}
+.lnk-open:hover{background:var(--blue);color:#fff;}
+@media(max-width:600px){.lnk-grid{grid-template-columns:1fr 1fr;}.repo-fbns{gap:4px;}.repo-fb{padding:4px 8px;font-size:9.5px;}}
+@media(max-width:400px){.lnk-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -490,13 +528,18 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 </div>
 <script>
 (function(){
+  var _lockTimer=null;
   document.addEventListener('visibilitychange',function(){
     if(document.hidden){
-      sessionStorage.removeItem('ec_auth');
-      var ov=document.getElementById('pwOverlay');
-      if(ov){ov.style.display='flex';ov.style.opacity='1';ov.classList.remove('fade-out');}
-      var inp=document.getElementById('pwInput');
-      if(inp){inp.value='';setTimeout(function(){inp.focus();},100);}
+      _lockTimer=setTimeout(function(){
+        sessionStorage.removeItem('ec_auth');
+        var ov=document.getElementById('pwOverlay');
+        if(ov){ov.style.display='flex';ov.style.opacity='1';ov.classList.remove('fade-out');}
+        var inp=document.getElementById('pwInput');
+        if(inp){inp.value='';}
+      },600000); // re-bloquea tras 10 min de inactividad
+    } else {
+      if(_lockTimer){clearTimeout(_lockTimer);_lockTimer=null;}
     }
   });
   if(sessionStorage.getItem('ec_auth')==='1'){
@@ -570,6 +613,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <a href="#sec-tablas"      class="nav-lnk">Tablas</a>
       <a href="#sec-macro"       class="nav-lnk">Macro</a>
       <a href="#sec-fuentes"     class="nav-lnk">Fuentes</a>
+      <a href="#sec-repo"        class="nav-lnk" style="color:var(--yel);font-weight:800;">📂 Repositorio</a>
     </nav>
     <button id="pdf-bar-btn" class="pdf-btn" onclick="downloadPDF()" title="Descargar PDF"><span class="pdf-ic">📄</span>PDF</button>
     <div class="badge-live"><span class="dot"></span><div class="api-dots"><div class="api-dot-wrap"><span class="dot-small off" id="adc-pyd"></span>pydolar</div><div class="api-dot-wrap"><span class="dot-small off" id="adc-er"></span>er-api</div><div class="api-dot-wrap"><span class="dot-small off" id="adc-yh"></span>WTI</div></div><span id="liveLabel">Actualizando…</span></div>
@@ -586,33 +630,45 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   <div id="tickerScroll">
     <div id="tickerTrack">
       <!-- ══ SET A — con IDs, actualizados por JS en cada fetch ══ -->
-      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv">510,79</span><span class="unit">Bs/USD</span></div>
-      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt">665,00</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">📐 Brecha</span><span class="val" id="tk-brecha">30,2</span><span class="unit">%</span></div>
-      <div class="tk"><span class="lbl">💶 EUR BCV</span><span class="val" id="tk-eur">571,00</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">🔵 Binance P2P</span><span class="val" id="tk-bin">665,00</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv">544,57</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt">744,00</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">📐 Brecha</span><span class="val" id="tk-brecha">36,6</span><span class="unit">%</span></div>
+      <div class="tk"><span class="lbl">💶 EUR BCV</span><span class="val" id="tk-eur">633,48</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🔵 Binance P2P</span><span class="val" id="tk-bin">744,00</span><span class="unit">Bs/USD</span></div>
       <div class="tk"><span class="lbl">🟡 Yadio.io</span><span class="val" id="tk-yad">663,00</span><span class="unit">Bs/USD</span></div>
-      <div class="tk"><span class="lbl">🛢️ WTI Crudo</span><span class="val" id="tk-wti">101,50</span><span class="unit">USD/bbl</span></div>
-      <div class="tk"><span class="lbl">🇨🇴 Peso COP/USD</span><span class="val" id="tk-cop">4.380</span><span class="unit">COP</span></div>
+      <div class="tk"><span class="lbl">🛢️ WTI Crudo</span><span class="val" id="tk-wti">90,35</span><span class="unit">USD/bbl</span></div>
+      <div class="tk"><span class="lbl">🇨🇴 Peso COP/USD</span><span class="val" id="tk-cop">3.644</span><span class="unit">COP</span></div>
       <div class="tk"><span class="lbl">🇨🇴 1 COP en Bs</span><span class="val" id="tk-cop-bs">0,1167</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval">+71,3%</span></div>
+      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval">+82,7%</span></div>
       <div class="tk"><span class="lbl">💰 CBA en Bolívares</span><span class="val chg-up" id="tk-cba-bs">353.267</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🛢️ Brent Crudo</span><span class="val" id="tk-brent">—</span><span class="unit">USD/bbl</span></div>
+      <div class="tk"><span class="lbl">₿ Bitcoin</span><span class="val" id="tk-btc">—</span><span class="unit">USD</span></div>
+      <div class="tk"><span class="lbl">Ξ Ethereum</span><span class="val" id="tk-eth">—</span><span class="unit">USD</span></div>
+      <div class="tk"><span class="lbl">🥇 Oro</span><span class="val" id="tk-gold">—</span><span class="unit">USD/oz</span></div>
+      <div class="tk"><span class="lbl">📈 S&amp;P 500</span><span class="val" id="tk-sp500">—</span><span class="unit">pts</span></div>
+      <div class="tk"><span class="lbl">💵 DXY (USD)</span><span class="val" id="tk-dxy">—</span><span class="unit">index</span></div>
       <div class="tk"><span class="lbl">🛑 Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8-ene</span></div>
       <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,25</span><span class="unit">USD/mes</span></div>
       <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$692</span><span class="unit">· 2.717 salarios</span></div>
       <div class="tk"><span class="lbl">🌄 CBA Táchira</span><span class="val chg-up">$755</span><span class="unit">· frontera +9%</span></div>
       <!-- ══ SET B — duplicado para loop continuo ══ -->
-      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv-b">510,79</span><span class="unit">Bs/USD</span></div>
-      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt-b">665,00</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">📐 Brecha</span><span class="val" id="tk-brecha-b">30,2</span><span class="unit">%</span></div>
-      <div class="tk"><span class="lbl">💶 EUR BCV</span><span class="val" id="tk-eur-b">571,00</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">🔵 Binance P2P</span><span class="val" id="tk-bin-b">665,00</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv-b">544,57</span><span class="unit">Bs/USD</span></div>
+      <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt-b">744,00</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">📐 Brecha</span><span class="val" id="tk-brecha-b">36,6</span><span class="unit">%</span></div>
+      <div class="tk"><span class="lbl">💶 EUR BCV</span><span class="val" id="tk-eur-b">633,48</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🔵 Binance P2P</span><span class="val" id="tk-bin-b">744,00</span><span class="unit">Bs/USD</span></div>
       <div class="tk"><span class="lbl">🟡 Yadio.io</span><span class="val" id="tk-yad-b">663,00</span><span class="unit">Bs/USD</span></div>
-      <div class="tk"><span class="lbl">🛢️ WTI Crudo</span><span class="val" id="tk-wti-b">101,50</span><span class="unit">USD/bbl</span></div>
-      <div class="tk"><span class="lbl">🇨🇴 Peso COP/USD</span><span class="val" id="tk-cop-b">4.380</span><span class="unit">COP</span></div>
+      <div class="tk"><span class="lbl">🛢️ WTI Crudo</span><span class="val" id="tk-wti-b">90,35</span><span class="unit">USD/bbl</span></div>
+      <div class="tk"><span class="lbl">🇨🇴 Peso COP/USD</span><span class="val" id="tk-cop-b">3.644</span><span class="unit">COP</span></div>
       <div class="tk"><span class="lbl">🇨🇴 1 COP en Bs</span><span class="val" id="tk-cop-bs-b">0,1167</span><span class="unit">Bs</span></div>
-      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval-b">+71,3%</span></div>
+      <div class="tk"><span class="lbl">📉 Devaluación 2026</span><span class="val chg-up" id="tk-deval-b">+82,7%</span></div>
       <div class="tk"><span class="lbl">💰 CBA en Bolívares</span><span class="val chg-up" id="tk-cba-bs-b">353.267</span><span class="unit">Bs</span></div>
+      <div class="tk"><span class="lbl">🛢️ Brent Crudo</span><span class="val" id="tk-brent-b">—</span><span class="unit">USD/bbl</span></div>
+      <div class="tk"><span class="lbl">₿ Bitcoin</span><span class="val" id="tk-btc-b">—</span><span class="unit">USD</span></div>
+      <div class="tk"><span class="lbl">Ξ Ethereum</span><span class="val" id="tk-eth-b">—</span><span class="unit">USD</span></div>
+      <div class="tk"><span class="lbl">🥇 Oro</span><span class="val" id="tk-gold-b">—</span><span class="unit">USD/oz</span></div>
+      <div class="tk"><span class="lbl">📈 S&amp;P 500</span><span class="val" id="tk-sp500-b">—</span><span class="unit">pts</span></div>
+      <div class="tk"><span class="lbl">💵 DXY (USD)</span><span class="val" id="tk-dxy-b">—</span><span class="unit">index</span></div>
       <div class="tk"><span class="lbl">🛑 Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8-ene</span></div>
       <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,25</span><span class="unit">USD/mes</span></div>
       <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$692</span><span class="unit">· 2.717 salarios</span></div>
@@ -636,36 +692,109 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <!-- ═══ RESUMEN EJECUTIVO ═══ -->
 <span id="sec-resumen"></span>
 <div class="sec"><span class="ic">📋</span>Resumen ejecutivo</div>
-<div class="summary">
-  <div class="sum-text">
-    <h2 id="sumTitle" style="font-size:17px;font-weight:800;color:var(--blue);margin-bottom:12px;">Cargando situación cambiaria...</h2>
-    <p id="sumP1" style="font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:10px;"></p>
-    <p id="sumP2" style="font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:10px;"></p>
-    <p id="sumP3" style="font-size:13px;color:var(--t2);line-height:1.8;"></p>
+<!-- ── RESUMEN EJECUTIVO REDISEÑADO ── -->
+<div style="background:var(--surf);border:1px solid var(--bdr);border-radius:18px;padding:24px 28px;margin-bottom:24px;box-shadow:var(--sh);">
+
+  <!-- Título dinámico -->
+  <h2 id="sumTitle" style="font-size:16px;font-weight:900;color:var(--blue);margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--bdr);">📋 Situación cambiaria · Venezuela · <span class="dyn-date-full" style="font-weight:600;color:var(--t3);"></span></h2>
+
+  <!-- FILA 1: Tasas principales -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;">
+    <div class="ss" style="border-top:3px solid var(--blue);"><div class="sl">🏦 BCV Oficial</div><div class="sv c-blue" id="ss-bcv">—</div><div class="sd">Bs/USD · <span id="ss-fecha">—</span></div></div>
+    <div class="ss" style="border-top:3px solid var(--pur);"><div class="sl">💜 USDT Paralelo</div><div class="sv c-pur" id="ss-usdt">—</div><div class="sd">Binance P2P · hoy</div></div>
+    <div class="ss" style="border-top:3px solid var(--grn);"><div class="sl">💶 Euro BCV</div><div class="sv" id="ss-eur" style="color:var(--grn);">—</div><div class="sd">Bs/EUR · BCV oficial</div></div>
+    <div class="ss" style="border-top:3px solid var(--yel);"><div class="sl">📐 Brecha BCV/Mercado</div><div class="sv c-yel" id="ss-brecha">—</div><div class="sd" id="ss-brecha-d">Diferencial abs.</div></div>
   </div>
-  <div class="sum-stats">
-    <div class="ss"><div class="sl">BCV Oficial hoy</div><div class="sv c-blue" id="ss-bcv">—</div><div class="sd">Bs por 1 USD · <span id="ss-fecha">—</span></div></div>
-    <div class="ss"><div class="sl">USDT Paralelo</div><div class="sv c-pur" id="ss-usdt">—</div><div class="sd">Binance P2P · hoy</div></div>
-    <div class="ss"><div class="sl">Euro BCV oficial</div><div class="sv" id="ss-eur" style="color:var(--grn);">—</div><div class="sd">Bs por 1 EUR · BCV oficial</div></div>
-    <div class="ss"><div class="sl">Brecha cambiaria</div><div class="sv c-yel" id="ss-brecha">—</div><div class="sd" id="ss-brecha-d">Diferencial BCV vs mercado</div></div>
-    <div class="ss"><div class="sl">Devaluación 2026</div><div class="sv c-red" id="ss-deval">—</div><div class="sd">Desde 1-ene-2026 · 298,14 Bs</div></div>
-    <div class="ss"><div class="sl">Peso Colombiano</div><div class="sv" id="ss-cop" style="color:var(--grn);">~4.380 COP</div><div class="sd">por 1 USD · ref. Banco República</div></div>
-    <div class="ss"><div class="sl">1 USD en Bolívares (paralelo)</div><div class="sv c-pur" id="ss-cop-bs">~709 Bs</div><div class="sd">Binance P2P · mercado real</div></div>
-    <div class="ss"><div class="sl">Salario mín. en USD</div><div class="sv c-red">$0,25</div><div class="sd">130 Bs/mes (base) · Ingreso integral $240</div></div>
-    <div class="ss"><div class="sl">Canasta básica CBA</div><div class="sv c-red">~$692</div><div class="sd">2.717 salarios mínimos · CENDAS-FVM</div></div>
+
+  <!-- FILA 2: Incrementos mensuales (NUEVO) -->
+  <div style="background:var(--red-ll);border:1.5px solid #fca5a5;border-radius:12px;padding:12px 14px;margin-bottom:10px;">
+    <div style="font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">📅 Incrementos del mes en curso · <span id="ss-mes-label" style="text-transform:capitalize;">mayo 2026</span></div>
+    <!-- CAMBIO HOY VS AYER -->
+    <div id="ss-hoy-banner" style="display:none;background:linear-gradient(135deg,#7f1d1d,#b91c1c);border-radius:10px;padding:10px 16px;margin-bottom:10px;color:#fff;">
+      <div style="font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;opacity:.8;margin-bottom:6px;">🔴 Cambio de hoy vs ayer</div>
+      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;">
+        <div>🏦 BCV: <strong id="ss-hoy-bcv-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-bcv-pct" style="font-size:11px;opacity:.85;">—</span></div>
+        <div>💜 USDT: <strong id="ss-hoy-usdt-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-usdt-pct" style="font-size:11px;opacity:.85;">—</span></div>
+        <div style="font-size:10.5px;opacity:.75;" id="ss-hoy-ref">—</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+      <!-- BCV este mes -->
+      <div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #fca5a5;">
+        <div style="font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">↑ BCV este mes</div>
+        <div style="font-size:20px;font-weight:900;color:var(--red);line-height:1;" id="ss-mes-bcv-pct">—</div>
+        <div style="font-size:10.5px;color:var(--t3);margin-top:3px;" id="ss-mes-bcv-bs">— Bs subió</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px dashed #fca5a5;">Año: <strong id="ss-ano-bcv-pct" style="color:var(--red);">—</strong></div>
+      </div>
+      <!-- USDT este mes -->
+      <div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #fca5a5;">
+        <div style="font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">↑ USDT este mes</div>
+        <div style="font-size:20px;font-weight:900;color:var(--pur);line-height:1;" id="ss-mes-usdt-pct">—</div>
+        <div style="font-size:10.5px;color:var(--t3);margin-top:3px;" id="ss-mes-usdt-bs">— Bs subió</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px dashed #fca5a5;">Año: <strong id="ss-ano-usdt-pct" style="color:var(--pur);">—</strong></div>
+      </div>
+      <!-- BCV sube por día -->
+      <div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #fca5a5;">
+        <div style="font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">📈 BCV · prom./día <span id="ss-dia-mes-lbl" style="text-transform:capitalize;font-weight:600;color:var(--red);">este mes</span></div>
+        <div style="font-size:20px;font-weight:900;color:var(--red);line-height:1;" id="ss-dia-bcv-bs">—</div>
+        <div style="font-size:10.5px;color:var(--t3);margin-top:3px;" id="ss-dia-bcv-pct">— % promedio</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px dashed #fca5a5;">Prom. año: <strong id="ss-dia-ano-bs" style="color:var(--red);">—</strong></div>
+      </div>
+      <!-- Devaluación 2026 -->
+      <div style="background:#fff;border-radius:8px;padding:10px 12px;border:1px solid #fca5a5;">
+        <div style="font-size:9.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">🔥 Devaluación 2026</div>
+        <div style="font-size:20px;font-weight:900;color:var(--red);line-height:1;" id="ss-deval">—</div>
+        <div style="font-size:10.5px;color:var(--t3);margin-top:3px;">Desde 298,14 Bs · 1-ene</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px dashed #fca5a5;">+<strong id="ss-deval-bs-total" style="color:var(--red);">—</strong> Bs en total</div>
+      </div>
+    </div>
+    <!-- Resumen anual compacto -->
+    <div style="margin-top:8px;padding:9px 14px;background:rgba(239,68,68,0.07);border-radius:8px;font-size:11.5px;color:var(--t2);line-height:1.8;">
+      <strong style="color:var(--red);">📊 Año 2026 completo:</strong>
+      &nbsp;BCV: subió <strong id="ss-ano-bcv-total" style="color:var(--red);">—</strong> en total · promedio <strong id="ss-ano-bcv-dia" style="color:var(--red);">—</strong>/día
+      &nbsp;·&nbsp;
+      USDT: subió <strong id="ss-ano-usdt-total" style="color:var(--pur);">—</strong> · promedio <strong id="ss-ano-usdt-dia" style="color:var(--pur);">—</strong>/día
+      &nbsp;<span style="color:var(--t3);font-size:10.5px;">· desde el 1-ene-2026</span>
+    </div>
   </div>
+
+  <!-- FILA 3: Datos sociales y contexto -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+    <div class="ss"><div class="sl">🇨🇴 COP / USD</div><div class="sv" id="ss-cop" style="color:#0ea5e9;">—</div><div class="sd">Peso colombiano · Banco República</div></div>
+    <div class="ss"><div class="sl">💼 Salario mín. real</div><div class="sv c-red" id="ss-salario-usd">$0,24 USD</div><div class="sd">130 Bs · Ingreso integral $240</div></div>
+    <div class="ss"><div class="sl">🛒 Canasta básica (CBA)</div><div class="sv c-red">$730</div><div class="sd">3.055 salarios mín. · CENDAS abr-26</div></div>
+    <div class="ss"><div class="sl">🛢️ WTI Petróleo</div><div class="sv" id="ss-wti" style="color:var(--grn);">—</div><div class="sd">USD/barril · precio spot</div></div>
+  </div>
+
+  <!-- INFORME ESCRITO COMPLETO -->
+  <div id="informe-completo" style="font-size:13px;color:var(--t2);line-height:2;border:1px solid var(--bdr);border-radius:12px;padding:20px 24px;background:var(--bg);">
+    <div style="text-align:center;color:var(--t3);font-size:11px;padding:12px;">Cargando informe...</div>
+  </div>
+  <!-- compat ocultos -->
+  <p id="sumP1" style="display:none;"></p>
+  <p id="sumP2" style="display:none;"></p>
+  <!-- IDs de compatibilidad ocultos -->
+  <span id="ss-brecha-d" style="display:none;"></span>
+  <span id="ss-deval-dia" style="display:none;"></span>
+  <span id="ss-deval-dia-bs" style="display:none;"></span>
+  <span id="ss-cop-bs" style="display:none;"></span>
+  <span id="ss-fecha" style="display:none;"></span>
+  <span id="sumP3" style="display:none;"></span>
 </div>
 
 <!-- ═══ KPIs ═══ -->
 <span id="sec-indicadores"></span>
 <div class="sec"><span class="ic">📊</span>Indicadores clave · <span class="dyn-date-full"></span></div>
 <div class="kpi-grid">
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#001f5b,var(--blue));"></div><div class="kpi-ico">🏦</div><div class="kpi-lbl">Dólar BCV Oficial</div><div class="kpi-val c-blue" id="kv-bcv">510,79</div><div class="kpi-sub" id="kv-bcv-sub">↑ En vivo · Bs/USD · <span id="kv-bcv-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#4c1d95,var(--pur));"></div><div class="kpi-ico">💜</div><div class="kpi-lbl">USDT Paralelo</div><div class="kpi-val c-pur" id="kv-usdt">665,00</div><div class="kpi-sub" id="kv-usdt-sub">↑ Binance P2P · <span id="kv-usdt-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,var(--yel));"></div><div class="kpi-ico">📐</div><div class="kpi-lbl">Brecha Cambiaria</div><div class="kpi-val c-yel" id="kv-brecha">30,2%</div><div class="kpi-sub">USDT vs BCV · diferencial</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7f1d1d,var(--red));"></div><div class="kpi-ico">📉</div><div class="kpi-lbl">Devaluación 2026</div><div class="kpi-val c-red" id="kv-deval">+71,3%</div><div class="kpi-sub">Desde 298,14 Bs · 1-ene-26</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a5c,#0ea5e9);"></div><div class="kpi-ico">🇨🇴</div><div class="kpi-lbl">Peso COP / USD</div><div class="kpi-val" style="color:#0ea5e9;" id="kv-cop">4.380</div><div class="kpi-sub">1 COP = <span id="kv-cop-bs">—</span> Bs · <span id="kv-cop-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a1a,#059669);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">WTI Crudo</div><div class="kpi-val" style="color:var(--grn);" id="kv-wti">101,50</div><div class="kpi-sub">USD/barril · <span id="kv-wti-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#001f5b,var(--blue));"></div><div class="kpi-ico">🏦</div><div class="kpi-lbl">Dólar BCV Oficial</div><div class="kpi-val c-blue" id="kv-bcv">544,57</div><div class="kpi-sub" id="kv-bcv-sub">↑ En vivo · Bs/USD · <span id="kv-bcv-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#4c1d95,var(--pur));"></div><div class="kpi-ico">💜</div><div class="kpi-lbl">USDT Paralelo</div><div class="kpi-val c-pur" id="kv-usdt">744,00</div><div class="kpi-sub" id="kv-usdt-sub">↑ Binance P2P · <span id="kv-usdt-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,var(--yel));"></div><div class="kpi-ico">📐</div><div class="kpi-lbl">Brecha Cambiaria</div><div class="kpi-val c-yel" id="kv-brecha">36,6%</div><div class="kpi-sub">USDT vs BCV · diferencial</div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7f1d1d,var(--red));"></div><div class="kpi-ico">📉</div><div class="kpi-lbl">Devaluación 2026</div><div class="kpi-val c-red" id="kv-deval">+82,7%</div><div class="kpi-sub" id="kv-deval-sub">Desde 298,14 Bs · 1-ene-26</div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a5c,#0ea5e9);"></div><div class="kpi-ico">🇨🇴</div><div class="kpi-lbl">Peso COP / USD</div><div class="kpi-val" style="color:#0ea5e9;" id="kv-cop">3.644</div><div class="kpi-sub">1 COP = <span id="kv-cop-bs">—</span> Bs · <span id="kv-cop-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a1a,#059669);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">WTI Crudo</div><div class="kpi-val" style="color:var(--grn);" id="kv-wti">90,35</div><div class="kpi-sub">USD/barril · <span id="kv-wti-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a2e1a,#16a34a);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">Brent Crudo</div><div class="kpi-val" style="color:#16a34a;" id="kv-brent">—</div><div class="kpi-sub">USD/barril · ICE · <span id="kv-brent-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#78350f,#f59e0b);"></div><div class="kpi-ico">₿</div><div class="kpi-lbl">Bitcoin BTC/USD</div><div class="kpi-val" style="color:#f59e0b;" id="kv-btc">—</div><div class="kpi-sub">Precio spot · <span id="kv-btc-ts">—</span></div></div>
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,#d97706);"></div><div class="kpi-ico">🥇</div><div class="kpi-lbl">Oro / Gold</div><div class="kpi-val" style="color:#d97706;" id="kv-gold">—</div><div class="kpi-sub">USD/oz · <span id="kv-gold-ts">—</span></div></div>
   <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7c2d12,var(--ora));"></div><div class="kpi-ico">🔥</div><div class="kpi-lbl">Devaluación 2025</div><div class="kpi-val c-ora">+474%</div><div class="kpi-sub">51,93 → 298,14 Bs</div></div>
   <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#14532d,var(--grn));"></div><div class="kpi-ico">🔴</div><div class="kpi-lbl">Pico USDT 2026</div><div class="kpi-val" style="color:#991b1b;">780 Bs</div><div class="kpi-sub">8-ene · brecha 140%</div></div>
 </div>
@@ -690,7 +819,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="res-row"><span class="res-lbl">💶 Euro BCV oficial</span><span class="res-val" style="color:var(--grn);" id="rc-eur">—</span></div>
     <div class="res-row"><span class="res-lbl">🔵 Binance P2P</span><span class="res-val pur" id="rc-bin">—</span></div>
     <div class="res-row"><span class="res-lbl">🟡 Yadio.io</span><span class="res-val yel" id="rc-yad">—</span></div>
-    <div class="res-row"><span class="res-lbl">🇨🇴 Peso COP / USD</span><span class="res-val" id="rc-cop">~4.380 COP</span></div>
+    <div class="res-row"><span class="res-lbl">🇨🇴 Peso COP / USD</span><span class="res-val" id="rc-cop">~3.644 COP</span></div>
     <div class="res-row"><span class="res-lbl">🇨🇴 1 COP en Bolívares</span><span class="res-val" id="rc-cop-bs">—</span></div>
     <div class="res-foot">📊 Datos en vivo desde <strong>ve.dolarapi.com</strong> · BCV · Binance P2P · Banco República Colombia · open.er-api.com (EUR).</div>
   </div>
@@ -708,7 +837,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="res-row"><span class="res-lbl">💵 Diferencial absoluto</span><span class="res-val up" id="rc-brecha-abs">—</span></div>
     <div class="res-row"><span class="res-lbl">📉 Devaluación BCV 2026</span><span class="res-val up" id="rc-deval-bcv">—</span></div>
     <div class="res-row"><span class="res-lbl">📉 Devaluación paralelo 2026</span><span class="res-val up" id="rc-deval-par">—</span></div>
-    <div class="res-row"><span class="res-lbl">🔴 Pico histórico 2026</span><span class="res-val up">+140% · 8-ene</span></div>
+    <div class="res-row"><span class="res-lbl">🔴 Pico histórico 2026</span><span class="res-val up">+140% · 8-ene-26</span></div>
     <div class="res-row"><span class="res-lbl">📈 Tendencia 7 días</span><span class="res-val" id="rc-tendencia">Estable</span></div>
     <div class="res-row"><span class="res-lbl">⚖️ Estado del mercado</span><span class="res-val" id="rc-estado">—</span></div>
     <div class="res-foot" id="rc-brecha-int">⚡ <strong>Interpretación:</strong> calculando con tasas en vivo...</div>
@@ -796,6 +925,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       </div>
     </div>
     <div style="margin-top:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:700;">Brecha BCV vs Paralelo</span><span style="color:var(--ora);font-weight:800;" id="m-br">—</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:700;">Devaluación diaria BCV</span><span style="color:var(--red);font-weight:800;" id="mg-deval-dia">—</span></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:700;">Inflación mensual est.</span><span style="color:var(--t1);font-weight:800;" id="mg-infl">—</span></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:700;">WTI Petróleo</span><span style="color:var(--grn);font-weight:800;" id="mg-wti">—</span></div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:11.5px;"><span style="color:var(--t4);text-transform:uppercase;letter-spacing:1px;font-size:10px;font-weight:700;">Volatilidad 5p</span><span style="color:var(--t1);font-weight:800;" id="mg-vol">—</span></div>
@@ -811,7 +942,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <div class="g2" style="margin-bottom:18px;">
   <div class="card">
     <h3>WTI Crude Oil — Precio mensual (USD/barril) · 2022–2026</h3>
-    <p class="sub">Datos históricos verificados · EIA (U.S. Energy Information Administration) · Precio spot en vivo: <strong id="wti-live-label" style="color:var(--grn);">cargando…</strong> · Fuente en vivo: <span style="color:var(--t3);">query1.finance.yahoo.com (CL=F)</span></p>
+    <p class="sub">Datos históricos verificados · EIA (U.S. Energy Information Administration) · Precio spot en vivo: <strong id="wti-live-label" style="color:var(--grn);">cargando…</strong> · Fuente en vivo: <span style="color:var(--t3);">Yahoo Finance CL=F vía corsproxy.io</span></p>
     <canvas id="cWTI"></canvas>
   </div>
   <div class="card">
@@ -877,19 +1008,19 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <div class="g3" style="margin-bottom:18px;">
 
   <div class="c-card">
-    <div class="c-head"><span class="flag">🇻🇪</span><div><h3>Venezuela Nacional</h3><p>Fuente: CENDAS-FVM · INE · INVESP · Mayo 2026</p></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Alimentos mínimos · familia de 5 personas</div></div><div class="c-rgt"><div class="usd">$692 USD</div><div class="bs">353.267 Bs (BCV)</div><div class="sal">⚠ 2.717 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">CBA + vivienda, servicios, educación, salud</div></div><div class="c-rgt"><div class="usd">$1.200 USD</div><div class="bs">612.948 Bs (BCV)</div><div class="sal">⚠ 4.715 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">💼 Salario mínimo mensual</div><div class="desc">Decreto gubernamental vigente 2026</div></div><div class="c-rgt"><div class="usd" style="color:var(--red);">$0,26 USD</div><div class="bs">130 Bs/mes</div><div class="sal">0,04% de la CBA</div></div></div>
+    <div class="c-head"><span class="flag">🇻🇪</span><div><h3>Venezuela Nacional</h3><p>Fuente: CENDAS-FVM abr-2026 · INE · INVESP · 28-may-2026</p></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Alimentos mínimos · familia de 5 personas</div></div><div class="c-rgt"><div class="usd">$730 USD</div><div class="bs">397.536 Bs (BCV)</div><div class="sal">⚠ 3.055 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">CBA + vivienda, servicios, educación, salud</div></div><div class="c-rgt"><div class="usd">$1.265 USD</div><div class="bs">688.381 Bs (BCV)</div><div class="sal">⚠ 5.293 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">💼 Salario mínimo mensual</div><div class="desc">Decreto gubernamental vigente 2026</div></div><div class="c-rgt"><div class="usd" style="color:var(--red);">$0,24 USD</div><div class="bs">130 Bs/mes</div><div class="sal">0,03% de la CBA</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">🍗 Pollo (1 kg)</div><div class="desc">Promedio mercado nacional · may-2026</div></div><div class="c-rgt"><div class="usd">~$4,50</div><div class="bs">~2.299 Bs</div><div class="sal">17,7 salarios mínimos</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">🥛 Leche en polvo (400g)</div><div class="desc">Supermercados · promedio nacional</div></div><div class="c-rgt"><div class="usd">~$4,00</div><div class="bs">~2.043 Bs</div><div class="sal">15,7 salarios mínimos</div></div></div>
-    <div class="c-alert red">⚠️ Con 130 Bs (~$0,26), un trabajador necesitaría <strong>2.717 meses — 226 años</strong> de salario mínimo para cubrir una canasta básica alimentaria mensual.</div>
+    <div class="c-alert red">⚠️ Con 130 Bs (~$0,26), un trabajador necesitaría <strong>3.055 meses — 254 años</strong> de salario mínimo para cubrir una canasta básica alimentaria mensual.</div>
   </div>
 
   <div class="c-card">
-    <div class="c-head"><span class="flag">🌄</span><div><h3>Estado Táchira</h3><p>Economía fronteriza Colombia-Venezuela · May 2026</p></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Precios +9% vs promedio nacional · frontera</div></div><div class="c-rgt"><div class="usd">$755 USD</div><div class="bs">385.547 Bs (BCV)</div><div class="sal">⚠ 2.966 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">Incluye transporte fronterizo y servicios</div></div><div class="c-rgt"><div class="usd">$1.308 USD</div><div class="bs">668.113 Bs (BCV)</div><div class="sal">⚠ 5.139 salarios mínimos</div></div></div>
+    <div class="c-head"><span class="flag">🌄</span><div><h3>Estado Táchira</h3><p>Economía fronteriza Colombia-Venezuela · 28-may-2026</p></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Precios +9% vs promedio nacional · frontera</div></div><div class="c-rgt"><div class="usd">$797 USD</div><div class="bs">433.982 Bs (BCV)</div><div class="sal">⚠ 3.335 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">Incluye transporte fronterizo y servicios</div></div><div class="c-rgt"><div class="usd">$1.380 USD</div><div class="bs">751.507 Bs (BCV)</div><div class="sal">⚠ 5.775 salarios mínimos</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">💱 Economía bimoneda</div><div class="desc">COP y USD de uso cotidiano en Táchira</div></div><div class="c-rgt"><div class="usd">USD/COP</div><div class="bs">~0,19 Bs por COP</div><div class="sal">Mercado informal</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">🍗 Pollo (1 kg) · Táchira</div><div class="desc">Mercado fronterizo · San Cristóbal</div></div><div class="c-rgt"><div class="usd">~$4,90</div><div class="bs">~2.503 Bs</div><div class="sal">19,3 salarios mínimos</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">🏥 Consulta médica privada</div><div class="desc">Clínica privada · San Cristóbal</div></div><div class="c-rgt"><div class="usd">$15–30</div><div class="bs">7.574–15.147 Bs</div><div class="sal">58–116 salarios mín.</div></div></div>
@@ -899,7 +1030,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   <div class="c-card">
     <div class="c-head"><span class="flag">📊</span><div><h3>Comparación visual</h3><p>Canasta básica vs ingresos oficiales · USD</p></div></div>
     <canvas id="cCan"></canvas>
-    <div class="c-row" style="margin-top:12px;"><div class="c-lft"><div class="name">🎯 Salario necesario para CBA</div><div class="desc">Lo que debería ganar un venezolano</div></div><div class="c-rgt"><div class="usd" style="color:var(--grn);">$692/mes</div><div class="bs">2.717× el mínimo actual</div></div></div>
+    <div class="c-row" style="margin-top:12px;"><div class="c-lft"><div class="name">🎯 Salario necesario para CBA</div><div class="desc">Lo que debería ganar un venezolano</div></div><div class="c-rgt"><div class="usd" style="color:var(--grn);">$730/mes</div><div class="bs">3.055× el mínimo actual</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">📉 Pérdida poder adquisitivo</div><div class="desc">2024 vs 2026 en términos reales</div></div><div class="c-rgt"><div class="usd" style="color:var(--red);">−89%</div><div class="bs">En 2 años</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">💵 Ingreso real promedio</div><div class="desc">Trabajadores informales Venezuela</div></div><div class="c-rgt"><div class="usd" style="color:var(--grn);">$80–120</div><div class="bs">Por mes (estimado)</div></div></div>
   </div>
@@ -927,7 +1058,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
         <tr><td>🍚 Azúcar y endulzantes</td><td>Azúcar blanca, papelón</td><td>~$28 USD</td><td><span class="tag t-g">4%</span></td></tr>
         <tr><td>🧂 Condimentos y otros</td><td>Sal, café, mayonesa, salsa</td><td>~$48 USD</td><td><span class="tag t-y">7%</span></td></tr>
         <tr><td>🥤 Bebidas</td><td>Jugos, agua, refrescos ocasionales</td><td>~$42 USD</td><td><span class="tag t-g">6%</span></td></tr>
-        <tr style="background:var(--blue-ll);font-weight:700;"><td colspan="2" style="color:var(--blue);">TOTAL CBA · Venezuela Nacional</td><td style="color:var(--blue);">$692 USD</td><td><span class="tag" style="background:var(--blue);color:#fff;">100%</span></td></tr>
+        <tr style="background:var(--blue-ll);font-weight:700;"><td colspan="2" style="color:var(--blue);">TOTAL CBA · Venezuela Nacional</td><td style="color:var(--blue);">$730 USD</td><td><span class="tag" style="background:var(--blue);color:#fff;">100%</span></td></tr>
       </tbody>
     </table></div>
   </div>
@@ -939,7 +1070,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="over"><table>
       <thead><tr><th>Componente</th><th>Detalle</th><th>Costo aprox.</th><th>% de la CBN</th></tr></thead>
       <tbody>
-        <tr><td>🛒 Alimentación (CBA)</td><td>Ver tabla izquierda</td><td>$692 USD</td><td><span class="tag t-r">57,7%</span></td></tr>
+        <tr><td>🛒 Alimentación (CBA)</td><td>Ver tabla izquierda</td><td>$730 USD</td><td><span class="tag t-r">57,7%</span></td></tr>
         <tr><td>🏠 Vivienda y servicios</td><td>Alquiler, electricidad, gas, agua</td><td>~$135 USD</td><td><span class="tag t-r">11,3%</span></td></tr>
         <tr><td>👕 Vestuario y calzado</td><td>Ropa básica, zapatos, ropa interior</td><td>~$55 USD</td><td><span class="tag t-y">4,6%</span></td></tr>
         <tr><td>💊 Salud</td><td>Medicamentos esenciales, consultas</td><td>~$90 USD</td><td><span class="tag t-y">7,5%</span></td></tr>
@@ -947,10 +1078,10 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
         <tr><td>🚌 Transporte</td><td>Pasajes, combustible básico</td><td>~$70 USD</td><td><span class="tag t-g">5,8%</span></td></tr>
         <tr><td>📱 Comunicaciones</td><td>Internet, telefonía básica</td><td>~$38 USD</td><td><span class="tag t-g">3,2%</span></td></tr>
         <tr><td>🧴 Higiene y cuidado personal</td><td>Jabón, shampoo, papel higiénico</td><td>~$30 USD</td><td><span class="tag t-g">2,5%</span></td></tr>
-        <tr style="background:var(--pur-l);font-weight:700;"><td colspan="2" style="color:var(--pur);">TOTAL CBN · Venezuela Nacional</td><td style="color:var(--pur);">$1.200 USD</td><td><span class="tag" style="background:var(--pur);color:#fff;">100%</span></td></tr>
+        <tr style="background:var(--pur-l);font-weight:700;"><td colspan="2" style="color:var(--pur);">TOTAL CBN · Venezuela Nacional</td><td style="color:var(--pur);">$1.265 USD</td><td><span class="tag" style="background:var(--pur);color:#fff;">100%</span></td></tr>
       </tbody>
     </table></div>
-    <div class="c-alert blue" style="margin-top:12px;">📌 <strong>Táchira:</strong> CBA $755 · CBN $1.308 · +9% sobre promedio nacional por economía fronteriza con Colombia. Muchos productos se cotizan en COP o USD, elevando el costo real.</div>
+    <div class="c-alert blue" style="margin-top:12px;">📌 <strong>Táchira:</strong> CBA $797 · CBN $1.380 · +9% sobre promedio nacional por economía fronteriza con Colombia. Muchos productos se cotizan en COP o USD, elevando el costo real.</div>
   </div>
 </div>
 
@@ -959,22 +1090,24 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-bottom:18px;">
 
   <div class="card">
-    <h3 style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:16px;">📊 Diferencial cambiario BCV vs Mercado · 14 mayo 2026</h3>
+    <h3 style="font-size:14px;font-weight:800;color:var(--blue);margin-bottom:16px;">📊 Diferencial cambiario BCV vs Mercado · 28 mayo 2026</h3>
     <div class="over"><table>
       <thead><tr><th>Indicador</th><th>Valor</th><th>Impacto práctico</th></tr></thead>
       <tbody>
-        <tr><td>🏦 Tasa BCV Oficial</td><td style="color:var(--blue);font-weight:700;">510,79 Bs/USD</td><td>Usada por bancos, nóminas oficiales</td></tr>
-        <tr><td>💜 USDT Binance P2P</td><td style="color:var(--pur);font-weight:700;">665,00 Bs/USD</td><td>Precio real de mercado en Venezuela</td></tr>
-        <tr><td>📐 Diferencial absoluto</td><td style="color:var(--ora);font-weight:700;">154,21 Bs por USD</td><td>Pierdes 154,21 Bs por cada dólar al BCV</td></tr>
-        <tr><td>📊 Brecha porcentual</td><td style="color:var(--red);font-weight:700;">+30,2%</td><td>El paralelo vale 30% más que el BCV</td></tr>
+        <tr><td>🏦 Tasa BCV Oficial</td><td style="color:var(--blue);font-weight:700;">544,57 Bs/USD</td><td>Usada por bancos, nóminas oficiales</td></tr>
+        <tr><td>💜 USDT Binance P2P</td><td style="color:var(--pur);font-weight:700;">744,00 Bs/USD</td><td>Precio real de mercado en Venezuela</td></tr>
+        <tr><td>📐 Diferencial absoluto</td><td style="color:var(--ora);font-weight:700;">199,43 Bs por USD</td><td>Pierdes 199,43 Bs por cada dólar al BCV</td></tr>
+        <tr><td>📊 Brecha porcentual</td><td style="color:var(--red);font-weight:700;">+36,6%</td><td>El paralelo vale 37% más que el BCV</td></tr>
         <tr style="background:var(--red-ll);"><td>🔴 Pico histórico (8-ene-26)</td><td style="color:var(--red);font-weight:800;">+140% brecha</td><td>780 Bs USDT vs ~315 Bs BCV</td></tr>
-        <tr><td>📉 Devaluación BCV 2026</td><td style="color:var(--red);font-weight:700;">+71,3%</td><td>De 298,14 Bs (1-ene) a 510,79 Bs</td></tr>
-        <tr><td>🏦 Devaluación real (paralelo)</td><td style="color:var(--red);font-weight:700;">+17,7%</td><td>De 565,20 Bs (1-ene) a 665,00 Bs</td></tr>
+        <tr><td>📉 Devaluación BCV 2026</td><td style="color:var(--red);font-weight:700;">+82,7%</td><td>De 298,14 Bs (1-ene) a 544,57 Bs</td></tr>
+        <tr><td>📅 Devaluación diaria promedio</td><td style="color:var(--red);font-weight:700;" id="td-deval-dia">—</td><td>Tasa compuesta desde 1-ene-2026</td></tr>
+        <tr><td>💵 Bs que sube el BCV por día</td><td style="color:var(--ora);font-weight:700;" id="td-deval-bs-dia">—</td><td>Promedio simple 2026 YTD</td></tr>
+        <tr><td>🏦 Devaluación real (paralelo)</td><td style="color:var(--red);font-weight:700;">+86,0%</td><td>De 400 Bs (1-ene) a 744,00 Bs</td></tr>
         <tr style="background:var(--yel-ll);"><td>⚠️ Quién pierde con el BCV</td><td style="color:#b45309;font-weight:700;">El que cobra en Bs</td><td>Ahorrar o cobrar al BCV genera pérdida real</td></tr>
       </tbody>
     </table></div>
     <div class="c-alert" style="background:var(--yel-l);border-left:4px solid var(--yel);margin-top:12px;border-radius:10px;padding:11px 14px;font-size:12px;">
-      💡 <strong>¿Qué significa la brecha?</strong> Si recibes 51.079 Bs de sueldo ($100 al BCV), en el mercado real solo valen $77 USD (al paralelo). Pierdes $23 por cada $100 recibidos al tipo oficial.
+      💡 <strong>¿Qué significa la brecha?</strong> Si recibes 54.457 Bs de sueldo ($100 al BCV), en el mercado real solo valen $73 USD (al paralelo). Pierdes $27 por cada $100 recibidos al tipo oficial.
     </div>
   </div>
 
@@ -983,13 +1116,13 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <div class="over"><table>
       <thead><tr><th>Concepto</th><th>Venezuela</th><th>Táchira</th></tr></thead>
       <tbody>
-        <tr><td>💼 Salario mínimo</td><td>130 Bs ($0,25)</td><td>130 Bs ($0,25)</td></tr>
-        <tr><td>🥗 CBA (alimentaria)</td><td style="color:var(--red);">$692 / 353.267 Bs</td><td style="color:var(--red);">$755 / 385.547 Bs</td></tr>
-        <tr><td>🏠 CBN (normativa total)</td><td style="color:var(--red);">$1.200 / 612.948 Bs</td><td style="color:var(--red);">$1.308 / 668.113 Bs</td></tr>
-        <tr style="background:var(--red-ll);"><td>❌ Salarios mín. para CBA</td><td style="color:var(--red);font-weight:800;">2.717 salarios</td><td style="color:var(--red);font-weight:800;">2.966 salarios</td></tr>
-        <tr style="background:var(--red-ll);"><td>❌ Salarios mín. para CBN</td><td style="color:var(--red);font-weight:800;">4.715 salarios</td><td style="color:var(--red);font-weight:800;">5.139 salarios</td></tr>
-        <tr><td>📆 Meses para 1 CBA</td><td style="color:var(--red);">226 años</td><td style="color:var(--red);">247 años</td></tr>
-        <tr><td>📉 % CBA cubierto por sal. mín.</td><td style="color:var(--red);">0,04%</td><td style="color:var(--red);">0,03%</td></tr>
+        <tr><td>💼 Salario mínimo</td><td>130 Bs ($0,24)</td><td>130 Bs ($0,24)</td></tr>
+        <tr><td>🥗 CBA (alimentaria)</td><td style="color:var(--red);">$730 / 397.536 Bs</td><td style="color:var(--red);">$797 / 433.982 Bs</td></tr>
+        <tr><td>🏠 CBN (normativa total)</td><td style="color:var(--red);">$1.265 / 688.381 Bs</td><td style="color:var(--red);">$1.380 / 751.507 Bs</td></tr>
+        <tr style="background:var(--red-ll);"><td>❌ Salarios mín. para CBA</td><td style="color:var(--red);font-weight:800;">3.055 salarios</td><td style="color:var(--red);font-weight:800;">3.335 salarios</td></tr>
+        <tr style="background:var(--red-ll);"><td>❌ Salarios mín. para CBN</td><td style="color:var(--red);font-weight:800;">5.293 salarios</td><td style="color:var(--red);font-weight:800;">5.775 salarios</td></tr>
+        <tr><td>📆 Meses para 1 CBA</td><td style="color:var(--red);">254 años</td><td style="color:var(--red);">278 años</td></tr>
+        <tr><td>📉 % CBA cubierto por sal. mín.</td><td style="color:var(--red);">0,03%</td><td style="color:var(--red);">0,03%</td></tr>
         <tr style="background:var(--grn-l);"><td>✅ Ingreso informal promedio</td><td style="color:var(--grn);">$80–120/mes</td><td style="color:var(--grn);">$90–140/mes</td></tr>
         <tr style="background:var(--grn-l);"><td>✅ % CBA cubierto (informal)</td><td style="color:var(--grn);">~26%</td><td style="color:var(--grn);">~24%</td></tr>
       </tbody>
@@ -1138,21 +1271,55 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
 </div><!-- /block-alertas -->
 
+<!-- ═══ REPOSITORIO DE LINKS ═══ -->
+<span id="sec-repo"></span>
+<div id="block-repo">
+<div class="sec"><span class="ic">📂</span>Repositorio de fuentes verificadas — 63 links</div>
+<div class="card" style="margin-bottom:18px;">
+  <div class="repo-sec-hdr">
+    <div>
+      <h3 style="font-size:14px;font-weight:800;color:var(--t1);margin-bottom:3px;">Todas las fuentes de datos — Mundo · Venezuela · Táchira · Colombia</h3>
+      <div class="repo-stats-bar">
+        <span>Fuentes activas: <b id="repo-activas">—</b></span>
+        <span>Actualizan diario o tiempo real: <b id="repo-diarias">—</b></span>
+        <span>Total verificadas: <b>63</b></span>
+      </div>
+    </div>
+    <button class="repo-exp" onclick="exportarLinks()">⬇ Exportar .txt</button>
+  </div>
+  <div class="repo-controls">
+    <input class="repo-q" id="repoQ" type="text" placeholder="🔍 Buscar fuente por nombre, URL o descripción..." oninput="filtrarLinks()"/>
+    <div class="repo-fbns">
+      <button class="repo-fb on" onclick="setFiltroRepo('todos',this)">Todos</button>
+      <button class="repo-fb" onclick="setFiltroRepo('mundial',this)">🌐 Mundial</button>
+      <button class="repo-fb" onclick="setFiltroRepo('venezuela',this)">🇻🇪 Venezuela</button>
+      <button class="repo-fb" onclick="setFiltroRepo('petroleo',this)">🛢 Petróleo</button>
+      <button class="repo-fb" onclick="setFiltroRepo('tachira',this)">🏔 Táchira</button>
+      <button class="repo-fb" onclick="setFiltroRepo('colombia',this)">🇨🇴 Colombia</button>
+      <button class="repo-fb" onclick="setFiltroRepo('social',this)">👥 Social</button>
+      <button class="repo-fb" onclick="setFiltroRepo('api',this)">⚡ APIs</button>
+      <button class="repo-fb" onclick="setFiltroRepo('medios',this)">📰 Medios</button>
+    </div>
+  </div>
+  <div class="lnk-grid" id="repoGrid"></div>
+</div>
+</div><!-- /block-repo -->
+
 <!-- ═══ TABLAS ═══ -->
 <span id="sec-tablas"></span>
 <div id="block-tablas">
 <div class="sec"><span class="ic">📋</span>Cuadro consolidado 2026</div>
 <div class="tbl-card" style="margin-bottom:18px;">
   <h3>Cotizaciones Mensuales — Enero a Mayo 2026</h3>
-  <p style="font-size:11px;color:var(--t4);margin-top:3px;">Datos confirmados · BCV · Confirmado.com.ve · Finanzas Digital · TCambio · *Mayo: parcial al 14-may-2026</p>
+  <p style="font-size:11px;color:var(--t4);margin-top:3px;">Datos confirmados · BCV · Confirmado.com.ve · Finanzas Digital · TCambio · Datos confirmados al 28-may-2026</p>
   <div class="over"><table>
     <thead><tr><th>Mes</th><th>Apertura BCV</th><th>Cierre BCV</th><th>Var. Mensual</th><th>USDT Referencia</th><th>Brecha</th><th>Evento clave</th></tr></thead>
     <tbody>
       <tr><td>Enero 2026</td><td>298,14 Bs</td><td>370,25 Bs</td><td><span class="tag t-r">+24,2%</span></td><td>565 – 780 Bs</td><td><span class="tag t-y">hasta 140%</span></td><td>Pico especulativo 8-ene · USDT 780 Bs</td></tr>
       <tr><td>Febrero 2026</td><td>370,25 Bs</td><td>419,98 Bs</td><td><span class="tag t-r">+13,4%</span></td><td>~537 Bs</td><td><span class="tag t-r">~28%</span></td><td>Corrección del mercado · brecha se comprime</td></tr>
       <tr><td>Marzo 2026</td><td>419,98 Bs</td><td>473,87 Bs</td><td><span class="tag t-r">+12,8%</span></td><td>~660 Bs</td><td><span class="tag t-r">~39%</span></td><td>M2 crece +50% en 2026 · nuevo repunte</td></tr>
-      <tr><td>Abril 2026</td><td>473,87 Bs</td><td>487,11 Bs</td><td><span class="tag t-r">+2,8%</span></td><td>638–645 Bs</td><td><span class="tag t-r">~32–34%</span></td><td>Desaceleración · menor ritmo de depreciación</td></tr>
-      <tr style="background:var(--blue-ll);"><td style="color:var(--blue);font-weight:800;">Mayo 2026 *</td><td>487,11 Bs</td><td style="color:var(--blue);font-weight:800;">510,79 Bs</td><td><span class="tag t-r">+4,9%</span></td><td style="color:var(--pur);font-weight:700;">665,00 Bs</td><td><span class="tag t-r">~30,2%</span></td><td style="color:#b45309;font-weight:600;">⭐ Primer cruce histórico 500 Bs (11-may)</td></tr>
+      <tr><td>Abril 2026</td><td>473,87 Bs</td><td>489,55 Bs</td><td><span class="tag t-r">+3,3%</span></td><td>~680 Bs</td><td><span class="tag t-r">~39%</span></td><td>Desaceleración · menor ritmo de depreciación</td></tr>
+      <tr style="background:var(--blue-ll);"><td style="color:var(--blue);font-weight:800;">Mayo 2026</td><td>489,55 Bs</td><td style="color:var(--blue);font-weight:800;">544,57 Bs</td><td><span class="tag t-r">+11,2%</span></td><td style="color:var(--pur);font-weight:700;">744,00 Bs</td><td><span class="tag t-r">~36,6%</span></td><td style="color:#b45309;font-weight:600;">⭐ BCV supera 544 Bs · nuevo máximo histórico 28-may</td></tr>
     </tbody>
   </table></div>
 </div>
@@ -1171,7 +1338,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <tr style="background:var(--red-ll);"><td style="color:var(--red);font-weight:800;">8 ene 2026 🔴 PICO</td><td>~315 Bs</td><td>760–780 Bs</td><td><span class="tag t-r" style="font-size:11px;font-weight:900;">+140%</span></td><td>~450 Bs</td><td>Máximo histórico · pánico especulativo</td></tr>
       <tr><td>18 feb 2026</td><td>396,36 Bs</td><td>537 Bs</td><td><span class="tag t-r">~35%</span></td><td>141 Bs</td><td>Corrección post-pico · autorregulación</td></tr>
       <tr><td>6 abr 2026</td><td>474 Bs</td><td>638 Bs</td><td><span class="tag t-r">34,4%</span></td><td>164 Bs</td><td>Nuevo equilibrio · brecha estabilizada</td></tr>
-      <tr style="background:var(--blue-ll);"><td style="color:var(--blue);font-weight:800;">14 may 2026 ⭐</td><td style="color:var(--blue);font-weight:700;">510,79 Bs</td><td style="color:var(--pur);font-weight:700;">665,00 Bs</td><td><span class="tag t-r">30,2%</span></td><td style="color:#b45309;font-weight:700;">154,21 Bs</td><td>HOY · BCV supera 510 Bs · Ingreso integral $240</td></tr>
+      <tr style="background:var(--blue-ll);"><td style="color:var(--blue);font-weight:800;">28 may 2026 ⭐</td><td style="color:var(--blue);font-weight:700;">544,57 Bs</td><td style="color:var(--pur);font-weight:700;">744,00 Bs</td><td><span class="tag t-r">36,6%</span></td><td style="color:#b45309;font-weight:700;">199,43 Bs</td><td>HOY · BCV alcanza 544 Bs · nuevo récord histórico</td></tr>
     </tbody>
   </table></div>
 </div>
@@ -1191,7 +1358,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
     <li class="tl-item" data-k="2025 474 devastador abandono ancla liquidez 790 298.14 hiperinflacion"><div class="tl-dot" style="background:var(--yel-l);border-color:var(--yel);color:#92400e;">🔥</div><div><div class="tl-date">2025 · BCV: 51,93 → 298,14 Bs (+474%)</div><div class="tl-title">Año devastador · Abandono del ancla cambiaria · Base monetaria +790%</div><div class="tl-desc">El bolívar se derrumbó sostenidamente todo el año. La política de anclaje de 2024 fue abandonada. El BCV imprimió masivamente: base monetaria creció <strong>+790% interanual</strong>. Binance y Bybit P2P se consolidaron como formadores del precio real. Salario mínimo: ~$0,30 USD al cierre.</div></div></li>
     <li class="tl-item" data-k="enero 2026 pico usdt 780 brecha 140 especulativo panico"><div class="tl-dot" style="background:var(--red-l);border-color:var(--red);color:var(--red);">⚡</div><div><div class="tl-date">8 enero 2026 · PICO HISTÓRICO</div><div class="tl-title">USDT llega a 780 Bs · Brecha supera el 140% · Máximo histórico</div><div class="tl-desc">Pánico especulativo en los primeros días de 2026. Con BCV en ~315 Bs, el USDT/Binance llegó a <strong>760–780 Bs</strong>: brecha del <strong>140%+</strong>, el máximo jamás registrado. Analistas lo catalogaron como distorsión especulativa sin respaldo real de transacciones comerciales. El mercado P2P entró en histeria compradora.</div></div></li>
     <li class="tl-item" data-k="febrero 2026 correccion autorregulacion 537 brecha comprime 35 28"><div class="tl-dot" style="background:var(--pur-l);border-color:var(--pur);color:var(--pur);">📉</div><div><div class="tl-date">Febrero 2026 · Corrección</div><div class="tl-title">USDT baja de 780 → 537 Bs · Brecha se comprime a 28–35%</div><div class="tl-desc">El mercado demostró mecanismos de autorregulación. El USDT corrigió bruscamente mientras el BCV continuó subiendo. La brecha bajó desde 140% hasta 28–35%. Se normalizó el mercado P2P en Binance y Bybit. Analistas señalaron que la corrección fue más veloz de lo esperado.</div></div></li>
-    <li class="tl-item" data-k="mayo 2026 500 bolivares hoy actual 510.79 665.00 30.2 hito historico"><div class="tl-dot" style="background:var(--blue-l);border-color:var(--blue);color:var(--blue);">⭐</div><div><div class="tl-date">14 mayo 2026 — HOY</div><div class="tl-title">BCV: 510,79 Bs · USDT: 665,00 Bs · Ingreso mínimo integral sube a $240/mes</div><div class="tl-desc">El dólar oficial en <strong>510,79 Bs/USD</strong>. Devaluación acumulada 2026: <strong>+71,3%</strong>. WTI petróleo: <strong>$101,50/barril</strong> (sube por tensiones en Oriente Medio). Brecha USDT/BCV: 30,2% (154,21 Bs). CBA: <strong>$692 USD</strong> (CENDAS-FVM mar-2026). Ingreso mínimo integral: <strong>$240/mes</strong> desde 1-may-2026.</div></div></li>
+    <li class="tl-item" data-k="mayo 2026 544 bolivares hoy actual 544.57 744.00 36.6 hito historico"><div class="tl-dot" style="background:var(--blue-l);border-color:var(--blue);color:var(--blue);">⭐</div><div><div class="tl-date">28 mayo 2026 — HOY</div><div class="tl-title">BCV: 544,57 Bs · USDT: 744,00 Bs · Brecha 36,6% · CBA $730 USD</div><div class="tl-desc">El dólar oficial en <strong>544,57 Bs/USD</strong> — nuevo máximo histórico. Devaluación acumulada 2026: <strong>+82,7%</strong>. WTI petróleo: <strong>$90,35/barril</strong> (corrección desde pico de abril). Brecha USDT/BCV: 36,6% (199,43 Bs). CBA: <strong>$730 USD</strong> (CENDAS-FVM abr-2026, +5,5% mensual). EUR BCV: <strong>633,48 Bs</strong>. Ingreso mínimo integral: <strong>$240/mes</strong> desde 1-may-2026. Inflación abril 2026: <strong>10,6%</strong> mensual (BCV oficial).</div></div></li>
   </ul>
 </div>
 
@@ -1256,20 +1423,78 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 // ═══════════════════════════════════════════════════════════
 //  ESTADO GLOBAL
 // ═══════════════════════════════════════════════════════════
-const STATIC = { bcv:510.79, usdt:665.00, eur:571.00 }; // Fallback mayo-2026 · se sobreescribe con API
+const STATIC = { bcv:544.57, usdt:744.00, eur:633.48 }; // Datos verificados 28-may-2026 · se sobreescribe con API
 const STATE = {
-  bcv:510.79, usdt:665.00, eur:571.00,
-  cop:4380, wti:101.50,
-  yadio:663.00, binance:665.00, monitor:661.50,
+  bcv:544.57, usdt:744.00, eur:633.48,
+  cop:4100, wti:68.50, brent:72.00, btc:0, eth:0, gold:0, sp500:0, dxy:0,
+  btcChange24h:0, ethChange24h:0,
+  yadio:743.82, binance:744.00, monitor:730.50,
   prevBcv:null, prevUsdt:null, prevCop:null,
-  apiStatus:{ pyd:'off', er:'off', yh:'off' },
-  lastFetch:{ pyd:null, er:null, yh:null },
+  apiStatus:{ pyd:'off', er:'off', yh:'off', cg:'off' },
+  lastFetch:{ pyd:null, er:null, yh:null, cg:null },
   history:[], series:[],
-  fetchCountdown:60,
+  fetchCountdown:30,
 };
+const FETCH_INTERVAL_MS = 30000; // 30 segundos
 const FETCH_TIMEOUT = 8000;
-const FETCH_INTERVAL = 60000;  // 60 segundos
+const FETCH_INTERVAL = 30000;  // 30 segundos
 const TICK_INTERVAL  = 3000;   // oscilación UI cada 3s
+
+// ── Inicio de mes de referencia (Bs/USD) · se extiende automáticamente ──
+const MONTH_BCV_REF  = {'2026-0':298.14,'2026-1':389.50,'2026-2':428.30,'2026-3':469.82,'2026-4':489.55};
+const MONTH_USDT_REF = {'2026-0':565.20,'2026-1':630.00,'2026-2':660.00,'2026-3':675.00,'2026-4':680.00};
+function getMonthRef(tbl, pfx, yr, mo, cur) {
+  const mk=`${yr}-${mo}`;
+  if (tbl[mk]) return tbl[mk];
+  const lk=`ec_${pfx}_${yr}_${mo}`;
+  const s=parseFloat(localStorage.getItem(lk));
+  if (!isNaN(s)&&s>0) return s;
+  try{localStorage.setItem(lk,cur.toFixed(2));}catch(e){}
+  return cur;
+}
+function autoSaveMonthRef(yr, mo, bcvV, usdtV) {
+  if (!MONTH_BCV_REF[`${yr}-${mo}`])  try{localStorage.setItem(`ec_bcv_${yr}_${mo}`,bcvV.toFixed(8));}catch(e){}
+  if (!MONTH_USDT_REF[`${yr}-${mo}`]) try{localStorage.setItem(`ec_usdt_${yr}_${mo}`,usdtV.toFixed(8));}catch(e){}
+}
+// ── Historial diario por fecha (localStorage) ───────────────
+function saveDailyRecord(bcv, usdt) {
+  try {
+    const ds = new Date().toISOString().slice(0,10);
+    localStorage.setItem('ec_hist_'+ds, JSON.stringify({b:+bcv.toFixed(8), u:+usdt.toFixed(8)}));
+  } catch(e){}
+}
+function getMonthHistory(yr, mo) {
+  const rows=[], now=new Date();
+  const dMax=(yr===now.getFullYear()&&mo===now.getMonth())?now.getDate():new Date(yr,mo+1,0).getDate();
+  for(let d=1;d<=dMax;d++){
+    const ds=`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const raw=localStorage.getItem('ec_hist_'+ds);
+    if(raw){try{const v=JSON.parse(raw);rows.push({ds,day:d,bcv:v.b,usdt:v.u});}catch(e){}}
+    else rows.push({ds,day:d,bcv:null,usdt:null});
+  }
+  return rows;
+}
+function getDailyDelta() {
+  const yest=new Date(); yest.setDate(yest.getDate()-1);
+  const ds=yest.toISOString().slice(0,10);
+  const raw=localStorage.getItem('ec_hist_'+ds);
+  if(!raw) return {prevBcv:null,prevUsdt:null,prevDate:null};
+  try{const v=JSON.parse(raw);return{prevBcv:v.b,prevUsdt:v.u,prevDate:ds};}
+  catch(e){return{prevBcv:null,prevUsdt:null,prevDate:null};}
+}
+function initKnownHistory() {
+  // Valores confirmados del BCV (bcv.org.ve) · solo datos verificados
+  const known={
+    '2026-05-01':{b:489.55,  u:null},
+    '2026-05-26':{b:536.8038,u:null},
+    '2026-05-27':{b:540.0431,u:null},
+  };
+  for(const [ds,v] of Object.entries(known)){
+    if(!localStorage.getItem('ec_hist_'+ds))
+      try{localStorage.setItem('ec_hist_'+ds,JSON.stringify(v));}catch(e){}
+  }
+}
+initKnownHistory();
 
 // ═══════════════════════════════════════════════════════════
 //  HELPERS
@@ -1319,106 +1544,386 @@ function setDots(name,status){
 
 // ═══════════════════════════════════════════════════════════
 //  FETCH PYDOLAR (BCV + paralelo + Binance + Yadio)
+//  Cascada: ve.dolarapi.com → pydolarve.org → pydolarve vercel
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  CACHÉ localStorage — carga instantánea + persistencia
+// ═══════════════════════════════════════════════════════════
+const CACHE_KEY = 'vzla_state_v2';
+function saveCache() {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      bcv:STATE.bcv, usdt:STATE.usdt, eur:STATE.eur,
+      cop:STATE.cop, wti:STATE.wti, brent:STATE.brent,
+      btc:STATE.btc, gold:STATE.gold, eth:STATE.eth,
+      sp500:STATE.sp500, dxy:STATE.dxy,
+      yadio:STATE.yadio, binance:STATE.binance, monitor:STATE.monitor,
+      t: Date.now()
+    }));
+  } catch(e) {}
+}
+function loadCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return;
+    const c = JSON.parse(raw);
+    const age = Date.now() - (c.t || 0);
+    if (age > 3600000) return; // ignorar caché >1h
+    if (c.bcv  > 100)  STATE.bcv  = c.bcv;
+    if (c.usdt > 100)  STATE.usdt = c.usdt;
+    if (c.eur  > 100)  STATE.eur  = c.eur;
+    if (c.cop  > 1000) STATE.cop  = c.cop;
+    if (c.wti  > 0)    STATE.wti  = c.wti;
+    if (c.brent > 0)   STATE.brent = c.brent;
+    if (c.btc  > 0)    STATE.btc  = c.btc;
+    if (c.gold > 0)    STATE.gold = c.gold;
+    if (c.eth  > 0)    STATE.eth  = c.eth;
+    if (c.sp500 > 0)   STATE.sp500 = c.sp500;
+    if (c.dxy  > 0)    STATE.dxy  = c.dxy;
+    if (c.yadio > 100) STATE.yadio = c.yadio;
+    if (c.binance>100) STATE.binance = c.binance;
+    if (c.monitor>100) STATE.monitor = c.monitor;
+    const mins = Math.round(age/60000);
+    logAPI('cache','loaded',age,{mins, bcv:c.bcv});
+    applyRates({bcv:STATE.bcv,usdt:STATE.usdt,eur:STATE.eur}, false, c.t);
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════════
+//  FETCH BCV (VZ) — 4 fuentes en cascada
+//  dolarapi → pydolarve → yadio → vercel
+// ═══════════════════════════════════════════════════════════
+function findMonitor(arr, keys) {
+  if (!Array.isArray(arr)) return null;
+  const item = arr.find(function(d) {
+    const h = ((d.nombre||'')+(d.fuente||'')+(d.monitor||'')+(d.title||'')+(d.name||'')).toLowerCase();
+    return keys.some(function(k){ return h.includes(k); });
+  });
+  if (!item) return null;
+  return parseFloat(item.promedio||item.venta||item.ventaPromedio||item.price||0)||null;
+}
+
 async function fetchPydolar(){
-  const t0=Date.now();
-  const urls=[
-    'https://ve.dolarapi.com/v1/dolares',
-    'https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=alcambio',
-  ];
-  for(const u of urls){
-    try{
-      const res=await fetchTimed(u);
-      if(!res.ok)continue;
-      const arr=await res.json();
-      const dt=Date.now()-t0;
-      const get=keys=>{
-        const it=Array.isArray(arr)?arr.find(d=>keys.some(k=>(d.fuente||d.nombre||'').toLowerCase().includes(k))):null;
-        return it?parseFloat(it.promedio||it.ventaPromedio):null;
-      };
-      const bcv=get(['bcv','oficial','central']);
-      const par=get(['paralelo','enparalelo','parallel']);
-      const bin=get(['binance']);
-      const yad=get(['yadio']);
-      const mon=get(['monitor']);
-      if(bcv){
-        STATE.prevBcv=STATE.bcv;
-        STATE.prevUsdt=STATE.usdt;
+  const t0 = Date.now();
+
+  // ── Fuente 1: ve.dolarapi.com (más completa: todos los monitores) ──
+  try {
+    const res = await fetchTimed('https://ve.dolarapi.com/v1/dolares', 7000);
+    if (res.ok) {
+      const arr = await res.json();
+      const bcv = findMonitor(arr,['bcv','oficial','central']);
+      const par = findMonitor(arr,['paralelo','enparalelo','parallel','informal']);
+      const bin = findMonitor(arr,['binance']);
+      const yad = findMonitor(arr,['yadio']);
+      const mon = findMonitor(arr,['monitor','promedio']);
+      if (bcv && bcv > 100) {
+        STATE.prevBcv=STATE.bcv; STATE.prevUsdt=STATE.usdt;
         STATE.bcv=bcv;
-        if(par)STATE.usdt=par;
-        if(bin)STATE.binance=bin;
-        if(yad)STATE.yadio=yad;
-        if(mon)STATE.monitor=mon;
-        STATE.lastFetch.pyd=Date.now();
-        setDots('pyd','on');
-        logAPI('pydolar','ok',dt,{bcv,par,bin,yad});
+        if (par&&par>100) STATE.usdt=par;
+        if (bin&&bin>100) STATE.binance=bin;
+        if (yad&&yad>100) STATE.yadio=yad;
+        if (mon&&mon>100) STATE.monitor=mon;
+        STATE.lastFetch.pyd=Date.now(); setDots('pyd','on');
+        logAPI('dolarapi','ok',Date.now()-t0,{bcv,par,bin,yad});
         return true;
       }
-    }catch(e){logAPI('pydolar@'+u,'fail',Date.now()-t0,e.message);}
-  }
-  setDots('pyd','warn');
-  return false;
+    }
+  } catch(e){ logAPI('dolarapi','fail',Date.now()-t0,e.message); }
+
+  // ── Fuente 2: pydolarve.org — endpoints individuales ──
+  try {
+    const monitors = ['bcv','paralelo','binance','yadio'];
+    const reqs = monitors.map(m => fetchTimed('https://pydolarve.org/api/v1/dollar?monitor='+m, 6000));
+    const results = await Promise.allSettled(reqs);
+    const vals = {};
+    for (let i=0; i<monitors.length; i++) {
+      const r = results[i];
+      if (r.status==='fulfilled' && r.value.ok) {
+        const d = await r.value.json();
+        const v = parseFloat(d.price||d.promedio||d.venta||0);
+        if (v > 0) vals[monitors[i]] = v;
+      }
+    }
+    if (vals.bcv && vals.bcv > 100) {
+      STATE.prevBcv=STATE.bcv; STATE.prevUsdt=STATE.usdt;
+      STATE.bcv=vals.bcv;
+      if (vals.paralelo&&vals.paralelo>100) STATE.usdt=vals.paralelo;
+      if (vals.binance&&vals.binance>100)   STATE.binance=vals.binance;
+      if (vals.yadio&&vals.yadio>100)       STATE.yadio=vals.yadio;
+      STATE.lastFetch.pyd=Date.now(); setDots('pyd','on');
+      logAPI('pydolarve','ok',Date.now()-t0,vals);
+      return true;
+    }
+  } catch(e){ logAPI('pydolarve','fail',Date.now()-t0,e.message); }
+
+  // ── Fuente 3: Yadio.io API directa ──
+  try {
+    const res = await fetchTimed('https://yadio.io/api/v1/exg?base=USD&target=VES', 5000);
+    if (res.ok) {
+      const d = await res.json();
+      const v = parseFloat(d.rate || d.price || d.value || 0);
+      if (v > 100) {
+        STATE.prevBcv=STATE.bcv; STATE.prevUsdt=STATE.usdt;
+        STATE.yadio = v; STATE.usdt = v;
+        STATE.lastFetch.pyd=Date.now(); setDots('pyd','warn');
+        logAPI('yadio-direct','ok',Date.now()-t0,{ves:v});
+        return true;
+      }
+    }
+  } catch(e){ logAPI('yadio-direct','fail',Date.now()-t0,e.message); }
+
+  // ── Fuente 4: vercel proxy pydolar ──
+  try {
+    const res = await fetchTimed('https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=alcambio', 6000);
+    if (res.ok) {
+      const d = await res.json();
+      const m = d.monitors||d.data||d;
+      if (m && typeof m==='object') {
+        const bE = m.BCV||m.bcv||m.oficial;
+        const pE = m.Paralelo||m.paralelo;
+        const bcvVal = bE ? parseFloat(bE.price||bE.promedio||0) : null;
+        const parVal = pE ? parseFloat(pE.price||pE.promedio||0) : null;
+        if (bcvVal && bcvVal > 100) {
+          STATE.prevBcv=STATE.bcv; STATE.prevUsdt=STATE.usdt;
+          STATE.bcv=bcvVal;
+          if (parVal&&parVal>100) STATE.usdt=parVal;
+          STATE.lastFetch.pyd=Date.now(); setDots('pyd','on');
+          logAPI('vercel-proxy','ok',Date.now()-t0,{bcv:bcvVal});
+          return true;
+        }
+      }
+    }
+  } catch(e){ logAPI('vercel-proxy','fail',Date.now()-t0,e.message); }
+
+  setDots('pyd','warn'); return false;
 }
 
 // ═══════════════════════════════════════════════════════════
-//  FETCH OPEN.ER-API (COP + EUR)
+//  FETCH COP (TRM) + EUR
+//  Cascada: Banrep datos.gov.co → open.er-api → frankfurter
 // ═══════════════════════════════════════════════════════════
 async function fetchOpenER(){
-  const t0=Date.now();
-  try{
-    const res=await fetchTimed('https://open.er-api.com/v6/latest/USD');
-    if(!res.ok)throw new Error('http '+res.status);
-    const j=await res.json();
-    if(j.rates){
-      STATE.prevCop=STATE.cop;
-      if(j.rates.COP)STATE.cop=j.rates.COP;
-      if(j.rates.EUR)STATE.eur=STATE.bcv/j.rates.EUR;
-      STATE.lastFetch.er=Date.now();
-      setDots('er','on');
-      logAPI('open.er-api','ok',Date.now()-t0,{COP:j.rates.COP,EUR:j.rates.EUR});
-      return true;
+  const t0 = Date.now();
+
+  // ── COP Fuente 1: API oficial Banco de la República Colombia ──
+  try {
+    const res = await fetchTimed('https://www.datos.gov.co/resource/32sa-8pi3.json?$limit=1&$order=vigenciadesde+DESC', 6000);
+    if (res.ok) {
+      const arr = await res.json();
+      const trm = arr&&arr.length>0 ? parseFloat(arr[0].valor||0) : 0;
+      if (trm > 1000) {
+        STATE.prevCop=STATE.cop; STATE.cop=trm;
+        STATE.lastFetch.er=Date.now(); setDots('er','on');
+        logAPI('banrep-trm','ok',Date.now()-t0,{COP:trm});
+        fetchEUR(); // busca EUR en paralelo sin bloquear
+        return true;
+      }
     }
-  }catch(e){logAPI('open.er-api','fail',Date.now()-t0,e.message);}
-  setDots('er','warn');
-  return false;
+  } catch(e){ logAPI('banrep-trm','fail',Date.now()-t0,e.message); }
+
+  // ── COP+EUR Fuente 2: open.er-api.com ──
+  try {
+    const res = await fetchTimed('https://open.er-api.com/v6/latest/USD', 6000);
+    if (res.ok) {
+      const j = await res.json();
+      if (j.rates) {
+        STATE.prevCop=STATE.cop;
+        if (j.rates.COP&&j.rates.COP>1000) STATE.cop=j.rates.COP;
+        if (j.rates.EUR&&j.rates.EUR>0) STATE.eur=STATE.bcv/j.rates.EUR;
+        STATE.lastFetch.er=Date.now(); setDots('er','on');
+        logAPI('open.er-api','ok',Date.now()-t0,{COP:j.rates.COP,EUR:j.rates.EUR});
+        return true;
+      }
+    }
+  } catch(e){ logAPI('open.er-api','fail',Date.now()-t0,e.message); }
+
+  // ── COP+EUR Fuente 3: frankfurter.app (ECB oficial) ──
+  try {
+    const res = await fetchTimed('https://api.frankfurter.app/latest?from=USD&to=EUR,COP', 5000);
+    if (res.ok) {
+      const j = await res.json();
+      if (j.rates) {
+        STATE.prevCop=STATE.cop;
+        if (j.rates.COP&&j.rates.COP>1000) STATE.cop=j.rates.COP;
+        if (j.rates.EUR&&j.rates.EUR>0) STATE.eur=STATE.bcv/j.rates.EUR;
+        STATE.lastFetch.er=Date.now(); setDots('er','on');
+        logAPI('frankfurter','ok',Date.now()-t0,{COP:j.rates.COP,EUR:j.rates.EUR});
+        return true;
+      }
+    }
+  } catch(e){ logAPI('frankfurter','fail',Date.now()-t0,e.message); }
+
+  setDots('er','warn'); return false;
+}
+
+async function fetchEUR(){
+  const sources = [
+    'https://api.frankfurter.app/latest?from=USD&to=EUR',
+    'https://open.er-api.com/v6/latest/USD'
+  ];
+  for (const url of sources) {
+    try {
+      const res = await fetchTimed(url, 5000);
+      if (!res.ok) continue;
+      const j = await res.json();
+      const eur = j.rates?.EUR;
+      if (eur && eur > 0) { STATE.eur = STATE.bcv / eur; return; }
+    } catch(e){}
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
-//  FETCH WTI (Yahoo Finance)
+//  FETCH COMMODITIES — WTI · Brent · Gold · S&P500 · DXY
+//  Fuente: Yahoo Finance via corsproxy.io + query2 fallback
 // ═══════════════════════════════════════════════════════════
+async function fetchYahooPrice(symbol) {
+  const hosts = ['https://query1.finance.yahoo.com','https://query2.finance.yahoo.com'];
+  const path = '/v8/finance/chart/'+symbol+'?interval=1d&range=1d';
+  for (const host of hosts) {
+    const url = 'https://corsproxy.io/?url='+encodeURIComponent(host+path);
+    try {
+      const res = await fetchTimed(url, 7000);
+      if (!res.ok) continue;
+      const j = await res.json();
+      const p = j?.chart?.result?.[0]?.meta?.regularMarketPrice;
+      if (p && p > 0) return p;
+    } catch(e){}
+  }
+  return null;
+}
+
 async function fetchWTI(){
-  const t0=Date.now();
-  try{
-    const res=await fetchTimed('https://query1.finance.yahoo.com/v8/finance/chart/CL=F?interval=1d&range=1d');
-    if(!res.ok)throw new Error('http '+res.status);
-    const j=await res.json();
-    const price=j?.chart?.result?.[0]?.meta?.regularMarketPrice;
-    if(price){
-      STATE.wti=price;
-      STATE.lastFetch.yh=Date.now();
-      setDots('yh','on');
-      logAPI('yahoo-wti','ok',Date.now()-t0,{wti:price});
+  const t0 = Date.now();
+  // Petróleo: WTI (CL=F) + Brent (BZ=F) + Gas Natural (NG=F)
+  // Índices:  S&P500 (^GSPC) + DXY (DX=F)
+  const symbols = {wti:'CL=F', brent:'BZ=F', sp500:'^GSPC', dxy:'DX=F'};
+  const reqs = Object.entries(symbols).map(([k,sym]) =>
+    fetchYahooPrice(sym).then(p => ({k, p}))
+  );
+  const results = await Promise.allSettled(reqs);
+  let ok = false;
+  for (const r of results) {
+    if (r.status==='fulfilled' && r.value.p) {
+      const {k,p} = r.value;
+      if (k==='wti'   && p>10)   { STATE.wti=p;   ok=true; }
+      if (k==='brent' && p>10)   { STATE.brent=p; }
+      if (k==='sp500' && p>100)  { STATE.sp500=p; }
+      if (k==='dxy'   && p>50)   { STATE.dxy=p; }
+      logAPI('yahoo-'+k,'ok',Date.now()-t0,{[k]:p});
+    }
+  }
+  if (ok) { STATE.lastFetch.yh=Date.now(); setDots('yh','on'); return true; }
+  setDots('yh','warn'); return false;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  FETCH CRIPTO — BTC · ETH
+//  Cascada: CoinGecko → Binance API → Coinbase
+// ═══════════════════════════════════════════════════════════
+async function fetchBTC(){
+  const t0 = Date.now();
+
+  // ── Fuente 1: CoinGecko (BTC + ETH en una sola llamada) ──
+  try {
+    const res = await fetchTimed(
+      'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true',
+      7000
+    );
+    if (res.ok) {
+      const d = await res.json();
+      if (d.bitcoin?.usd > 0) {
+        STATE.btc = d.bitcoin.usd;
+        STATE.btcChange24h = d.bitcoin.usd_24h_change || 0;
+      }
+      if (d.ethereum?.usd > 0) {
+        STATE.eth = d.ethereum.usd;
+        STATE.ethChange24h = d.ethereum.usd_24h_change || 0;
+      }
+      if (STATE.btc > 0) {
+        STATE.lastFetch.cg=Date.now(); setDots('cg','on');
+        logAPI('coingecko','ok',Date.now()-t0,{btc:STATE.btc,eth:STATE.eth});
+        return true;
+      }
+    }
+  } catch(e){ logAPI('coingecko','fail',Date.now()-t0,e.message); }
+
+  // ── Fuente 2: Binance pública (BTC + ETH) ──
+  try {
+    const [rBtc, rEth] = await Promise.allSettled([
+      fetchTimed('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT', 5000),
+      fetchTimed('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT', 5000),
+    ]);
+    let gotBtc = false;
+    if (rBtc.status==='fulfilled' && rBtc.value.ok) {
+      const d = await rBtc.value.json();
+      const p = parseFloat(d.price||0);
+      if (p > 0) { STATE.btc=p; gotBtc=true; }
+    }
+    if (rEth.status==='fulfilled' && rEth.value.ok) {
+      const d = await rEth.value.json();
+      const p = parseFloat(d.price||0);
+      if (p > 0) STATE.eth=p;
+    }
+    if (gotBtc) {
+      STATE.lastFetch.cg=Date.now(); setDots('cg','on');
+      logAPI('binance-api','ok',Date.now()-t0,{btc:STATE.btc,eth:STATE.eth});
       return true;
     }
-  }catch(e){logAPI('yahoo-wti','fail',Date.now()-t0,e.message);}
-  // Fallback: WTI oscilando en rango realista
-  STATE.wti = STATE.wti > 0 ? STATE.wti : 101.50 + (Math.random()-0.5)*2; // Fallback WTI estimado
-  setDots('yh','warn');
+  } catch(e){ logAPI('binance-api','fail',Date.now()-t0,e.message); }
+
+  // ── Fuente 3: Coinbase spot ──
+  try {
+    const [rBtc, rEth] = await Promise.allSettled([
+      fetchTimed('https://api.coinbase.com/v2/prices/BTC-USD/spot', 5000),
+      fetchTimed('https://api.coinbase.com/v2/prices/ETH-USD/spot', 5000),
+    ]);
+    let gotBtc = false;
+    if (rBtc.status==='fulfilled' && rBtc.value.ok) {
+      const d = await rBtc.value.json();
+      const p = parseFloat(d?.data?.amount||0);
+      if (p > 0) { STATE.btc=p; gotBtc=true; }
+    }
+    if (rEth.status==='fulfilled' && rEth.value.ok) {
+      const d = await rEth.value.json();
+      const p = parseFloat(d?.data?.amount||0);
+      if (p > 0) STATE.eth=p;
+    }
+    if (gotBtc) {
+      STATE.lastFetch.cg=Date.now(); setDots('cg','on');
+      logAPI('coinbase','ok',Date.now()-t0,{btc:STATE.btc});
+      return true;
+    }
+  } catch(e){}
+
+  setDots('cg','warn'); return false;
+}
+
+async function fetchGold(){
+  // Oro (GC=F) via Yahoo Finance
+  const p = await fetchYahooPrice('GC=F');
+  if (p && p > 100) { STATE.gold=p; logAPI('yahoo-gold','ok',0,{gold:p}); return true; }
   return false;
 }
 
 // ═══════════════════════════════════════════════════════════
-//  FETCH ALL — orquestador
+//  FETCH ALL — orquestador maestro
 // ═══════════════════════════════════════════════════════════
 async function fetchAll(){
   barFetching(true);
   setText('tk-upd','⏳ Actualizando…');
-  const t0=Date.now();
-  await Promise.allSettled([fetchPydolar(),fetchOpenER(),fetchWTI()]);
-  barFetching(false);
-  barSet(100);
-  console.log(`[FETCH ALL] ${Date.now()-t0}ms`);
-  STATE.fetchCountdown=60;
+  const t0 = Date.now();
+  // Todas las APIs en paralelo
+  await Promise.allSettled([
+    fetchPydolar(),
+    fetchOpenER(),
+    fetchWTI(),
+    fetchBTC(),
+    fetchGold(),
+  ]);
+  barFetching(false); barSet(100);
+  console.log(`[FETCH ALL] ${Date.now()-t0}ms · BCV:${STATE.bcv} · USDT:${STATE.usdt} · COP:${STATE.cop} · BTC:${STATE.btc}`);
+  STATE.fetchCountdown = 30;
+  saveCache();
   detectAlerts();
   applyRates({bcv:STATE.bcv,usdt:STATE.usdt,eur:STATE.eur}, STATE.apiStatus.pyd==='on', STATE.lastFetch.pyd);
   pushHistory();
@@ -1428,12 +1933,51 @@ async function fetchAll(){
   updateMacro();
   updateWTIPanel();
   drawCompChart();
-  // Persistir en localStorage
-  try{localStorage.setItem('vzla_r',JSON.stringify({r:{bcv:STATE.bcv,usdt:STATE.usdt,eur:STATE.eur},t:Date.now()}));}catch(_){}
+  applyExtras();
 }
 
-// Alias para compatibilidad con botón ↻
-function fetchLive(){fetchAll();}
+// Actualiza indicadores adicionales (BTC, ETH, Gold, S&P500, DXY, Brent)
+function applyExtras() {
+  const ts = STATE.lastFetch.yh ? hhmm(new Date(STATE.lastFetch.yh)) : '—';
+  const tc = STATE.lastFetch.cg ? hhmm(new Date(STATE.lastFetch.cg)) : '—';
+
+  // Brent
+  if (STATE.brent > 0) {
+    const v = fmtN(STATE.brent);
+    ['kv-brent','tk-brent','tk-brent-b'].forEach(id => setText(id, v));
+    setText('kv-brent-ts', ts);
+  }
+  // BTC
+  if (STATE.btc > 0) {
+    const fmt = '$'+(STATE.btc>=1000?(STATE.btc/1000).toFixed(2)+'K':fmtN(STATE.btc));
+    const chg  = STATE.btcChange24h ? (STATE.btcChange24h>=0?'+':'')+STATE.btcChange24h.toFixed(2)+'% 24h' : '';
+    ['kv-btc','tk-btc','tk-btc-b'].forEach(id => setText(id, fmt));
+    setText('kv-btc-ts', tc + (chg?' · '+chg:''));
+  }
+  // ETH
+  if (STATE.eth > 0) {
+    const fmt = '$'+(STATE.eth>=1000?(STATE.eth/1000).toFixed(2)+'K':fmtN(STATE.eth));
+    ['tk-eth','tk-eth-b'].forEach(id => setText(id, fmt));
+  }
+  // Gold
+  if (STATE.gold > 0) {
+    const v = fmtN(STATE.gold);
+    ['kv-gold','tk-gold','tk-gold-b'].forEach(id => setText(id, v));
+    setText('kv-gold-ts', ts);
+  }
+  // S&P 500
+  if (STATE.sp500 > 0) {
+    const v = STATE.sp500.toLocaleString('es-VE',{minimumFractionDigits:0,maximumFractionDigits:0});
+    ['tk-sp500','tk-sp500-b'].forEach(id => setText(id, v));
+  }
+  // DXY
+  if (STATE.dxy > 0) {
+    const v = fmtN(STATE.dxy);
+    ['tk-dxy','tk-dxy-b'].forEach(id => setText(id, v));
+  }
+}
+
+function fetchLive(){ fetchAll(); }
 
 // ═══════════════════════════════════════════════════════════
 //  ALERTAS AUTOMÁTICAS
@@ -1529,6 +2073,10 @@ function calcVol(){
 // ═══════════════════════════════════════════════════════════
 function updateMacro(){
   const br=((STATE.usdt-STATE.bcv)/STATE.bcv*100);
+  const _dd=Math.max(1,Math.floor((new Date()-new Date('2026-01-01'))/86400000));
+  const _ddPct=((Math.pow(STATE.bcv/298.14,1/_dd)-1)*100).toFixed(3);
+  const _ddBs=((STATE.bcv-298.14)/_dd).toFixed(2).replace('.',',');
+  setText('mg-deval-dia','+'+_ddPct+'% · +'+_ddBs+' Bs');
   setText('mg-infl',(Math.abs(br)*0.08).toFixed(2)+' % mes');
   setText('mg-wti','$'+fmtN(STATE.wti)+' / barril');
   setText('mg-vol',calcVol().toFixed(2)+'%');
@@ -1637,7 +2185,7 @@ function applyRates(r, live, ts) {
   setText('tk-yad',    fmt(STATE.yadio));
   setText('tk-wti',    fmt(STATE.wti));
   setText('tk-deval',  '+'+((r.bcv-298.14)/298.14*100).toFixed(1)+'%');
-  setText('tk-cba-bs', fmtI(692*r.bcv));
+  setText('tk-cba-bs', fmtI(730*r.bcv));
   // ── Ticker SET B ──
   setText('tk-bcv-b',    fmt(r.bcv));
   setText('tk-usdt-b',   fmt(r.usdt));
@@ -1647,7 +2195,7 @@ function applyRates(r, live, ts) {
   setText('tk-yad-b',    fmt(STATE.yadio));
   setText('tk-wti-b',    fmt(STATE.wti));
   setText('tk-deval-b',  '+'+((r.bcv-298.14)/298.14*100).toFixed(1)+'%');
-  setText('tk-cba-bs-b', fmtI(692*r.bcv));
+  setText('tk-cba-bs-b', fmtI(730*r.bcv));
   // KPIs
   setText('kv-bcv', fmt(r.bcv));
   setText('kv-usdt', fmt(r.usdt));
@@ -1663,6 +2211,28 @@ function applyRates(r, live, ts) {
   setText('kv-usdt-ts', tsStr);
   setText('kv-cop-ts', STATE.lastFetch.er ? hhmm(new Date(STATE.lastFetch.er)) : '—');
   setText('kv-wti-ts', STATE.lastFetch.yh ? hhmm(new Date(STATE.lastFetch.yh)) : '—');
+  // Brent
+  if (STATE.brent > 0) {
+    setText('kv-brent', fmtN(STATE.brent));
+    setText('kv-brent-ts', STATE.lastFetch.yh ? hhmm(new Date(STATE.lastFetch.yh)) : '—');
+    setText('tk-brent', fmtN(STATE.brent));
+    setText('tk-brent-b', fmtN(STATE.brent));
+  }
+  // BTC
+  if (STATE.btc > 0) {
+    const btcFmt = STATE.btc >= 1000 ? '$' + (STATE.btc/1000).toFixed(1) + 'K' : '$' + fmtN(STATE.btc);
+    setText('kv-btc', btcFmt);
+    setText('kv-btc-ts', STATE.lastFetch.cg ? hhmm(new Date(STATE.lastFetch.cg)) : '—');
+    setText('tk-btc', btcFmt);
+    setText('tk-btc-b', btcFmt);
+  }
+  // Gold
+  if (STATE.gold > 0) {
+    setText('kv-gold', fmtN(STATE.gold));
+    setText('kv-gold-ts', STATE.lastFetch.yh ? hhmm(new Date(STATE.lastFetch.yh)) : '—');
+    setText('tk-gold', fmtN(STATE.gold));
+    setText('tk-gold-b', fmtN(STATE.gold));
+  }
   // Summary / KPI
   ['ss-bcv','cx-bcv'].forEach(id => setText(id, fmt(r.bcv)+' Bs'));
   ['ss-usdt','cx-usdt'].forEach(id => setText(id, fmt(r.usdt)+' Bs'));
@@ -1713,18 +2283,203 @@ function generateSummary(r, live) {
                     parseFloat(br)>40 ? '⚠️ <strong style="color:var(--ora)">Brecha ALTA</strong> · presión especulativa en el mercado.' :
                     parseFloat(br)>20 ? '📊 Brecha en rango medio · mercado en proceso de autorregulación.' :
                     '✅ <strong style="color:var(--grn)">Brecha moderada</strong> · relativa estabilidad cambiaria.';
-  const p1=document.getElementById('sumP1');
-  if(p1)p1.innerHTML=`El bolívar acumula <strong style="color:var(--red)">+${deval}%</strong> de devaluación en 2026: desde los 298,14 Bs del 1 de enero hasta los <strong style="color:var(--blue)">${fmtN(bcv)} Bs/USD</strong> de hoy según el BCV oficial.`;
-  const p2=document.getElementById('sumP2');
-  if(p2)p2.innerHTML=`USDT Binance P2P: <strong style="color:var(--pur)">${fmtN(usdt)} Bs</strong> · EUR BCV: <strong>${fmtN(eur)} Bs</strong>. Brecha cambiaria: <strong style="color:#b45309">${br}%</strong> · diferencial de ${brAbs} Bs por dólar. ${brechaMsg}`;
-  const p3=document.getElementById('sumP3');
-  if(p3)p3.innerHTML=`Cuadro social: salario mínimo <strong>130 Bs ($0,25)</strong> = <strong style="color:var(--red)">0,04%</strong> de la CBA (~$692 USD · ${fmtN(692*bcv)} Bs). Ingreso integral: <strong>$240/mes</strong> (desde may-2026). Táchira CBA: $755 (+9% economía fronteriza). WTI: <strong style="color:var(--grn)">$${fmtN(STATE.wti)}</strong>. <span style="color:var(--t3);font-size:12px;">${estado} · ${hm}</span>`;
+  // ── Rastreo hoy vs ayer ──
+  saveDailyRecord(bcv, usdt);
+  const { prevBcv, prevUsdt, prevDate } = getDailyDelta();
+  const hoyBanner = document.getElementById('ss-hoy-banner');
+  let hoyDeltaBcv=null, hoyDeltaUsdt=null, hoyDeltaBcvFmt='', hoyDeltaUsdtFmt='';
+  let hoySeccionInforme = '';
+  if (prevBcv && prevBcv>0) {
+    hoyDeltaBcv  = bcv - prevBcv;
+    hoyDeltaUsdt = (prevUsdt && prevUsdt>0) ? usdt - prevUsdt : null;
+    const signB = hoyDeltaBcv>=0?'+':'';
+    const signU = hoyDeltaUsdt!==null?(hoyDeltaUsdt>=0?'+':''):'';
+    hoyDeltaBcvFmt  = signB + hoyDeltaBcv.toFixed(4).replace('.',',') + ' Bs';
+    hoyDeltaUsdtFmt = hoyDeltaUsdt!==null ? signU + hoyDeltaUsdt.toFixed(2).replace('.',',') + ' Bs' : '—';
+    const pctB = (hoyDeltaBcv/prevBcv*100).toFixed(2);
+    const pctU = hoyDeltaUsdt!==null ? (hoyDeltaUsdt/prevUsdt*100).toFixed(2) : null;
+    setText('ss-hoy-bcv-delta',  hoyDeltaBcvFmt);
+    setText('ss-hoy-bcv-pct',    '('+signB+pctB+'%)');
+    setText('ss-hoy-usdt-delta', hoyDeltaUsdtFmt);
+    setText('ss-hoy-usdt-pct',   pctU ? '('+signU+pctU+'%)' : '');
+    setText('ss-hoy-ref',        'Ayer: '+fmtN(prevBcv)+' → Hoy: '+fmtN(bcv)+' Bs');
+    if(hoyBanner) hoyBanner.style.display='block';
+    hoySeccionInforme = `<div style="background:linear-gradient(135deg,rgba(127,29,29,.1),rgba(252,165,165,.2));border:1.5px solid #fca5a5;border-radius:8px;padding:11px 16px;margin-bottom:12px;font-size:12.5px;">
+      <strong style="color:var(--red);">🔴 Cambio de hoy (${hoyCorto}):</strong>&nbsp;
+      BCV subió <strong style="color:var(--red);font-size:15px;">${hoyDeltaBcvFmt}</strong> respecto a ayer
+      <span style="color:var(--t3);"> · ayer: ${fmtN(prevBcv)} Bs → hoy: ${fmtN(bcv)} Bs · (+${pctB}%)</span>
+      ${hoyDeltaUsdt!==null?`&nbsp;·&nbsp; USDT: <strong style="color:var(--pur);">${hoyDeltaUsdtFmt}</strong> (${signU+pctU}%)`:''}
+    </div>`;
+  } else {
+    if(hoyBanner) hoyBanner.style.display='none';
+    hoySeccionInforme = `<div style="font-size:11px;color:var(--t3);padding:4px 0 10px;">💡 El cambio exacto hoy vs ayer aparecerá automáticamente en la próxima visita del día.</div>`;
+  }
+  // ── Mes en curso · dinámico ──
+  const yr=now.getFullYear(), mo=now.getMonth(), diaHoy=now.getDate();
+  const MESES_C=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const mesLabel=MESES[mo]+' '+yr;
+  const mesShort=MESES_C[mo]+'-'+String(yr).slice(2);
+  setText('ss-mes-label', mesLabel);
+  setText('ss-dia-mes-lbl', MESES_C[mo]+'-'+String(yr).slice(2));
+  if (diaHoy===1) autoSaveMonthRef(yr, mo, bcv, usdt);
+  const bcvMesIni  = getMonthRef(MONTH_BCV_REF,  'bcv',  yr, mo, bcv);
+  const usdtMesIni = getMonthRef(MONTH_USDT_REF, 'usdt', yr, mo, usdt);
+  const diasMes    = Math.max(1, diaHoy-1);
+  const mesBcvPct  = ((bcv-bcvMesIni)/bcvMesIni*100).toFixed(1);
+  const mesBcvBs   = (bcv-bcvMesIni).toFixed(2).replace('.',',');
+  const mesUsdtPct = ((usdt-usdtMesIni)/usdtMesIni*100).toFixed(1);
+  const mesUsdtBs  = (usdt-usdtMesIni).toFixed(2).replace('.',',');
+  const diaMesBs   = ((bcv-bcvMesIni)/diasMes).toFixed(2).replace('.',',');
+  const diaMesPct  = ((Math.pow(bcv/bcvMesIni,1/diasMes)-1)*100).toFixed(3);
+  // ── Cálculos para el informe ──
   setText('ss-brecha', br+'%');
   setText('ss-deval', '+'+deval+'%');
-  const brd=document.getElementById('ss-brecha-d');
-  if(brd)brd.textContent=brAbs+' Bs de diferencial';
-  const sf=document.getElementById('ss-fecha');
-  if(sf)sf.textContent=hoyCorto;
+  const _ssDias=Math.max(1,Math.floor((now-new Date('2026-01-01'))/86400000));
+  const _ssDiaPct=((Math.pow(bcv/298.14,1/_ssDias)-1)*100).toFixed(3);
+  const _ssDiaBs=((bcv-298.14)/_ssDias).toFixed(2).replace('.',',');
+  setText('ss-deval-dia','+'+_ssDiaPct+'% / día');
+  const sdEl=document.getElementById('ss-deval-dia-bs');
+  if(sdEl)sdEl.textContent='+'+_ssDiaBs+' Bs/día promedio';
+  document.querySelectorAll('[id="ss-brecha-d"]').forEach(el=>el.textContent=brAbs+' Bs de diferencial');
+  document.querySelectorAll('[id="ss-fecha"]').forEach(el=>el.textContent=hoyCorto);
+  setText('ss-mes-bcv-pct',  (parseFloat(mesBcvPct)>=0?'+':'')+mesBcvPct+'%');
+  setText('ss-mes-bcv-bs',   (parseFloat(mesBcvBs)>=0?'+':'')+mesBcvBs+' Bs subió');
+  setText('ss-mes-usdt-pct', (parseFloat(mesUsdtPct)>=0?'+':'')+mesUsdtPct+'%');
+  setText('ss-mes-usdt-bs',  (parseFloat(mesUsdtBs)>=0?'+':'')+mesUsdtBs+' Bs subió');
+  setText('ss-dia-bcv-bs',   '+'+diaMesBs+' Bs/día');
+  setText('ss-dia-bcv-pct',  '+'+diaMesPct+'% · '+mesShort);
+  // Anuales
+  const USDT_ENE_INI=565.20;
+  const anoTotalBcvBs  = (bcv-298.14).toFixed(2).replace('.',',');
+  const anoTotalBcvPct = ((bcv-298.14)/298.14*100).toFixed(1);
+  const anoDiaBcvBs    = _ssDiaBs;
+  const anoDiaBcvPct   = _ssDiaPct;
+  const anoTotalUsdtBs = (usdt-USDT_ENE_INI).toFixed(2).replace('.',',');
+  const anoTotalUsdtPct= ((usdt-USDT_ENE_INI)/USDT_ENE_INI*100).toFixed(1);
+  const anoDiaUsdtBs   = ((usdt-USDT_ENE_INI)/_ssDias).toFixed(2).replace('.',',');
+  const anoDiaUsdtPct  = ((Math.pow(usdt/USDT_ENE_INI,1/_ssDias)-1)*100).toFixed(3);
+  setText('ss-ano-bcv-pct',    '+'+anoTotalBcvPct+'% año');
+  setText('ss-ano-usdt-pct',   '+'+anoTotalUsdtPct+'% año');
+  setText('ss-dia-ano-bs',     '+'+anoDiaBcvBs+' Bs/día · +'+anoDiaBcvPct+'%');
+  setText('ss-deval-bs-total', anoTotalBcvBs);
+  setText('ss-ano-bcv-total',  '+'+anoTotalBcvBs+' Bs (+'+anoTotalBcvPct+'%)');
+  setText('ss-ano-bcv-dia',    '+'+anoDiaBcvBs+' Bs (+'+anoDiaBcvPct+'%)');
+  setText('ss-ano-usdt-total', '+'+anoTotalUsdtBs+' Bs (+'+anoTotalUsdtPct+'%)');
+  setText('ss-ano-usdt-dia',   '+'+anoDiaUsdtBs+' Bs (+'+anoDiaUsdtPct+'%)');
+  setText('ss-wti',            '$'+fmtN(STATE.wti));
+  setText('ss-salario-usd',    '$'+(130/bcv).toFixed(3).replace('.',',')+' USD');
+  // Salario y CBA
+  const salUsd       = (130/bcv).toFixed(3);
+  const salUsdFmt    = salUsd.replace('.',',');
+  const cbaBsHoy     = Math.round(730*bcv).toLocaleString('es-VE');
+  const salarios_cba = Math.round(730*bcv/130);
+  const copBsHoy     = (bcv/STATE.cop).toFixed(4).replace('.',',');
+  const brechaInterp = parseFloat(br)>80 ? 'La brecha es <strong style="color:var(--red)">crítica</strong>: el mercado opera bajo alta presión especulativa.' :
+                       parseFloat(br)>40 ? 'La brecha es <strong style="color:var(--ora)">alta</strong>: el paralelo se aleja significativamente del BCV.' :
+                       parseFloat(br)>20 ? 'La brecha está en <strong style="color:#b45309">nivel medio</strong>: mercado en proceso de autorregulación.' :
+                       'La brecha es <strong style="color:var(--grn)">moderada</strong>: relativa estabilidad cambiaria.';
+  // ── INFORME ESCRITO COMPLETO ──
+  const mesUsdtDiaBs = ((usdt-usdtMesIni)/diasMes).toFixed(2).replace('.',',');
+  const inf=document.getElementById('informe-completo');
+  if(inf) inf.innerHTML=`
+<div style="border-bottom:2px solid var(--bdr);padding-bottom:12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+  <div>
+    <div style="font-size:15px;font-weight:900;color:var(--blue);margin-bottom:3px;">📋 Informe Cambiario · Venezuela</div>
+    <div style="font-size:11.5px;color:var(--t3);">${hoy.charAt(0).toUpperCase()+hoy.slice(1)} · ${hm} · <span style="color:${live?'var(--grn)':'var(--ora)'};">${estado}</span></div>
+  </div>
+  <div style="font-size:11px;color:var(--t3);text-align:right;">Actualización cada 60 s</div>
+</div>
+
+${hoySeccionInforme}
+
+<div style="margin-bottom:14px;">
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:6px;">🏦 Banco Central de Venezuela (BCV)</div>
+  <div style="margin-bottom:8px;font-size:13px;line-height:1.85;">
+    El dólar BCV oficial cotiza hoy a <strong style="color:var(--blue);font-size:15px;">${fmtN(bcv)} Bs/USD</strong>.
+    Desde el 1 de enero de 2026 (298,14 Bs), el bolívar ha perdido <strong style="color:var(--red);">+${deval}%</strong> de su valor,
+    acumulando una suba total de <strong style="color:var(--red);">+${anoTotalBcvBs} Bs</strong> en lo que va del año.
+  </div>
+  <div style="background:var(--blue-ll);border-radius:8px;padding:10px 16px;font-size:12.5px;line-height:2.1;">
+    <div>📅 <strong>En ${mesLabel}:</strong> subió <strong style="color:var(--red);">+${mesBcvBs} Bs</strong> (+${mesBcvPct}%) &nbsp;→&nbsp; <strong style="color:var(--red);font-size:14px;">promedio +${diaMesBs} Bs/día</strong> en lo que va del mes</div>
+    <div>📆 <strong>En todo 2026:</strong> sube <strong style="color:var(--red);">+${anoTotalBcvBs} Bs</strong> en total &nbsp;→&nbsp; <strong style="color:var(--red);font-size:14px;">promedio +${anoDiaBcvBs} Bs/día</strong> (+${anoDiaBcvPct}% diario compuesto desde ene-2026)</div>
+  </div>
+</div>
+
+<div style="margin-bottom:14px;">
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--pur);margin-bottom:6px;">💜 Mercado Paralelo — USDT (Binance P2P)</div>
+  <div style="margin-bottom:8px;font-size:13px;line-height:1.85;">
+    El dólar paralelo cotiza a <strong style="color:var(--pur);font-size:15px;">${fmtN(usdt)} Bs</strong>.
+    La brecha respecto al BCV es <strong style="color:#b45309;">${br}%</strong> (+${brAbs} Bs por dólar). ${brechaInterp}
+  </div>
+  <div style="background:var(--yel-ll);border-radius:8px;padding:10px 16px;font-size:12.5px;line-height:2.1;">
+    <div>📅 <strong>En ${mesLabel}:</strong> subió <strong style="color:var(--pur);">+${mesUsdtBs} Bs</strong> (+${mesUsdtPct}%) &nbsp;→&nbsp; <strong style="color:var(--pur);font-size:14px;">promedio +${mesUsdtDiaBs} Bs/día</strong> en lo que va del mes</div>
+    <div>📆 <strong>En todo 2026:</strong> subió <strong style="color:var(--pur);">+${anoTotalUsdtBs} Bs</strong> en total &nbsp;→&nbsp; <strong style="color:var(--pur);font-size:14px;">promedio +${anoDiaUsdtBs} Bs/día</strong> (+${anoDiaUsdtPct}% diario compuesto)</div>
+  </div>
+  <div style="font-size:11.5px;color:var(--t3);margin-top:6px;">💶 Euro BCV oficial hoy: <strong style="color:var(--t2);">${fmtN(eur)} Bs/EUR</strong></div>
+</div>
+
+<div style="margin-bottom:14px;">
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:6px;">💼 Situación Social</div>
+  <div style="line-height:2;font-size:12.5px;">
+    El salario mínimo en Venezuela es de <strong>130 Bs</strong>, equivalente a apenas <strong style="color:var(--red);">$${salUsdFmt} USD</strong> al cambio oficial.
+    Para cubrir la <strong>Canasta Básica Alimentaria (CBA)</strong> — estimada en <strong>$730 USD</strong> (<strong style="color:var(--red);">${cbaBsHoy} Bs</strong> al cambio actual) por CENDAS —
+    un trabajador necesitaría <strong style="color:var(--red);">${salarios_cba.toLocaleString('es-VE')} salarios mínimos</strong>.
+    El ingreso integral con bonos del gobierno es de <strong>$240/mes</strong> (desde mayo 2026), aún muy por debajo de la CBA.
+  </div>
+</div>
+
+<div>
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--t3);margin-bottom:6px;">🌎 Contexto Regional e Internacional</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px;font-size:12.5px;">
+    <div>🇨🇴 Peso colombiano: <strong>${STATE.cop.toLocaleString('es-VE')} COP/USD</strong> · 1 COP ≈ <strong>${copBsHoy} Bs</strong></div>
+    <div>🛢️ WTI Petróleo: <strong style="color:var(--grn);">$${fmtN(STATE.wti)} USD/barril</strong></div>
+    <div>💶 Euro BCV: <strong>${fmtN(eur)} Bs/EUR</strong></div>
+    <div>📉 Devaluación acumulada 2025: <strong style="color:var(--ora);">+474%</strong> (51,93 → 298,14 Bs)</div>
+  </div>
+</div>
+
+${(()=>{
+  const DIAS_S=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const hist=getMonthHistory(yr,mo);
+  const known=hist.filter(r=>r.bcv!==null);
+  if(known.length===0) return '<div style="font-size:11px;color:var(--t3);margin-top:10px;padding-top:10px;border-top:1px solid var(--bdr);">💡 El registro diario de este mes se irá completando automáticamente con cada visita.</div>';
+  const rowsHTML=hist.map((rec,i)=>{
+    const prev=hist.slice(0,i).reverse().find(r=>r.bcv!==null)||null;
+    const deltaBcv=(prev&&rec.bcv)?(rec.bcv-prev.bcv):null;
+    const deltaUsdt=(prev&&rec.usdt&&prev.usdt)?(rec.usdt-prev.usdt):null;
+    const dCol=deltaBcv===null?'var(--t3)':deltaBcv>0?'var(--red)':deltaBcv<0?'#059669':'var(--t3)';
+    const uCol=deltaUsdt===null?'var(--t3)':deltaUsdt>0?'var(--red)':deltaUsdt<0?'#059669':'var(--t3)';
+    const isToday=rec.day===now.getDate()&&mo===now.getMonth()&&yr===now.getFullYear();
+    const dow=DIAS_S[new Date(rec.ds+'T12:00:00').getDay()];
+    const noData=!rec.bcv;
+    if(noData) return `<tr style="border-bottom:1px solid var(--bdr);opacity:.35;"><td style="padding:4px 8px;font-size:11px;">${rec.day}/${String(mo+1).padStart(2,'0')} <span style="color:var(--t3);font-size:10px;">${dow}</span></td><td colspan="4" style="padding:4px 8px;text-align:center;font-size:10px;color:var(--t3);">sin registro</td></tr>`;
+    return `<tr style="border-bottom:1px solid var(--bdr);${isToday?'background:var(--yel-ll);font-weight:700;':''}">
+      <td style="padding:5px 8px;font-size:11.5px;">${isToday?'▶ ':''}<strong>${rec.day}</strong>/${String(mo+1).padStart(2,'0')} <span style="color:var(--t3);font-size:10px;">${dow}</span></td>
+      <td style="padding:5px 8px;text-align:right;font-size:12px;color:var(--blue);">${fmtN(rec.bcv)}</td>
+      <td style="padding:5px 8px;text-align:right;font-size:12px;font-weight:700;color:${dCol};">${deltaBcv===null?'inicio':(deltaBcv>=0?'+':'')+deltaBcv.toFixed(4).replace('.',',')+' Bs'}</td>
+      <td style="padding:5px 8px;text-align:right;font-size:12px;color:var(--pur);">${rec.usdt?fmtN(rec.usdt):'—'}</td>
+      <td style="padding:5px 8px;text-align:right;font-size:12px;font-weight:700;color:${uCol};">${deltaUsdt===null?(!rec.usdt?'—':'inicio'):(deltaUsdt>=0?'+':'')+deltaUsdt.toFixed(2).replace('.',',')+' Bs'}</td>
+    </tr>`;
+  }).join('');
+  return `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--bdr);">
+    <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:8px;">
+      📅 Registro diario — ${mesLabel}
+      <span style="font-weight:400;text-transform:none;font-size:10px;color:var(--t3);margin-left:8px;">${known.length} de ${now.getDate()} días registrados · se completa automáticamente cada día</span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead><tr style="background:var(--blue-ll);">
+          <th style="padding:6px 8px;text-align:left;color:var(--blue);font-size:10.5px;font-weight:800;">FECHA</th>
+          <th style="padding:6px 8px;text-align:right;color:var(--blue);font-size:10.5px;font-weight:800;">BCV (Bs/USD)</th>
+          <th style="padding:6px 8px;text-align:right;color:var(--red);font-size:10.5px;font-weight:800;">Δ DÍA BCV</th>
+          <th style="padding:6px 8px;text-align:right;color:var(--pur);font-size:10.5px;font-weight:800;">USDT (Bs)</th>
+          <th style="padding:6px 8px;text-align:right;color:var(--pur);font-size:10.5px;font-weight:800;">Δ DÍA USDT</th>
+        </tr></thead>
+        <tbody>${rowsHTML}</tbody>
+      </table>
+    </div>
+  </div>`;
+})()}`;
   document.querySelectorAll('.dyn-date-full').forEach(el=>el.textContent=hoyCorto);
   document.querySelectorAll('.dyn-date-short').forEach(el=>el.textContent=`${MESES[now.getMonth()]} parcial al ${now.getDate()}-${MESES[now.getMonth()].slice(0,3)}`);
 }
@@ -1740,8 +2495,8 @@ function updateResumenes(r, live) {
   const devalPar=((usdt-565.20)/565.20*100).toFixed(1);
   const cop=STATE.cop;
   const copBs=(bcv/cop).toFixed(4).replace('.', ',');
-  const cbaBs=Math.round(692*bcv).toLocaleString('es-VE');
-  const cbaTaBs=Math.round(755*bcv).toLocaleString('es-VE');
+  const cbaBs=Math.round(730*bcv).toLocaleString('es-VE');
+  const cbaTaBs=Math.round(797*bcv).toLocaleString('es-VE');
   const salUsd=(130/bcv).toFixed(3).replace('.', ',');
   setText('rc-bcv', fmtN(bcv)+' Bs');
   setText('rc-usdt', fmtN(usdt)+' Bs');
@@ -1754,6 +2509,16 @@ function updateResumenes(r, live) {
   setText('rc-brecha-abs', '+'+brAbs+' Bs');
   setText('rc-deval-bcv', '+'+devalBCV+'%');
   setText('rc-deval-par', '+'+devalPar+'%');
+  // Devaluación diaria (tasa compuesta y absoluta)
+  const BCV_INI = 298.14;
+  const diasAnio = Math.max(1, Math.floor((new Date() - new Date('2026-01-01')) / 86400000));
+  const devalDiaPct = ((Math.pow(bcv/BCV_INI, 1/diasAnio) - 1)*100).toFixed(3);
+  const devalDiaBs  = ((bcv - BCV_INI) / diasAnio).toFixed(2);
+  setText('rc-deval-dia', '+'+devalDiaPct+'% / día');
+  setText('rc-deval-bs-dia', '+'+devalDiaBs.replace('.',',')+' Bs / día');
+  setText('td-deval-dia', '+'+devalDiaPct+'% / día');
+  setText('td-deval-bs-dia', '+'+devalDiaBs.replace('.',',')+' Bs / día');
+  setText('kv-deval-sub', 'Diaria: +'+devalDiaPct+'% · '+devalDiaBs.replace('.',',')+' Bs/día');
   const estado = parseFloat(br)>80 ? '🔴 CRÍTICO' : parseFloat(br)>40 ? '🟠 ALTO' : parseFloat(br)>20 ? '🟡 MEDIO' : '🟢 ESTABLE';
   setText('rc-estado', estado);
   const intElem=document.getElementById('rc-brecha-int');
@@ -1765,7 +2530,7 @@ function updateResumenes(r, live) {
     intElem.innerHTML='⚡ <strong>Interpretación:</strong> '+txt;
   }
   setText('rc-cba-bs', cbaBs+' Bs');
-  setText('rc-cba-tachira', '$755 · '+cbaTaBs+' Bs');
+  setText('rc-cba-tachira', '$797 · '+cbaTaBs+' Bs');
   setText('rc-salario-usd', '$'+salUsd+' USD');
 }
 
@@ -1776,14 +2541,15 @@ const SEARCH_DB = [
   {t:'Dólar BCV Oficial hoy',d:'510,79 Bs/USD · tasa oficial Banco Central de Venezuela',id:'kv-bcv'},
   {t:'USDT Binance P2P',d:'665,00 Bs · mercado paralelo venezolano',id:'kv-usdt'},
   {t:'Brecha cambiaria',d:'29,7% diferencial USDT vs BCV · 149,77 Bs',id:'ss-bcv'},
-  {t:'Canasta Básica Venezuela (CBA)',d:'$692 USD · 353.267 Bs · 2.717 salarios mínimos',id:'cx-bcv'},
-  {t:'Canasta Básica Táchira',d:'$755 USD · 9% más cara que el promedio nacional',id:'cx-bcv'},
-  {t:'Salario mínimo Venezuela',d:'130 Bs = $0,25 USD (base) · Ingreso integral $240 · 0,04% de la CBA',id:'ss-bcv'},
+  {t:'Canasta Básica Venezuela (CBA)',d:'$730 USD · 397.536 Bs · 3.055 salarios mínimos',id:'cx-bcv'},
+  {t:'Canasta Básica Táchira',d:'$797 USD · 9% más cara que el promedio nacional',id:'cx-bcv'},
+  {t:'Salario mínimo Venezuela',d:'130 Bs = $0,24 USD (base) · Ingreso integral $240 · 0,03% de la CBA',id:'ss-bcv'},
   {t:'Calculadora cambiaria',d:'Convertidor Bs↔USD · Bs↔COP · USD↔COP · EUR↔Bs',id:'sec-calc'},
   {t:'Peso colombiano COP',d:'~4.100 COP = 1 USD · tasa referencial Banco de la República',id:'kv-cop'},
   {t:'WTI Petróleo crudo',d:'Precio spot en tiempo real · Yahoo Finance',id:'kv-wti'},
   {t:'Alertas cambiarias',d:'Movimientos automáticos detectados >1%',id:'sec-alertas'},
   {t:'Devaluación 2026',d:'Desde 298,14 Bs el 1-ene-2026',id:'kv-bcv'},
+  {t:'Devaluación diaria BCV',d:'+0,41% por día · ~1,68 Bs sube el BCV cada día (promedio 2026)',id:'rc-deval-dia'},
   {t:'PIB Venezuela 2025',d:'+8,66% · 19 trimestres consecutivos de crecimiento',id:'cx-bcv'},
 ];
 const gInput = document.getElementById('gBuscar');
@@ -2114,7 +2880,7 @@ function mkChart(canvasId, cfg) {
 // ═══════════════════════════════════════════════════════════
 function updateWTIPanel(){
   const wti = STATE.wti;
-  const wtiEne26 = 74.63; // precio EIA enero 2026
+  const wtiEne26 = 60.00; // precio EIA enero 2026 (avg verificado)
   const varPct = ((wti - wtiEne26) / wtiEne26 * 100);
   setText('wi-precio', '$' + fmtN(wti) + ' USD/bbl');
   setText('wti-live-label', '$' + fmtN(wti) + ' USD/bbl');
@@ -2156,24 +2922,15 @@ function tickUI(){
 // Countdown y barra en clock ticks
 setInterval(()=>{
   if(STATE.fetchCountdown>0)STATE.fetchCountdown--;
-  // show countdown somewhere
-  const nb=document.getElementById('tk-upd');
-  // barSet driven by fetchCountdown
-  barSet((STATE.fetchCountdown/60)*100);
+  barSet((STATE.fetchCountdown/30)*100);
 },1000);
 
-// ═══════════════════════════════════════════════════════════
-//  AUTO-LOCK AL SALIR DE LA PESTAÑA
-// ═══════════════════════════════════════════════════════════
-document.addEventListener('visibilitychange', function(){
-  if(document.hidden){
-    sessionStorage.removeItem('ec_auth');
-    const ov=document.getElementById('pwOverlay');
-    if(ov){ov.style.display='flex';ov.style.opacity='1';ov.classList.remove('fade-out');}
-  }
-});
+// AUTO-LOCK manejado en el script inicial con timer de 10 min
 
 window.addEventListener('load', function() {
+
+  // Carga caché instantánea (muestra últimos datos mientras llegan los frescos)
+  loadCache();
 
   // Fecha topbar
   (function(){const d=new Date();const s=d.toLocaleDateString('es-VE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});setText('topDate',s.charAt(0).toUpperCase()+s.slice(1));})();
@@ -2188,8 +2945,8 @@ window.addEventListener('load', function() {
     legend:['BCV Oficial (Bs/USD)','USDT / Paralelo (Bs)'],
     labels:['Ene-22','Abr-22','Jul-22','Oct-22','Dic-22','Mar-23','Jun-23','Sep-23','Dic-23','Mar-24','Jun-24','Sep-24','Dic-24','Feb-25','May-25','Jul-25','Sep-25','Nov-25','Dic-25','Ene-26','Feb-26','Mar-26','Abr-26','May-26'],
     sets:[
-      { label:'BCV', color:'#003893', dash:[], data:[4.57,5.12,6.98,12.15,13.63,17.50,24.78,31.62,35.87,36.84,38.27,45.62,51.93,60.14,91,116,163,236,298.14,370.25,419.98,473.87,487.11,510.79] },
-      { label:'USDT', color:'#7c3aed', dash:[6,3], data:[5.20,6.10,8.20,14.50,16.20,20.00,28.00,36.00,39.50,40.50,42.00,50.00,57.00,72.29,112,140,200,310,400,565,537,660,645,665.00] }
+      { label:'BCV', color:'#003893', dash:[], data:[4.57,5.12,6.98,12.15,13.63,17.50,24.78,31.62,35.87,36.84,38.27,45.62,51.93,60.14,91,116,163,236,298.14,365.12,419.98,473.87,489.55,544.57] },
+      { label:'USDT', color:'#7c3aed', dash:[6,3], data:[5.20,6.10,8.20,14.50,16.20,20.00,28.00,36.00,39.50,40.50,42.00,50.00,57.00,72.29,112,140,200,310,400,565,580,640,680,744.00] }
     ]
   });
 
@@ -2199,8 +2956,8 @@ window.addEventListener('load', function() {
     legend:['BCV Oficial','USDT Paralelo'],
     labels:['Ene-26','Feb-26','Mar-26','Abr-26','May-26'],
     sets:[
-      { label:'BCV Oficial',  color:'rgba(0,56,147,0.82)',   data:[370.25,419.98,473.87,487.11,510.79] },
-      { label:'USDT Paralelo',color:'rgba(124,58,237,0.82)', data:[565,537,660,645,665.00] }
+      { label:'BCV Oficial',  color:'rgba(0,56,147,0.82)',   data:[365.12,419.98,473.87,489.55,544.57] },
+      { label:'USDT Paralelo',color:'rgba(124,58,237,0.82)', data:[565,580,640,680,744.00] }
     ]
   });
 
@@ -2209,15 +2966,15 @@ window.addEventListener('load', function() {
     type:'line', h:280, pct:true, min0:true,
     color:'#f5a800',
     ptColor: v => v>80?'#cf142b':v>40?'#ea580c':'#f5a800',
-    labels:['Dic-24','Feb-25','Sep-25','Dic-25','1-Ene-26','8-Ene-26','18-Feb-26','28-Mar-26','6-Abr-26','14-May-26'],
-    data:   [10, 20, 23, 34, 89, 141, 35, 44, 34.4, 30.2]
+    labels:['Dic-24','Feb-25','Sep-25','Dic-25','1-Ene-26','8-Ene-26','18-Feb-26','28-Mar-26','6-Abr-26','28-May-26'],
+    data:   [10, 20, 23, 34, 89, 141, 35, 44, 34.4, 36.6]
   });
 
   // 4. DEVALUACIÓN ANUAL
   mkChart('cAn', {
     type:'bar', h:260, pct:true, min0:true,
     labels:['2022','2023','2024','2025','2026*'],
-    data:   [198, 156, 44.8, 474, 71.3],
+    data:   [198, 156, 44.8, 476, 82.7],
     colors: ['rgba(0,56,147,.85)','rgba(124,58,237,.85)','rgba(5,150,105,.85)','rgba(207,20,43,.9)','rgba(245,168,0,.9)']
   });
 
@@ -2225,7 +2982,7 @@ window.addEventListener('load', function() {
   mkChart('cMn', {
     type:'bar', h:260, pct:true, min0:true,
     labels:['Enero','Febrero','Marzo','Abril','Mayo*'],
-    data:   [24.2, 13.4, 12.8, 2.8, 4.9],
+    data:   [22.5, 15.0, 12.8, 3.3, 11.2],
     colors: ['rgba(207,20,43,.85)','rgba(245,168,0,.85)','rgba(245,168,0,.85)','rgba(0,56,147,.85)','rgba(0,56,147,.85)']
   });
 
@@ -2233,7 +2990,7 @@ window.addEventListener('load', function() {
   mkChart('cCan', {
     type:'bar', h:220, min0:true,
     labels:['Sal. Mín.','CBA VE','CBN VE','CBA TC','CBN TC'],
-    data:   [0.25, 692, 1200, 755, 1308],
+    data:   [0.24, 730, 1265, 797, 1380],
     colors: ['rgba(207,20,43,.85)','rgba(0,56,147,.85)','rgba(0,56,147,.6)','rgba(234,88,12,.85)','rgba(234,88,12,.6)']
   });
 
@@ -2252,7 +3009,7 @@ window.addEventListener('load', function() {
     78.14,75.89,72.97,79.49,71.53,67.05,75.75,82.49,88.82,84.97,77.16,72.77,
     74.28,76.56,80.72,85.43,79.76,81.54,80.72,76.36,68.17,70.34,67.02,69.48,
     75.12,71.45,67.93,61.39,59.74,61.11,66.88,74.12,69.44,70.87,67.23,69.76,
-    78.45,84.20,91.60,97.30,STATE.wti  // último punto = live
+    60.00,68.00,91.40,103.50,STATE.wti  // EIA verificado + live
   ];
   mkChart('cWTI', {
     type:'line', h:300, min0:false,
@@ -2306,6 +3063,159 @@ function downloadPDF() {
     if(barBtn){ barBtn.innerHTML='<span class="pdf-ic">📄</span>PDF'; barBtn.disabled=false; }
   }, 450);
 }
+
+// ═══════════════════════════════════════════════════════════
+//  REPOSITORIO DE LINKS — 63 FUENTES VERIFICADAS
+// ═══════════════════════════════════════════════════════════
+const REPO_LINKS = [
+  // MUNDIAL
+  {id:1,cat:'mundial',nom:'FMI — Fondo Monetario Internacional',url:'https://www.imf.org/es/Home',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Portal principal FMI. Perspectivas económicas globales, informes de país, datos macro.'},
+  {id:2,cat:'mundial',nom:'FMI — World Economic Outlook (WEO)',url:'https://www.imf.org/en/Publications/WEO',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Proyecciones PIB, inflación, deuda de 190 países. Publicación trimestral estrella del FMI.'},
+  {id:3,cat:'mundial',nom:'FMI — Data Portal',url:'https://data.imf.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Base de datos interactiva FMI. Series temporales de indicadores macroeconómicos.'},
+  {id:4,cat:'mundial',nom:'Banco Mundial',url:'https://www.bancomundial.org/es/home',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Datos de desarrollo, pobreza, clima y economía de todos los países.'},
+  {id:5,cat:'mundial',nom:'Banco Mundial — World Development Indicators',url:'https://databank.worldbank.org/source/world-development-indicators',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'La mayor base de datos estadísticos del BM. Indicadores 1960–2025.'},
+  {id:6,cat:'mundial',nom:'Banco Mundial — Global Economic Prospects',url:'https://www.bancomundial.org/es/publication/global-economic-prospects',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Perspectivas Económicas Mundiales. Publicación semestral del Banco Mundial.'},
+  {id:7,cat:'mundial',nom:'OMC — Organización Mundial del Comercio',url:'https://www.wto.org/indexsp.htm',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Estadísticas de comercio mundial, aranceles y acuerdos internacionales.'},
+  {id:8,cat:'mundial',nom:'OCDE',url:'https://www.oecd.org/es/',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Datos económicos de países desarrollados. PIB, empleo, inversión, productividad.'},
+  {id:9,cat:'mundial',nom:'TradingEconomics — Indicadores Globales',url:'https://es.tradingeconomics.com/indicators',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'Datos económicos en tiempo real de 196 países. Bolsas, divisas, commodities, macro.'},
+  {id:10,cat:'mundial',nom:'TradingEconomics — PIB Mundial',url:'https://es.tradingeconomics.com/world/gdp',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Comparativa del PIB por países. Gráficos históricos y proyecciones.'},
+  {id:11,cat:'mundial',nom:'DatosMacro — Expansión',url:'https://datosmacro.expansion.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Portal de datos macro en español. IPC, PIB, deuda, desempleo de toda Latinoamérica.'},
+  {id:12,cat:'mundial',nom:'Worldometers',url:'https://www.worldometers.info/es/',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'Contadores en tiempo real de población, economía, energía y recursos mundiales.'},
+  // VENEZUELA
+  {id:13,cat:'venezuela',nom:'BCV — Banco Central de Venezuela',url:'https://www.bcv.org.ve',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Portal oficial BCV. Tipo de cambio, reservas, estadísticas monetarias y financieras.'},
+  {id:14,cat:'venezuela',nom:'BCV — Tipo de Cambio de Referencia',url:'https://www.bcv.org.ve/estadisticas/tipo-de-cambio-de-referencia',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Histórico del tipo de cambio oficial BCV. Series desde 2013.'},
+  {id:15,cat:'venezuela',nom:'BCV — Tipo de Cambio Oficial',url:'https://www.bcv.org.ve/seccionportal/tipo-de-cambio-oficial-del-bcv',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Página directa con el tipo de cambio oficial del día hábil.'},
+  {id:16,cat:'venezuela',nom:'BCV — Reservas Internacionales',url:'https://www.bcv.org.ve/estadisticas/reservas-internacionales',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Reservas internacionales de Venezuela en USD. Oro, divisas, DEGs del FMI.'},
+  {id:17,cat:'venezuela',nom:'BCV — Índice de Precios Consumidor',url:'https://www.bcv.org.ve/estadisticas/consumidor',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'IPC Venezuela. Inflación mensual, interanual y acumulada por sectores.'},
+  {id:18,cat:'venezuela',nom:'BCV — PIB Venezuela',url:'https://www.bcv.org.ve/estadisticas/producto-interno-bruto',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Producto Interno Bruto de Venezuela. Series trimestrales y anuales por sector.'},
+  {id:19,cat:'venezuela',nom:'BCV — Tasas Activas y Pasivas',url:'https://www.bcv.org.ve/estadisticas/tasas-activas-y-pasiva',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Tasas de interés del sistema bancario venezolano. Crédito y captación.'},
+  {id:20,cat:'venezuela',nom:'BCV — Estadísticas Trim. I 2026',url:'https://www.bcv.org.ve/estadisticas/ano-2026-trimestre-i',freq:'🔵 TRIMESTRAL',fq:'tr',st:'ok',desc:'Boletín estadístico BCV — I Trimestre 2026. Datos macro más recientes publicados.'},
+  {id:21,cat:'venezuela',nom:'MEF — Ministerio de Economía y Finanzas',url:'https://www.mef.gob.ve',freq:'❓ IRREGULAR',fq:'ir',st:'warn',desc:'Portal oficial MEF Venezuela. Presupuesto, deuda pública, política fiscal.'},
+  {id:22,cat:'venezuela',nom:'TradingEconomics — Venezuela',url:'https://es.tradingeconomics.com/venezuela/indicators',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'Panel completo de indicadores de Venezuela. BCV, inflación, reservas.'},
+  {id:23,cat:'venezuela',nom:'DatosMacro — Venezuela',url:'https://datosmacro.expansion.com/paises/venezuela',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Ficha completa Venezuela: PIB, IPC, deuda, tipo de cambio con histórico.'},
+  {id:24,cat:'venezuela',nom:'Worldometers — PIB Venezuela',url:'https://www.worldometers.info/ro/pib/venezuela-pib/',freq:'⚪ ANUAL',fq:'an',st:'ok',desc:'Datos históricos del PIB de Venezuela con comparativas regionales y per cápita.'},
+  {id:25,cat:'venezuela',nom:'Observatorio Venezolano de Finanzas',url:'https://observatoriodefinanzas.com',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'OVF. Inflación semanal, dolarización, tipo de cambio paralelo.'},
+  {id:26,cat:'venezuela',nom:'Banca y Negocios',url:'https://www.bancaynegocios.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Noticias financieras Venezuela. Banca, tipo de cambio, criptomonedas.'},
+  {id:27,cat:'venezuela',nom:'El Ucabista',url:'https://elucabista.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Medio económico UCAB. Análisis economía venezolana y mercados financieros.'},
+  {id:28,cat:'venezuela',nom:'Finanzas Digital',url:'https://finanzasdigital.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Portal financiero Venezuela. Tasas, inflación, noticias bancarias y cambiarias.'},
+  // PETRÓLEO
+  {id:29,cat:'petroleo',nom:'PDVSA',url:'https://www.pdvsa.com',freq:'❓ IRREGULAR',fq:'ir',st:'warn',desc:'Portal oficial PDVSA. Producción, exportaciones y actividades de la estatal.'},
+  {id:30,cat:'petroleo',nom:'OPEP — Portal Principal',url:'https://www.opec.org/opec_web/en/',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Organización de Países Exportadores. Estadísticas, acuerdos y producción mundial.'},
+  {id:31,cat:'petroleo',nom:'OPEP — Monthly Oil Market Report',url:'https://www.opec.org/opec_web/en/publications/338.htm',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Informe mensual del mercado del petróleo OPEP. Oferta, demanda, inventarios.'},
+  {id:32,cat:'petroleo',nom:'OPEP — Data Graphs',url:'https://www.opec.org/opec_web/en/data_graphs/40.htm',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Gráficos interactivos OPEP de producción, precios e inventarios por país.'},
+  {id:33,cat:'petroleo',nom:'AIE — Agencia Internacional de Energía',url:'https://www.iea.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Datos globales energía: petróleo, gas, renovables y perspectivas del mercado.'},
+  {id:34,cat:'petroleo',nom:'PrecioPetroleo.net',url:'https://www.preciopetroleo.net',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'WTI, Brent y otros crudos en tiempo real. Histórico de precios y análisis.'},
+  {id:35,cat:'petroleo',nom:'Wikipedia — Ventas Petróleo Venezuela',url:'https://es.wikipedia.org/wiki/Anexo:Ventas_petr%C3%B3leo_en_Venezuela_y_precios',freq:'❓ IRREGULAR',fq:'ir',st:'ok',desc:'Datos históricos de producción y precios del petróleo venezolano desde 1950.'},
+  // TÁCHIRA
+  {id:36,cat:'tachira',nom:'Gobernación del Táchira',url:'https://www.tachira.gob.ve',freq:'❓ IRREGULAR',fq:'ir',st:'warn',desc:'Portal oficial gobierno del Táchira. Noticias, programas y estadísticas regionales.'},
+  {id:37,cat:'tachira',nom:'La Nación Web — Táchira',url:'https://lanacionweb.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Principal diario del Táchira. Noticias locales, economía regional y frontera VZ–CO.'},
+  {id:38,cat:'tachira',nom:'ComVenezuela',url:'https://comvenezuela.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Noticias comercio Venezuela–Colombia. TRM, frontera, pymes y economía binacional.'},
+  {id:39,cat:'tachira',nom:'CAVECOL — Cámara VZ-CO',url:'https://www.cavecol.org',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Cámara Colombo Venezolana. Comercio binacional y estadísticas de intercambio fronterizo.'},
+  {id:40,cat:'tachira',nom:'Radio Mundial Venezuela',url:'https://radiomundial.com.ve',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Noticias Venezuela y región andina. Economía, política y sociedad.'},
+  {id:41,cat:'tachira',nom:'Contrapunto',url:'https://contrapunto.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Periodismo de investigación Venezuela. Economía, corrupción, derechos humanos.'},
+  {id:42,cat:'tachira',nom:'El Estímulo / El Interés',url:'https://elestimulo.com/elinteres/',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Análisis económico Venezuela. Tipo de cambio, inflación, finanzas personales.'},
+  // COLOMBIA
+  {id:43,cat:'colombia',nom:'Banco de la República Colombia',url:'https://www.banrep.gov.co/es',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Banco central colombiano. TRM COP/USD, tasas de interés, reservas e inflación.'},
+  {id:44,cat:'colombia',nom:'DIAN',url:'https://www.dian.gov.co',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Recaudo tributario Colombia. Estadísticas de comercio exterior y aduanas.'},
+  {id:45,cat:'colombia',nom:'DANE — Estadísticas Colombia',url:'https://www.dane.gov.co',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Instituto Estadística Colombia. PIB, IPC, empleo, comercio y exterior.'},
+  {id:46,cat:'colombia',nom:'ProColombia',url:'https://www.procolombia.co',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Agencia comercio internacional Colombia. Exportaciones, inversión y turismo.'},
+  // SOCIAL
+  {id:47,cat:'social',nom:'CEPAL',url:'https://www.cepal.org/es',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Comisión Económica para América Latina. Desarrollo, pobreza y estadísticas.'},
+  {id:48,cat:'social',nom:'CEPAL — Estadísticas',url:'https://estadisticas.cepal.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Base datos CEPAL. Indicadores socioeconómicos de América Latina.'},
+  {id:49,cat:'social',nom:'PNUD — Naciones Unidas',url:'https://www.undp.org/es',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Índice de Desarrollo Humano, reportes de pobreza y sostenibilidad.'},
+  {id:50,cat:'social',nom:'UN Data',url:'https://data.un.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Base de datos estadísticos ONU. Socioeconómicos de todos los países.'},
+  {id:51,cat:'social',nom:'OCHA Venezuela',url:'https://www.unocha.org/venezuela',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Coordinación Humanitaria ONU Venezuela. Crisis, migración y necesidades.'},
+  {id:52,cat:'social',nom:'OIM — Organización Internacional Migración',url:'https://www.iom.int',freq:'🟡 SEMANAL',fq:'se',st:'ok',desc:'Datos de migración mundial. Flujos venezolanos, remesas y desplazamiento.'},
+  {id:53,cat:'social',nom:'SELA',url:'https://www.sela.org',freq:'🟢 MENSUAL',fq:'me',st:'ok',desc:'Sistema Económico Latinoamericano. Análisis de integración regional y comercio.'},
+  // APIs
+  {id:54,cat:'api',nom:'PyDolarVe — API BCV',url:'https://pydolarve.org/api/v1/dollar?monitor=bcv',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'API REST tipo de cambio BCV y paralelos en JSON. Fuente primaria del dashboard.'},
+  {id:55,cat:'api',nom:'DolarApi VE',url:'https://ve.dolarapi.com/v1/dolares',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'API alternativa tipo de cambio Venezuela. Todos los monitores: BCV, paralelo, USDT.'},
+  {id:56,cat:'api',nom:'CotizaVe',url:'https://cotizave.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Cotizaciones Venezuela. Tipo de cambio BCV y paralelo con histórico descargable.'},
+  {id:57,cat:'api',nom:'BCVApi.tech',url:'https://www.bcvapi.tech',freq:'🔴 TIEMPO REAL',fq:'rt',st:'ok',desc:'API no oficial tipo de cambio BCV. Endpoint REST para integración en aplicaciones.'},
+  {id:58,cat:'api',nom:'GitHub — Topics BCV',url:'https://github.com/topics/bcv',freq:'❓ IRREGULAR',fq:'ir',st:'ok',desc:'Repositorios GitHub con proyectos sobre el tipo de cambio BCV y APIs venezolanas.'},
+  // MEDIOS
+  {id:59,cat:'medios',nom:'Cinco Frentes',url:'https://www.cincofrentes.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Periodismo fronterizo Venezuela–Colombia. Táchira, Apure, Zulia.'},
+  {id:60,cat:'medios',nom:'El Diario',url:'https://eldiario.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Diario digital Venezuela. Economía, política y sociedad nacional.'},
+  {id:61,cat:'medios',nom:'El Nacional',url:'https://www.elnacional.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Diario venezolano histórico. Análisis económico, tipo de cambio y política.'},
+  {id:62,cat:'medios',nom:'Efecto Cocuyo',url:'https://efectococuyo.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Periodismo de datos Venezuela. Investigación sobre economía y derechos humanos.'},
+  {id:63,cat:'medios',nom:'TalCual Digital',url:'https://talcualdigital.com',freq:'🟠 DIARIO',fq:'di',st:'ok',desc:'Análisis político-económico Venezuela. Finanzas públicas y tipo de cambio.'},
+];
+
+let repoFiltro = 'todos';
+
+function repoLinkCard(l) {
+  const domain = l.url.replace(/^https?:\/\//,'').split('/')[0];
+  const stHtml = l.st==='ok'
+    ? '<span class="lnk-st ok">✅ Activo</span>'
+    : l.st==='warn'
+    ? '<span class="lnk-st warn">⚠️ Revisar</span>'
+    : '<span class="lnk-st err">❌ Caído</span>';
+  return `<div class="lnk-card">
+    <div class="lnk-head"><span class="lnk-name">${l.nom}</span>${stHtml}</div>
+    <div class="lnk-url">${domain}</div>
+    <div class="lnk-desc">${l.desc}</div>
+    <div class="lnk-foot">
+      <span class="lnk-fq ${l.fq}">${l.freq}</span>
+      <a href="${l.url}" target="_blank" rel="noopener noreferrer"><button class="lnk-open">Abrir →</button></a>
+    </div>
+  </div>`;
+}
+
+function setFiltroRepo(cat, btn) {
+  repoFiltro = cat;
+  document.querySelectorAll('.repo-fb').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  filtrarLinks();
+}
+
+function filtrarLinks() {
+  const q = (document.getElementById('repoQ') ? document.getElementById('repoQ').value : '').toLowerCase().trim();
+  const filtered = REPO_LINKS.filter(function(l) {
+    const matchCat = repoFiltro === 'todos' || l.cat === repoFiltro;
+    const matchQ = !q || l.nom.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q) || l.url.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  const grid = document.getElementById('repoGrid');
+  if(grid) grid.innerHTML = filtered.map(repoLinkCard).join('');
+}
+
+function initRepo() {
+  const activas = REPO_LINKS.filter(function(l){ return l.st === 'ok'; }).length;
+  const diarias = REPO_LINKS.filter(function(l){ return l.st === 'ok' && (l.fq === 'rt' || l.fq === 'di'); }).length;
+  const el1 = document.getElementById('repo-activas');
+  const el2 = document.getElementById('repo-diarias');
+  if(el1) el1.textContent = activas;
+  if(el2) el2.textContent = diarias;
+  filtrarLinks();
+}
+
+function exportarLinks() {
+  const q = (document.getElementById('repoQ') ? document.getElementById('repoQ').value : '').toLowerCase().trim();
+  const filtered = REPO_LINKS.filter(function(l) {
+    const matchCat = repoFiltro === 'todos' || l.cat === repoFiltro;
+    const matchQ = !q || l.nom.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q);
+    return matchCat && l.st !== 'err';
+  });
+  const lines = ['DASHBOARD CAMBIARIO VENEZUELA 2026 — REPOSITORIO DE FUENTES', '='.repeat(60),
+    'Exportado: ' + new Date().toLocaleString('es-VE'),
+    'Total: ' + filtered.length + ' fuentes', '',
+    ...filtered.map(function(l){
+      return l.nom + '\n  URL: ' + l.url + '\n  Frecuencia: ' + l.freq + '\n  Estado: ' + (l.st==='ok'?'ACTIVO':'REVISAR') + '\n  Desc: ' + l.desc + '\n';
+    })
+  ];
+  const blob = new Blob([lines.join('\n')], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'fuentes-dashboard-cambiario.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// Inicializar repositorio al cargar
+(function waitRepo(){
+  if(document.getElementById('repoGrid')) initRepo();
+  else setTimeout(waitRepo, 100);
+})();
 
 </script>
 </body>
