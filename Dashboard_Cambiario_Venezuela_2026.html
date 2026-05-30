@@ -703,9 +703,9 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <div class="tk"><span class="lbl">📈 S&amp;P 500</span><span class="val" id="tk-sp500">—</span><span class="unit">pts</span></div>
       <div class="tk"><span class="lbl">💵 DXY (USD)</span><span class="val" id="tk-dxy">—</span><span class="unit">index</span></div>
       <div class="tk"><span class="lbl">🛑 Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8-ene</span></div>
-      <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,25</span><span class="unit">USD/mes</span></div>
-      <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$692</span><span class="unit">· 2.717 salarios</span></div>
-      <div class="tk"><span class="lbl">🌄 CBA Táchira</span><span class="val chg-up">$755</span><span class="unit">· frontera +9%</span></div>
+      <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,24</span><span class="unit">USD/mes</span></div>
+      <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$730</span><span class="unit">· 3.055 salarios</span></div>
+      <div class="tk"><span class="lbl">🌄 CBA Táchira</span><span class="val chg-up">$797</span><span class="unit">· frontera +9%</span></div>
       <!-- ══ SET B — duplicado para loop continuo ══ -->
       <div class="tk"><span class="lbl">🏦 BCV Oficial</span><span class="val" id="tk-bcv-b">544,57</span><span class="unit">Bs/USD</span></div>
       <div class="tk"><span class="lbl">💜 USDT Paralelo</span><span class="val" id="tk-usdt-b">744,00</span><span class="unit">Bs</span></div>
@@ -726,8 +726,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <div class="tk"><span class="lbl">💵 DXY (USD)</span><span class="val" id="tk-dxy-b">—</span><span class="unit">index</span></div>
       <div class="tk"><span class="lbl">🛑 Pico USDT 2026</span><span class="val" style="color:#7a1200;">780 Bs</span><span class="unit">8-ene</span></div>
       <div class="tk"><span class="lbl">💼 Salario Mínimo</span><span class="val chg-up">$0,25</span><span class="unit">USD/mes</span></div>
-      <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$692</span><span class="unit">· 2.717 salarios</span></div>
-      <div class="tk"><span class="lbl">🌄 CBA Táchira</span><span class="val chg-up">$755</span><span class="unit">· frontera +9%</span></div>
+      <div class="tk"><span class="lbl">🛒 CBA Venezuela</span><span class="val chg-up">$730</span><span class="unit">· 3.055 salarios</span></div>
+      <div class="tk"><span class="lbl">🌄 CBA Táchira</span><span class="val chg-up">$797</span><span class="unit">· frontera +9%</span></div>
     </div>
   </div>
   <div id="tickerCtrl">
@@ -1038,9 +1038,9 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
   <div class="c-card">
     <div class="c-head"><span class="flag">🇻🇪</span><div><h3>Venezuela Nacional</h3><p>Fuente: CENDAS-FVM abr-2026 · INE · INVESP · 28-may-2026</p></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Alimentos mínimos · familia de 5 personas</div></div><div class="c-rgt"><div class="usd">$730 USD</div><div class="bs">397.536 Bs (BCV)</div><div class="sal">⚠ 3.055 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">CBA + vivienda, servicios, educación, salud</div></div><div class="c-rgt"><div class="usd">$1.265 USD</div><div class="bs">688.381 Bs (BCV)</div><div class="sal">⚠ 5.293 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">💼 Salario mínimo mensual</div><div class="desc">Decreto gubernamental vigente 2026</div></div><div class="c-rgt"><div class="usd" style="color:var(--red);">$0,24 USD</div><div class="bs">130 Bs/mes</div><div class="sal">0,03% de la CBA</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Alimentos mínimos · familia de 5 personas</div></div><div class="c-rgt"><div class="usd">$730 USD</div><div class="bs" id="c-cba-bs-vzla">— Bs (BCV)</div><div class="sal">⚠ 3.055 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">CBA + vivienda, servicios, educación, salud</div></div><div class="c-rgt"><div class="usd">$1.265 USD</div><div class="bs" id="c-cbn-bs-vzla">— Bs (BCV)</div><div class="sal">⚠ 5.293 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">💼 Salario mínimo mensual</div><div class="desc">Decreto gubernamental vigente 2026</div></div><div class="c-rgt"><div class="usd" style="color:var(--red);" id="c-salario-usd">$0,24 USD</div><div class="bs">130 Bs/mes</div><div class="sal">0,03% de la CBA</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">🍗 Pollo (1 kg)</div><div class="desc">Promedio mercado nacional · may-2026</div></div><div class="c-rgt"><div class="usd">~$4,50</div><div class="bs">~2.299 Bs</div><div class="sal">17,7 salarios mínimos</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">🥛 Leche en polvo (400g)</div><div class="desc">Supermercados · promedio nacional</div></div><div class="c-rgt"><div class="usd">~$4,00</div><div class="bs">~2.043 Bs</div><div class="sal">15,7 salarios mínimos</div></div></div>
     <div class="c-alert red">⚠️ Con 130 Bs (~$0,26), un trabajador necesitaría <strong>3.055 meses — 254 años</strong> de salario mínimo para cubrir una canasta básica alimentaria mensual.</div>
@@ -1048,8 +1048,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
   <div class="c-card">
     <div class="c-head"><span class="flag">🌄</span><div><h3>Estado Táchira</h3><p>Economía fronteriza Colombia-Venezuela · 28-may-2026</p></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Precios +9% vs promedio nacional · frontera</div></div><div class="c-rgt"><div class="usd">$797 USD</div><div class="bs">433.982 Bs (BCV)</div><div class="sal">⚠ 3.335 salarios mínimos</div></div></div>
-    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">Incluye transporte fronterizo y servicios</div></div><div class="c-rgt"><div class="usd">$1.380 USD</div><div class="bs">751.507 Bs (BCV)</div><div class="sal">⚠ 5.775 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🥗 Canasta Básica Alimentaria (CBA)</div><div class="desc">Precios +9% vs promedio nacional · frontera</div></div><div class="c-rgt"><div class="usd">$797 USD</div><div class="bs" id="c-cba-bs-tach">— Bs (BCV)</div><div class="sal">⚠ 3.335 salarios mínimos</div></div></div>
+    <div class="c-row"><div class="c-lft"><div class="name">🏠 Canasta Básica Normativa (CBN)</div><div class="desc">Incluye transporte fronterizo y servicios</div></div><div class="c-rgt"><div class="usd">$1.380 USD</div><div class="bs" id="c-cbn-bs-tach">— Bs (BCV)</div><div class="sal">⚠ 5.775 salarios mínimos</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">💱 Economía bimoneda</div><div class="desc">COP y USD de uso cotidiano en Táchira</div></div><div class="c-rgt"><div class="usd">USD/COP</div><div class="bs">~0,19 Bs por COP</div><div class="sal">Mercado informal</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">🍗 Pollo (1 kg) · Táchira</div><div class="desc">Mercado fronterizo · San Cristóbal</div></div><div class="c-rgt"><div class="usd">~$4,90</div><div class="bs">~2.503 Bs</div><div class="sal">19,3 salarios mínimos</div></div></div>
     <div class="c-row"><div class="c-lft"><div class="name">🏥 Consulta médica privada</div><div class="desc">Clínica privada · San Cristóbal</div></div><div class="c-rgt"><div class="usd">$15–30</div><div class="bs">7.574–15.147 Bs</div><div class="sal">58–116 salarios mín.</div></div></div>
@@ -1337,13 +1337,13 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <span id="sec-macro"></span>
 <div class="sec"><span class="ic">🇻🇪</span>Contexto económico Venezuela · Inflación, petróleo y política monetaria</div>
 <div class="ctx-grid" style="margin-bottom:18px;">
-  <div class="ctx-c"><h4>🏦 Indicadores cambiarios · 14-may-2026</h4><ul>
-    <li>Dólar BCV oficial<span class="v c-blue" id="cx-bcv">510,79 Bs</span></li>
-    <li>USDT Binance P2P<span class="v c-pur" id="cx-usdt">665,00 Bs</span></li>
-    <li>Euro BCV (14-may)<span class="v">571,00 Bs</span></li>
-    <li>Brecha USDT/BCV<span class="v c-yel">29,7% · 149,77 Bs</span></li>
-    <li>Devaluación acum. 2026<span class="v c-red">+71,3%</span></li>
-    <li>Salario mínimo en USD<span class="v c-red">~$0,26</span></li>
+  <div class="ctx-c"><h4>🏦 Indicadores cambiarios · <span class="dyn-date-full"></span></h4><ul>
+    <li>Dólar BCV oficial<span class="v c-blue" id="cx-bcv">—</span></li>
+    <li>USDT Binance P2P<span class="v c-pur" id="cx-usdt">—</span></li>
+    <li>Euro BCV hoy<span class="v" id="cx-eur">—</span></li>
+    <li>Brecha USDT/BCV<span class="v c-yel" id="cx-brecha">—</span></li>
+    <li>Devaluación acum. 2026<span class="v c-red" id="cx-deval">—</span></li>
+    <li>Salario mínimo en USD<span class="v c-red" id="cx-salario">~$0,24</span></li>
   </ul></div>
   <div class="ctx-c"><h4>📊 Inflación sectorial · ene–feb 2026</h4><ul>
     <li>Restaurantes y Hoteles<span class="v c-red">+59,7%</span></li>
@@ -1379,7 +1379,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <div class="sec"><span class="ic">📚</span>¿De dónde vienen los datos? · Fuentes verificadas</div>
 <div class="card" style="margin-bottom:18px;">
   <h3 style="font-size:14px;font-weight:800;color:var(--t1);margin-bottom:4px;">Origen de cada dato publicado en este dashboard</h3>
-  <p style="font-size:11px;color:var(--t3);margin-bottom:16px;">Todos los datos son de fuentes primarias o secundarias de alta credibilidad. Última verificación: 14 de mayo de 2026.</p>
+  <p style="font-size:11px;color:var(--t3);margin-bottom:16px;">Todos los datos son de fuentes primarias o secundarias de alta credibilidad. Última verificación: <span class="dyn-date-full"></span>.</p>
   <div class="over"><table>
     <thead><tr><th>Fuente</th><th>Tipo</th><th>Datos que aporta</th><th>Frecuencia</th><th>Acceso</th></tr></thead>
     <tbody>
@@ -1550,7 +1550,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
 <footer class="footer">
   <div>
-    <p>Dashboard Cambiario Venezuela 2026 · Elaborado con datos de fuentes primarias oficiales y de mercado · Estado Táchira, Venezuela · 12 de mayo de 2026</p>
+    <p>Dashboard Cambiario Venezuela 2026 · Elaborado con datos de fuentes primarias oficiales y de mercado · Estado Táchira, Venezuela · <span class="dyn-date-full"></span></p>
     <p>Fuentes: BCV.org.ve · Confirmado.com.ve · FinanzasDigital.com · TCambio.app · DolarToday.com · ExchangeMonitor.net · Binance P2P · CENDAS-FVM · INE · INVESP · ve.dolarapi.com</p>
   </div>
   <div>
@@ -2389,6 +2389,18 @@ function applyRates(r, live, ts) {
   // Summary / KPI
   ['ss-bcv','cx-bcv'].forEach(id => setText(id, fmt(r.bcv)+' Bs'));
   ['ss-usdt','cx-usdt'].forEach(id => setText(id, fmt(r.usdt)+' Bs'));
+  // Macro context — valores en vivo
+  setText('cx-eur',    fmt(r.eur)+' Bs');
+  setText('cx-brecha', br+'% · '+fmtN(r.usdt-r.bcv)+' Bs');
+  setText('cx-deval',  '+'+((r.bcv-298.14)/298.14*100).toFixed(1)+'%');
+  setText('cx-salario','~$'+(130/r.bcv).toFixed(2)+' USD');
+  // Canasta — bolívares calculados con BCV en vivo
+  const fmtBs = v => v.toLocaleString('es-VE',{maximumFractionDigits:0});
+  setText('c-cba-bs-vzla',  fmtBs(730*r.bcv)+' Bs (BCV hoy)');
+  setText('c-cbn-bs-vzla',  fmtBs(1265*r.bcv)+' Bs (BCV hoy)');
+  setText('c-cba-bs-tach',  fmtBs(797*r.bcv)+' Bs (BCV hoy)');
+  setText('c-cbn-bs-tach',  fmtBs(1380*r.bcv)+' Bs (BCV hoy)');
+  setText('c-salario-usd',  '~$'+(130/r.bcv).toFixed(2)+' USD');
   setText('ss-eur', fmt(r.eur)+' Bs');
   // COP en stats
   const copN = STATE.cop;
