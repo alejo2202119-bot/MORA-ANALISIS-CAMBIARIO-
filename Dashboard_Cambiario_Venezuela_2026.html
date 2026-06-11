@@ -748,7 +748,7 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 <div class="page-view active" id="view-inicio" data-view="inicio">
 <!-- ═══ RESUMEN EJECUTIVO ═══ -->
 <span id="sec-resumen"></span>
-<div class="sec"><span class="ic">📋</span>Situación cambiaria · hoy</div>
+<div class="sec"><span class="ic">🇻🇪</span>Situación cambiaria · Venezuela · hoy</div>
 <!-- ── RESUMEN EJECUTIVO REDISEÑADO ── -->
 <div style="background:var(--surf);border:1px solid var(--bdr);border-radius:18px;padding:24px 28px;margin-bottom:24px;box-shadow:var(--sh);">
 
@@ -757,8 +757,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
   <!-- FILA 1: Tasas principales -->
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;">
-    <div class="ss" style="border-top:3px solid var(--blue);"><div class="sl">🏦 Dólar oficial (BCV)</div><div class="sv c-blue" id="ss-bcv">—</div><div class="sd">Bolívares por dólar · precio fijado por el gobierno</div></div>
-    <div class="ss" style="border-top:3px solid var(--pur);"><div class="sl">💜 Dólar paralelo (USDT)</div><div class="sv c-pur" id="ss-usdt">—</div><div class="sd">Precio real en el mercado libre · Binance P2P</div></div>
+    <div class="ss" style="border-top:3px solid var(--blue);"><div class="sl"><span style="font-weight:900;font-size:13px;color:var(--blue);font-family:sans-serif;">Bs</span> Dólar oficial (BCV)</div><div class="sv c-blue" id="ss-bcv">—</div><div class="sd">Bolívares por dólar · precio fijado por el gobierno</div></div>
+    <div class="ss" style="border-top:3px solid var(--pur);"><div class="sl"><span style="color:#F3BA2F;font-size:15px;font-weight:900;">◈</span> Dólar paralelo (USDT · Binance)</div><div class="sv c-pur" id="ss-usdt">—</div><div class="sd">Precio real en el mercado libre · Binance P2P</div></div>
     <div class="ss" style="border-top:3px solid var(--grn);"><div class="sl">💶 Euro (BCV oficial)</div><div class="sv" id="ss-eur" style="color:var(--grn);">—</div><div class="sd">Bolívares por euro · precio oficial del BCV</div></div>
     <div class="ss" style="border-top:3px solid var(--yel);"><div class="sl">📐 Brecha cambiaria</div><div class="sv c-yel" id="ss-brecha">—</div><div class="sd">% que el paralelo supera al oficial hoy</div></div>
   </div>
@@ -767,8 +767,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
   <div id="ss-hoy-banner" style="display:none;background:linear-gradient(135deg,#7f1d1d,#b91c1c);border-radius:10px;padding:10px 16px;margin-bottom:10px;color:#fff;">
     <div style="font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;opacity:.8;margin-bottom:6px;">🔴 Cambio de hoy vs ayer</div>
     <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;">
-      <div>🏦 BCV: <strong id="ss-hoy-bcv-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-bcv-pct" style="font-size:11px;opacity:.85;">—</span></div>
-      <div>💜 USDT: <strong id="ss-hoy-usdt-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-usdt-pct" style="font-size:11px;opacity:.85;">—</span></div>
+      <div><span style="font-weight:900;font-size:11px;color:var(--yel)">Bs</span> BCV: <strong id="ss-hoy-bcv-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-bcv-pct" style="font-size:11px;opacity:.85;">—</span></div>
+      <div><span style="color:#F3BA2F;font-size:13px;">◈</span> USDT: <strong id="ss-hoy-usdt-delta" style="font-size:17px;">—</strong> <span id="ss-hoy-usdt-pct" style="font-size:11px;opacity:.85;">—</span></div>
       <div style="font-size:10.5px;opacity:.75;" id="ss-hoy-ref">—</div>
     </div>
   </div>
@@ -815,19 +815,32 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
 
 <!-- ═══ KPIs ═══ -->
 <span id="sec-indicadores"></span>
-<div class="sec"><span class="ic">📊</span>Precios en tiempo real · <span class="dyn-date-full"></span></div>
+<div class="sec"><span class="ic">📊</span>Mercados internacionales · <span class="dyn-date-full"></span></div>
+<!-- IDs ocultos para compatibilidad con JS (no se muestran) -->
+<span id="kv-bcv" style="display:none;"></span><span id="kv-bcv-ts" style="display:none;"></span>
+<span id="kv-usdt" style="display:none;"></span><span id="kv-usdt-ts" style="display:none;"></span>
+<span id="kv-brecha" style="display:none;"></span>
+<span id="kv-cop" style="display:none;"></span><span id="kv-cop-bs" style="display:none;"></span>
+<span id="kv-wti" style="display:none;"></span><span id="kv-wti-ts" style="display:none;"></span>
 <div class="kpi-grid">
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#001f5b,var(--blue));"></div><div class="kpi-ico">🏦</div><div class="kpi-lbl">Dólar BCV Oficial</div><div class="kpi-val c-blue" id="kv-bcv">544,57</div><div class="kpi-sub">Precio fijado por el gobierno · Bs por USD · <span id="kv-bcv-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#4c1d95,var(--pur));"></div><div class="kpi-ico">💜</div><div class="kpi-lbl">Dólar Paralelo (USDT)</div><div class="kpi-val c-pur" id="kv-usdt">744,00</div><div class="kpi-sub">Precio real en el mercado libre · Binance P2P · <span id="kv-usdt-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,var(--yel));"></div><div class="kpi-ico">📐</div><div class="kpi-lbl">Brecha Cambiaria</div><div class="kpi-val c-yel" id="kv-brecha">36,6%</div><div class="kpi-sub">Diferencia entre precio oficial y precio real del dólar</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7f1d1d,var(--red));"></div><div class="kpi-ico">📉</div><div class="kpi-lbl">Pérdida del Bolívar 2026</div><div class="kpi-val c-red" id="kv-deval">+82,7%</div><div class="kpi-sub" id="kv-deval-sub">Cuánto ha subido el dólar desde el 1 de enero de 2026</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a5c,#0ea5e9);"></div><div class="kpi-ico">🇨🇴</div><div class="kpi-lbl">Peso Colombiano (COP)</div><div class="kpi-val" style="color:#0ea5e9;" id="kv-cop">3.644</div><div class="kpi-sub">Pesos colombianos por 1 dólar · 1 COP = <span id="kv-cop-bs">—</span> Bs</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a3a1a,#059669);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">Petróleo WTI</div><div class="kpi-val" style="color:var(--grn);" id="kv-wti">90,35</div><div class="kpi-sub">Precio del barril en dólares · afecta ingresos de Venezuela · <span id="kv-wti-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a2e1a,#16a34a);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">Petróleo Brent</div><div class="kpi-val" style="color:#16a34a;" id="kv-brent">—</div><div class="kpi-sub">Referencia mundial del barril de crudo · <span id="kv-brent-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#78350f,#f59e0b);"></div><div class="kpi-ico">₿</div><div class="kpi-lbl">Bitcoin (BTC)</div><div class="kpi-val" style="color:#f59e0b;" id="kv-btc">—</div><div class="kpi-sub">Precio del Bitcoin en dólares · <span id="kv-btc-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,#d97706);"></div><div class="kpi-ico">🥇</div><div class="kpi-lbl">Oro (por onza)</div><div class="kpi-val" style="color:#d97706;" id="kv-gold">—</div><div class="kpi-sub">Precio de la onza troy de oro en dólares · <span id="kv-gold-ts">—</span></div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7c2d12,var(--ora));"></div><div class="kpi-ico">🔥</div><div class="kpi-lbl">Pérdida del Bolívar 2025</div><div class="kpi-val c-ora">+474%</div><div class="kpi-sub">El dólar pasó de 51,93 a 298,14 Bs en todo el año 2025</div></div>
-  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#14532d,var(--grn));"></div><div class="kpi-ico">📌</div><div class="kpi-lbl">Máximo Histórico 2026</div><div class="kpi-val" style="color:#991b1b;">780 Bs</div><div class="kpi-sub">El dólar paralelo llegó a 780 Bs el 8 de enero · brecha fue 140%</div></div>
+  <!-- Pérdida bolívar 2026 — calculado en vivo -->
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7f1d1d,var(--red));"></div><div class="kpi-ico">📉</div><div class="kpi-lbl">Devaluación 2026</div><div class="kpi-val c-red" id="kv-deval">—</div><div class="kpi-sub" id="kv-deval-sub">Cuánto ha subido el dólar desde el 1 de enero de 2026</div></div>
+  <!-- Petróleo Brent — live Yahoo Finance -->
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1a2e1a,#16a34a);"></div><div class="kpi-ico">🛢️</div><div class="kpi-lbl">Petróleo Brent</div><div class="kpi-val" style="color:#16a34a;" id="kv-brent">—</div><div class="kpi-sub">Referencia mundial del crudo (USD/barril) · <span id="kv-brent-ts">—</span></div></div>
+  <!-- Bitcoin — live CoinGecko / Binance -->
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#78350f,#f59e0b);"></div><div class="kpi-ico">₿</div><div class="kpi-lbl">Bitcoin (BTC)</div><div class="kpi-val" style="color:#f59e0b;" id="kv-btc">—</div><div class="kpi-sub">Precio en dólares · <span id="kv-btc-ts">—</span></div></div>
+  <!-- Ethereum — live CoinGecko / Binance -->
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#3730a3,#6366f1);"></div><div class="kpi-ico">Ξ</div><div class="kpi-lbl">Ethereum (ETH)</div><div class="kpi-val" style="color:#6366f1;" id="kv-eth">—</div><div class="kpi-sub">Precio en dólares · <span id="kv-eth-ts">—</span></div></div>
+  <!-- Oro — live Yahoo Finance -->
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#92400e,#d97706);"></div><div class="kpi-ico">🥇</div><div class="kpi-lbl">Oro (por onza)</div><div class="kpi-val" style="color:#d97706;" id="kv-gold">—</div><div class="kpi-sub">Onza troy en dólares · <span id="kv-gold-ts">—</span></div></div>
+  <!-- S&P 500 — live Yahoo Finance -->
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1e3a5f,#3b82f6);"></div><div class="kpi-ico">📈</div><div class="kpi-lbl">S&amp;P 500</div><div class="kpi-val" style="color:#3b82f6;" id="kv-sp500">—</div><div class="kpi-sub">Índice bursátil de EE.UU. · <span id="kv-sp500-ts">—</span></div></div>
+  <!-- DXY — live Yahoo Finance -->
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#1e3a3a,#0e9f9f);"></div><div class="kpi-ico">💲</div><div class="kpi-lbl">Índice Dólar (DXY)</div><div class="kpi-val" style="color:#0e9f9f;" id="kv-dxy">—</div><div class="kpi-sub">Fortaleza del dólar vs. cesta de divisas · <span id="kv-dxy-ts">—</span></div></div>
+  <!-- Devaluación 2025 — histórico -->
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#7c2d12,var(--ora));"></div><div class="kpi-ico">🔥</div><div class="kpi-lbl">Devaluación 2025</div><div class="kpi-val c-ora">+474%</div><div class="kpi-sub">El dólar subió de 51,93 → 298,14 Bs en todo el año 2025</div></div>
+  <!-- Máximo histórico 2026 — referencia -->
+  <div class="kpi"><div class="kpi-bar" style="background:linear-gradient(90deg,#991b1b,#dc2626);"></div><div class="kpi-ico">🚨</div><div class="kpi-lbl">Pico Paralelo 2026</div><div class="kpi-val" style="color:#dc2626;">780 Bs</div><div class="kpi-sub">USDT llegó a 780 Bs el 8-ene-26 · brecha máxima: 140%</div></div>
 </div>
 
 
@@ -856,10 +869,10 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
         <div class="res-sub">Precio oficial BCV + precio real del mercado libre · actualizado cada 30 seg</div>
       </div>
     </div>
-    <div class="res-row"><span class="res-lbl">🏦 Dólar BCV oficial</span><span class="res-val blue" id="rc-bcv">—</span></div>
-    <div class="res-row"><span class="res-lbl">💜 Dólar paralelo (USDT)</span><span class="res-val pur" id="rc-usdt">—</span></div>
+    <div class="res-row"><span class="res-lbl"><span style="font-weight:900;font-size:11px;color:var(--blue)">Bs</span> Dólar BCV oficial</span><span class="res-val blue" id="rc-bcv">—</span></div>
+    <div class="res-row"><span class="res-lbl"><span style="color:#F3BA2F;font-size:14px;">◈</span> Dólar paralelo (USDT)</span><span class="res-val pur" id="rc-usdt">—</span></div>
     <div class="res-row"><span class="res-lbl">💶 Euro BCV oficial</span><span class="res-val" style="color:var(--grn);" id="rc-eur">—</span></div>
-    <div class="res-row"><span class="res-lbl">🔵 Binance P2P</span><span class="res-val pur" id="rc-bin">—</span></div>
+    <div class="res-row"><span class="res-lbl"><span style="color:#F3BA2F;font-size:13px;">◈</span> Binance P2P</span><span class="res-val pur" id="rc-bin">—</span></div>
     <div class="res-row"><span class="res-lbl">🟡 Yadio.io</span><span class="res-val yel" id="rc-yad">—</span></div>
     <div class="res-row"><span class="res-lbl">🇨🇴 Peso COP / USD</span><span class="res-val" id="rc-cop">~3.644 COP</span></div>
     <div class="res-row"><span class="res-lbl">🇨🇴 1 COP en Bolívares</span><span class="res-val" id="rc-cop-bs">—</span></div>
@@ -2110,6 +2123,22 @@ function applyExtras() {
     ['kv-gold','tk-gold','tk-gold-b'].forEach(id => setText(id, v));
     setText('kv-gold-ts', ts);
   }
+  // Ethereum
+  if (STATE.eth > 0) {
+    const ethFmt = '$'+(STATE.eth>=1000?(STATE.eth/1000).toFixed(2)+'K':fmtN(STATE.eth));
+    setText('kv-eth', ethFmt);
+    setText('kv-eth-ts', tc);
+  }
+  // S&P 500
+  if (STATE.sp500 > 0) {
+    setText('kv-sp500', STATE.sp500.toLocaleString('es-VE',{maximumFractionDigits:0}));
+    setText('kv-sp500-ts', ts);
+  }
+  // DXY
+  if (STATE.dxy > 0) {
+    setText('kv-dxy', fmtN(STATE.dxy));
+    setText('kv-dxy-ts', ts);
+  }
   // S&P 500
   if (STATE.sp500 > 0) {
     const v = STATE.sp500.toLocaleString('es-VE',{minimumFractionDigits:0,maximumFractionDigits:0});
@@ -2568,7 +2597,7 @@ function generateSummary(r, live) {
 ${hoySeccionInforme}
 
 <div style="margin-bottom:14px;">
-  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:6px;">🏦 Banco Central de Venezuela (BCV)</div>
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:6px;"><span style="font-weight:900;font-size:11px;letter-spacing:-.5px;">Bs</span> Banco Central de Venezuela (BCV)</div>
   <div style="margin-bottom:8px;font-size:13px;line-height:1.85;">
     El dólar BCV oficial cotiza hoy a <strong style="color:var(--blue);font-size:15px;">${fmtN(bcv)} Bs/USD</strong>.
     Desde el 1 de enero de 2026 (298,14 Bs), el bolívar ha perdido <strong style="color:var(--red);">+${deval}%</strong> de su valor,
@@ -2581,7 +2610,7 @@ ${hoySeccionInforme}
 </div>
 
 <div style="margin-bottom:14px;">
-  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--pur);margin-bottom:6px;">💜 Mercado Paralelo — USDT (Binance P2P)</div>
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--pur);margin-bottom:6px;"><span style="color:#F3BA2F;font-size:13px;">◈</span> Mercado Paralelo — USDT (Binance P2P)</div>
   <div style="margin-bottom:8px;font-size:13px;line-height:1.85;">
     El dólar paralelo cotiza a <strong style="color:var(--pur);font-size:15px;">${fmtN(usdt)} Bs</strong>.
     La brecha respecto al BCV es <strong style="color:#b45309;">${br}%</strong> (+${brAbs} Bs por dólar). ${brechaInterp}
@@ -2658,7 +2687,7 @@ function buildPanorama(r, live) {
   el.innerHTML = `
 <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--bdr);">
   <div>
-    <div style="font-size:15px;font-weight:900;color:var(--t1);">🗞️ Panorama Económico del Día</div>
+    <div style="font-size:15px;font-weight:900;color:var(--t1);">📰 Análisis Económico del Día</div>
     <div style="font-size:11.5px;color:var(--t3);margin-top:3px;">${fechaHoy} · Última actualización: <strong>${hm}</strong> VET · ${estado}</div>
   </div>
   <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
