@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Dashboard Cambiario · Venezuela 2026 | FUNDESTA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -656,8 +659,8 @@ span[id^="sec-"]{display:block;scroll-margin-top:135px;}
       <span style="height:7px;background:#cf142b;"></span>
     </div>
     <div>
-      <h1>📊 Dashboard Cambiario Venezuela</h1>
-      <p>Tipo de cambio en vivo · BCV Oficial · USDT Paralelo · Peso COP · Petróleo · Canasta Básica · Estado Táchira · Venezuela 2026</p>
+      <h1>📊 Dashboard Cambiario Venezuela <span style="font-size:11px;font-weight:700;background:rgba(245,168,0,.22);color:#f5e068;padding:2px 9px;border-radius:20px;letter-spacing:.5px;vertical-align:middle;">v2.0 · Jun 2026</span></h1>
+      <p>Tipo de cambio en vivo · BCV Oficial · USDT Binance P2P · Peso COP · Petróleo · Canasta Básica · Táchira · Venezuela · Auto-actualiza cada 30 s</p>
     </div>
   </div>
   <div class="header-right">
@@ -2586,62 +2589,79 @@ function generateSummary(r, live) {
   const mesUsdtDiaBs = ((usdt-usdtMesIni)/diasMes).toFixed(2).replace('.',',');
   const inf=document.getElementById('informe-completo');
   if(inf) inf.innerHTML=`
-<div style="border-bottom:2px solid var(--bdr);padding-bottom:12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+<div style="border-bottom:2px solid var(--bdr);padding-bottom:12px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
   <div>
-    <div style="font-size:15px;font-weight:900;color:var(--blue);margin-bottom:3px;">📋 Informe Cambiario · Venezuela</div>
-    <div style="font-size:11.5px;color:var(--t3);">${hoy.charAt(0).toUpperCase()+hoy.slice(1)} · ${hm} · <span style="color:${live?'var(--grn)':'var(--ora)'};">${estado}</span></div>
+    <div style="font-size:16px;font-weight:900;color:var(--blue);margin-bottom:4px;">📋 Informe Cambiario Diario · Venezuela</div>
+    <div style="font-size:11.5px;color:var(--t3);">${hoy.charAt(0).toUpperCase()+hoy.slice(1)} · ${hm} VET · <span style="color:${live?'var(--grn)':'var(--ora)'};">${estado}</span></div>
   </div>
-  <div style="font-size:11px;color:var(--t3);text-align:right;">Actualización cada 60 s</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+    <span style="background:var(--blue-ll);color:var(--blue);font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;border:1px solid var(--blue-l);">🏦 BCV: ${fmtN(bcv)} Bs</span>
+    <span style="background:var(--pur-l);color:var(--pur);font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">◈ USDT: ${fmtN(usdt)} Bs</span>
+    <span style="background:var(--yel-ll);color:#92400e;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">📐 Brecha: ${br}%</span>
+  </div>
 </div>
 
 ${hoySeccionInforme}
 
-<div style="margin-bottom:14px;">
-  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:6px;"><span style="font-weight:900;font-size:11px;letter-spacing:-.5px;">Bs</span> Banco Central de Venezuela (BCV)</div>
-  <div style="margin-bottom:8px;font-size:13px;line-height:1.85;">
-    El dólar BCV oficial cotiza hoy a <strong style="color:var(--blue);font-size:15px;">${fmtN(bcv)} Bs/USD</strong>.
-    Desde el 1 de enero de 2026 (298,14 Bs), el bolívar ha perdido <strong style="color:var(--red);">+${deval}%</strong> de su valor,
-    acumulando una suba total de <strong style="color:var(--red);">+${anoTotalBcvBs} Bs</strong> en lo que va del año.
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+  <div style="background:var(--blue-ll);border:1px solid var(--blue-l);border-radius:12px;padding:14px 16px;">
+    <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><span style="font-weight:900;font-size:12px;background:var(--blue);color:#fff;padding:1px 6px;border-radius:4px;">Bs</span> Dólar BCV Oficial</div>
+    <div style="font-size:26px;font-weight:900;color:var(--blue);margin-bottom:4px;">${fmtN(bcv)} <span style="font-size:14px;font-weight:600;">Bs/USD</span></div>
+    <div style="font-size:12px;color:var(--t2);line-height:1.9;">
+      <div>📅 <strong>${mesLabel}:</strong> <span style="color:var(--red);">+${mesBcvBs} Bs (+${mesBcvPct}%)</span> · prom. <strong style="color:var(--red);">+${diaMesBs} Bs/día</strong></div>
+      <div>📆 <strong>2026 acumulado:</strong> <span style="color:var(--red);">+${anoTotalBcvBs} Bs (+${deval}%)</span> · prom. <strong style="color:var(--red);">+${anoDiaBcvBs} Bs/día</strong></div>
+      <div style="margin-top:4px;font-size:11px;color:var(--t3);">Base: 298,14 Bs el 1-ene-2026</div>
+    </div>
   </div>
-  <div style="background:var(--blue-ll);border-radius:8px;padding:10px 16px;font-size:12.5px;line-height:2.1;">
-    <div>📅 <strong>En ${mesLabel}:</strong> subió <strong style="color:var(--red);">+${mesBcvBs} Bs</strong> (+${mesBcvPct}%) &nbsp;→&nbsp; <strong style="color:var(--red);font-size:14px;">promedio +${diaMesBs} Bs/día</strong> en lo que va del mes</div>
-    <div>📆 <strong>En todo 2026:</strong> sube <strong style="color:var(--red);">+${anoTotalBcvBs} Bs</strong> en total &nbsp;→&nbsp; <strong style="color:var(--red);font-size:14px;">promedio +${anoDiaBcvBs} Bs/día</strong> (+${anoDiaBcvPct}% diario compuesto desde ene-2026)</div>
-  </div>
-</div>
-
-<div style="margin-bottom:14px;">
-  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--pur);margin-bottom:6px;"><span style="color:#F3BA2F;font-size:13px;">◈</span> Mercado Paralelo — USDT (Binance P2P)</div>
-  <div style="margin-bottom:8px;font-size:13px;line-height:1.85;">
-    El dólar paralelo cotiza a <strong style="color:var(--pur);font-size:15px;">${fmtN(usdt)} Bs</strong>.
-    La brecha respecto al BCV es <strong style="color:#b45309;">${br}%</strong> (+${brAbs} Bs por dólar). ${brechaInterp}
-  </div>
-  <div style="background:var(--yel-ll);border-radius:8px;padding:10px 16px;font-size:12.5px;line-height:2.1;">
-    <div>📅 <strong>En ${mesLabel}:</strong> subió <strong style="color:var(--pur);">+${mesUsdtBs} Bs</strong> (+${mesUsdtPct}%) &nbsp;→&nbsp; <strong style="color:var(--pur);font-size:14px;">promedio +${mesUsdtDiaBs} Bs/día</strong> en lo que va del mes</div>
-    <div>📆 <strong>En todo 2026:</strong> subió <strong style="color:var(--pur);">+${anoTotalUsdtBs} Bs</strong> en total &nbsp;→&nbsp; <strong style="color:var(--pur);font-size:14px;">promedio +${anoDiaUsdtBs} Bs/día</strong> (+${anoDiaUsdtPct}% diario compuesto)</div>
-  </div>
-  <div style="font-size:11.5px;color:var(--t3);margin-top:6px;">💶 Euro BCV oficial hoy: <strong style="color:var(--t2);">${fmtN(eur)} Bs/EUR</strong></div>
-</div>
-
-<div style="margin-bottom:14px;">
-  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:6px;">💼 Situación Social</div>
-  <div style="line-height:2;font-size:12.5px;">
-    El salario mínimo en Venezuela es de <strong>130 Bs</strong>, equivalente a apenas <strong style="color:var(--red);">$${salUsdFmt} USD</strong> al cambio oficial.
-    Para cubrir la <strong>Canasta Básica Alimentaria (CBA)</strong> — estimada en <strong>$730 USD</strong> (<strong style="color:var(--red);">${cbaBsHoy} Bs</strong> al cambio actual) por CENDAS —
-    un trabajador necesitaría <strong style="color:var(--red);">${salarios_cba.toLocaleString('es-VE')} salarios mínimos</strong>.
-    El ingreso integral con bonos del gobierno es de <strong>$240/mes</strong> (desde mayo 2026), aún muy por debajo de la CBA.
+  <div style="background:var(--pur-l);border:1px solid #c4b5fd;border-radius:12px;padding:14px 16px;">
+    <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--pur);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><span style="color:#F3BA2F;font-size:16px;font-weight:900;">◈</span> USDT Binance P2P</div>
+    <div style="font-size:26px;font-weight:900;color:var(--pur);margin-bottom:4px;">${fmtN(usdt)} <span style="font-size:14px;font-weight:600;">Bs/USD</span></div>
+    <div style="font-size:12px;color:var(--t2);line-height:1.9;">
+      <div>📐 <strong>Brecha vs BCV:</strong> <span style="color:#b45309;font-weight:700;">${br}%</span> · diferencial: <strong style="color:#b45309;">+${brAbs} Bs</strong></div>
+      <div>📅 <strong>${mesLabel}:</strong> <span style="color:var(--pur);">+${mesUsdtBs} Bs (+${mesUsdtPct}%)</span></div>
+      <div>📆 <strong>2026 acumulado:</strong> <span style="color:var(--pur);">+${anoTotalUsdtBs} Bs (+${anoTotalUsdtPct}%)</span></div>
+    </div>
   </div>
 </div>
 
-<div>
-  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--t3);margin-bottom:6px;">🌎 Contexto Regional e Internacional</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px;font-size:12.5px;">
-    <div>🇨🇴 Peso colombiano: <strong>${STATE.cop.toLocaleString('es-VE')} COP/USD</strong> · 1 COP ≈ <strong>${copBsHoy} Bs</strong></div>
-    <div>🛢️ WTI Petróleo: <strong style="color:var(--grn);">$${fmtN(STATE.wti)} USD/barril</strong></div>
-    <div>💶 Euro BCV: <strong>${fmtN(eur)} Bs/EUR</strong></div>
-    <div>📉 Devaluación acumulada 2025: <strong style="color:var(--ora);">+474%</strong> (51,93 → 298,14 Bs)</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+  <div style="background:var(--surf2);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;">
+    <div style="font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">💶 Euro BCV</div>
+    <div style="font-size:18px;font-weight:900;color:var(--grn);">${fmtN(eur)} Bs</div>
+    <div style="font-size:11px;color:var(--t3);margin-top:2px;">Precio oficial BCV · por euro</div>
+  </div>
+  <div style="background:var(--surf2);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;">
+    <div style="font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🇨🇴 Peso COP</div>
+    <div style="font-size:18px;font-weight:900;color:#0ea5e9;">${STATE.cop.toLocaleString('es-VE')} COP</div>
+    <div style="font-size:11px;color:var(--t3);margin-top:2px;">Por 1 USD · TRM Banrep Colombia</div>
+  </div>
+  <div style="background:var(--surf2);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;">
+    <div style="font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">🛢️ WTI Petróleo</div>
+    <div style="font-size:18px;font-weight:900;color:var(--grn);">$${fmtN(STATE.wti)}</div>
+    <div style="font-size:11px;color:var(--t3);margin-top:2px;">USD/barril · Yahoo Finance en vivo</div>
   </div>
 </div>
 
+<div style="background:linear-gradient(135deg,#fff5f5,#fff8f0);border:1px solid #fca5a5;border-radius:12px;padding:14px 18px;margin-bottom:14px;">
+  <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:8px;">💼 Situación Social · Contexto Laboral Venezuela 2026</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12.5px;color:var(--t2);line-height:1.9;">
+    <div>
+      El salario mínimo es de <strong>130 Bs/mes</strong>, equivalente a solo <strong style="color:var(--red);">$${salUsdFmt} USD</strong> al cambio oficial.
+      Con bonos del gobierno, el ingreso integral llega a <strong>$240/mes</strong> (desde mayo 2026).
+    </div>
+    <div>
+      La Canasta Básica Alimentaria (CENDAS abr-2026) cuesta <strong>$730 USD</strong> = <strong style="color:var(--red);">${cbaBsHoy} Bs</strong>.
+      Un trabajador necesita <strong style="color:var(--red);">${salarios_cba.toLocaleString('es-VE')} salarios mínimos</strong> para cubrirla.
+    </div>
+  </div>
+</div>
+
+<div style="font-size:11.5px;color:var(--t3);line-height:1.8;">
+  ${brechaMsg}
+  &nbsp;·&nbsp; 💶 Euro: <strong>${fmtN(eur)} Bs</strong>
+  &nbsp;·&nbsp; 📉 Deval. 2025 completo: <strong style="color:var(--ora);">+474%</strong> (51,93→298,14 Bs)
+  &nbsp;·&nbsp; 1 COP ≈ <strong>${copBsHoy} Bs</strong>
+</div>
 `;
   document.querySelectorAll('.dyn-date-full').forEach(el=>el.textContent=hoyCorto);
   document.querySelectorAll('.dyn-date-short').forEach(el=>el.textContent=`${MESES[now.getMonth()]} parcial al ${now.getDate()}-${MESES[now.getMonth()].slice(0,3)}`);
@@ -2684,22 +2704,71 @@ function buildPanorama(r, live) {
     STATE.dxy > 0 ? `El índice dólar (DXY) en <strong>${fmtN(STATE.dxy)}</strong>.` : '',
   ].filter(Boolean).join(' ');
 
+  const btcStr = STATE.btc > 0 ? ` Bitcoin cotiza en <strong>$${(STATE.btc>=1000?(STATE.btc/1000).toFixed(1)+'K':fmtN(STATE.btc))}</strong>.` : '';
+  const salarioUsd = (130/bcv).toFixed(2);
+  const cbaBsNum = Math.round(730*bcv);
+  const salariosMinimosCBA = Math.round(730*bcv/130);
+
   el.innerHTML = `
-<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--bdr);">
-  <div>
-    <div style="font-size:15px;font-weight:900;color:var(--t1);">📰 Análisis Económico del Día</div>
-    <div style="font-size:11.5px;color:var(--t3);margin-top:3px;">${fechaHoy} · Última actualización: <strong>${hm}</strong> VET · ${estado}</div>
+<div style="background:linear-gradient(135deg,var(--blue) 0%,#0d2f80 100%);border-radius:16px;padding:18px 22px;margin-bottom:16px;color:#fff;">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+    <div>
+      <div style="font-size:16px;font-weight:900;">📰 Análisis Económico del Día</div>
+      <div style="font-size:11.5px;opacity:.75;margin-top:3px;">${fechaHoy} · ${hm} VET · ${estado}</div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+      <span style="background:rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🌎 MUNDO</span>
+      <span style="background:rgba(207,20,43,.35);color:#fca5a5;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🇻🇪 VENEZUELA</span>
+      <span style="background:rgba(245,168,0,.25);color:#fde68a;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🏔️ TÁCHIRA</span>
+    </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-    <span style="background:rgba(37,99,235,.1);color:var(--blue);font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🌎 MUNDO</span>
-    <span style="background:rgba(207,20,43,.1);color:var(--red);font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🇻🇪 VENEZUELA</span>
-    <span style="background:rgba(245,168,0,.15);color:#92400e;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;">🏔️ TÁCHIRA</span>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;">
+    <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;text-align:center;">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;opacity:.7;margin-bottom:4px;">Bs BCV Oficial</div>
+      <div style="font-size:20px;font-weight:900;color:#93c5fd;">${fmtN(bcv)}</div>
+    </div>
+    <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;text-align:center;">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;opacity:.7;margin-bottom:4px;">◈ USDT Paralelo</div>
+      <div style="font-size:20px;font-weight:900;color:#c4b5fd;">${fmtN(usdt)}</div>
+    </div>
+    <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;text-align:center;">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;opacity:.7;margin-bottom:4px;">📐 Brecha</div>
+      <div style="font-size:20px;font-weight:900;color:#fde68a;">${brecha}%</div>
+    </div>
+    <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;text-align:center;">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;opacity:.7;margin-bottom:4px;">📉 Deval. 2026</div>
+      <div style="font-size:20px;font-weight:900;color:#fca5a5;">+${deval}%</div>
+    </div>
+    ${STATE.wti>0?`<div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;text-align:center;">
+      <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;opacity:.7;margin-bottom:4px;">🛢️ WTI</div>
+      <div style="font-size:20px;font-weight:900;color:#86efac;">$${fmtN(STATE.wti)}</div>
+    </div>`:''}
   </div>
 </div>
-<div style="font-size:13.5px;line-height:2.0;color:var(--t2);">
-  <p style="margin-bottom:12px;"><strong style="color:var(--blue-m);">🌎 MUNDO —</strong> ${mundoPetroleo} ${mundoExtras} Los mercados internacionales operan bajo vigilancia por las tensiones arancelarias globales y la política monetaria de la Reserva Federal de EE.UU.</p>
-  <p style="margin-bottom:12px;"><strong style="color:var(--red);">🇻🇪 VENEZUELA —</strong> El Banco Central de Venezuela (BCV) fijó el dólar oficial en <strong style="color:var(--blue);font-size:15px;">Bs ${fmtN(bcv)}</strong>. El mercado paralelo (USDT Binance P2P) cotiza en <strong style="color:var(--pur);font-size:15px;">Bs ${fmtN(usdt)}</strong>, generando una brecha cambiaria de <strong style="color:${brechaColor};">${brecha}%</strong> (${brechaAbs} Bs de diferencial).${brechaComentario} El euro BCV se cotiza en <strong>Bs ${fmtN(eur)}</strong>. Respecto al inicio del año (Bs 298,14), el bolívar acumula una devaluación de <strong style="color:var(--red);">+${deval}%</strong>.</p>
-  <p style="margin-bottom:0;"><strong style="color:#92400e;">🏔️ TÁCHIRA —</strong> En la frontera con Colombia, el peso equivale a <strong>Bs ${copBs} por cada 1.000 COP</strong> (TRM Banrep: <strong>${cop.toLocaleString('es-VE')} COP/USD</strong>). Las casas de cambio de San Antonio del Táchira operan con el paralelo como referencia principal. La canasta básica (CENDAS) se estima en <strong>$730 USD</strong> — equivalente a <strong>Bs ${cbaBs}</strong> al cambio oficial de hoy.${devalAlerta}</p>
+<div style="font-size:13.5px;line-height:2.1;color:var(--t2);">
+  <div style="margin-bottom:14px;padding:14px 18px;background:var(--blue-ll);border-left:4px solid var(--blue-m);border-radius:0 10px 10px 0;">
+    <strong style="color:var(--blue-m);">🌎 MERCADOS INTERNACIONALES —</strong>
+    ${mundoPetroleo} ${mundoExtras}${btcStr}
+    Los mercados globales operan bajo vigilancia por la política monetaria de la Reserva Federal de EE.UU. y las tensiones arancelarias entre potencias.
+  </div>
+  <div style="margin-bottom:14px;padding:14px 18px;background:var(--red-ll);border-left:4px solid var(--red);border-radius:0 10px 10px 0;">
+    <strong style="color:var(--red);">🇻🇪 VENEZUELA —</strong>
+    El Banco Central de Venezuela (BCV) publicó el dólar oficial en <strong style="color:var(--blue);font-size:15px;">Bs ${fmtN(bcv)}</strong>.
+    El mercado paralelo (USDT · Binance P2P) opera en <strong style="color:var(--pur);font-size:15px;">Bs ${fmtN(usdt)}</strong>,
+    con una brecha de <strong style="color:${brechaColor};font-size:14px;">${brecha}%</strong> (${brechaAbs} Bs de diferencial).${brechaComentario}
+    El euro BCV cotiza en <strong>Bs ${fmtN(eur)}</strong>.
+    Desde el 1-ene-2026 (Bs 298,14), el bolívar acumula <strong style="color:var(--red);">+${deval}% de devaluación</strong>.
+    El salario mínimo equivale a <strong style="color:var(--red);">$${salarioUsd} USD</strong>, frente a una Canasta Básica de
+    <strong>$730 USD</strong> (<strong style="color:var(--red);">${cbaBsNum.toLocaleString('es-VE')} Bs</strong>): se necesitan <strong style="color:var(--red);">${salariosMinimosCBA.toLocaleString('es-VE')} salarios</strong> para cubrirla.${devalAlerta}
+  </div>
+  <div style="padding:14px 18px;background:var(--yel-ll);border-left:4px solid var(--yel);border-radius:0 10px 10px 0;">
+    <strong style="color:#92400e;">🏔️ TÁCHIRA · FRONTERA —</strong>
+    En San Antonio del Táchira y Cúcuta, la tasa real de referencia es el paralelo (USDT · Bs ${fmtN(usdt)}).
+    El peso colombiano cotiza a <strong>${cop.toLocaleString('es-VE')} COP/USD</strong> (TRM Banrep), equivalente a
+    <strong>Bs ${copBs} por cada 1.000 COP</strong>. La Canasta Básica Alimentaria en la frontera
+    asciende a <strong>$797 USD</strong> (9% más cara que en el promedio nacional por CENDAS).
+    Las casas de cambio de Cúcuta absorben el diferencial cambiario del corredor binacional.${devalAlerta}
+  </div>
 </div>`;
 }
 
