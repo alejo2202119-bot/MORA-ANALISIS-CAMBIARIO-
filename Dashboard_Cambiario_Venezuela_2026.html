@@ -2078,6 +2078,7 @@ async function fetchAll(){
   updateWTIPanel();
   drawCompChart();
   applyExtras();
+  updateChartsLive(); // ← actualiza último punto de cada gráfica con datos en vivo
 }
 
 // Actualiza indicadores adicionales (BTC, ETH, Gold, S&P500, DXY, Brent)
@@ -2807,6 +2808,10 @@ document.getElementById('tlBuscar').addEventListener('input', function() {
 const TIP = document.getElementById('chartTooltip');
 function showTip(html,x,y){TIP.innerHTML=html;TIP.style.display='block';const tw=TIP.offsetWidth,th=TIP.offsetHeight;let tx=x+14,ty=y-th/2;if(tx+tw>window.innerWidth-10)tx=x-tw-14;if(ty<10)ty=10;if(ty+th>window.innerHeight-10)ty=window.innerHeight-th-10;TIP.style.left=tx+'px';TIP.style.top=ty+'px';}
 function hideTip(){TIP.style.display='none';}
+
+/* ── Registro global de gráficas para actualización en vivo ── */
+const CHART_REGISTRY = {};
+
 function mkChart(canvasId, cfg) {
   const el = document.getElementById(canvasId);
   if (!el) return;
@@ -3078,14 +3083,74 @@ function mkChart(canvasId, cfg) {
 
   el.addEventListener('mouseleave', ()=>{ hoverIdx=-1; paint(); hideTip(); });
 
+  // ─ Registro para actualización en vivo ─
+  CHART_REGISTRY[canvasId] = { cfg: cfg, repaint: paint };
+
   // ─ Resize + initial paint ─
-  // THE FIX: ResizeObserver ensures we always have correct dimensions
   if (window.ResizeObserver) {
     const ro = new ResizeObserver(() => paint());
     ro.observe(el.closest('.card') || el.closest('.c-card') || el.parentElement);
   }
-  // Guaranteed first paint after full layout
   setTimeout(paint, 0);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ACTUALIZACIÓN EN VIVO DE GRÁFICAS
+//  Muta el último punto de cada chart con STATE actual y repinta
+// ═══════════════════════════════════════════════════════════
+function updateChartsLive() {
+  const bcv = STATE.bcv, usdt = STATE.usdt, wti = STATE.wti;
+  function setLast(d, v) { if (d && d.length) d[d.length-1] = v; }
+
+  // cH — Histórico BCV vs USDT 2022–2026 (último punto = mes actual)
+  if (CHART_REGISTRY.cH) {
+    const sets = CHART_REGISTRY.cH.cfg.sets;
+    setLast(sets[0].data, bcv);
+    setLast(sets[1].data, usdt);
+    CHART_REGISTRY.cH.repaint();
+  }
+
+  // c26 — BCV vs USDT mensual 2026 (último = mes en curso)
+  if (CHART_REGISTRY.c26) {
+    const sets = CHART_REGISTRY.c26.cfg.sets;
+    setLast(sets[0].data, bcv);
+    setLast(sets[1].data, usdt);
+    CHART_REGISTRY.c26.repaint();
+  }
+
+  // cBr — Brecha cambiaria (último punto = brecha hoy)
+  if (CHART_REGISTRY.cBr) {
+    const brecha = parseFloat(((usdt - bcv) / bcv * 100).toFixed(1));
+    setLast(CHART_REGISTRY.cBr.cfg.data, brecha);
+    CHART_REGISTRY.cBr.repaint();
+  }
+
+  // cAn — Devaluación anual (último punto = 2026* acumulado)
+  if (CHART_REGISTRY.cAn) {
+    const deval = parseFloat(((bcv - 298.14) / 298.14 * 100).toFixed(1));
+    setLast(CHART_REGISTRY.cAn.cfg.data, deval);
+    CHART_REGISTRY.cAn.repaint();
+  }
+
+  // cMn — Variación mensual (último punto = mayo actual vs apertura 489.55)
+  if (CHART_REGISTRY.cMn) {
+    const varMay = parseFloat(((bcv - 489.55) / 489.55 * 100).toFixed(1));
+    setLast(CHART_REGISTRY.cMn.cfg.data, Math.max(0, varMay));
+    CHART_REGISTRY.cMn.repaint();
+  }
+
+  // cWTI — Petróleo WTI (último punto = precio live)
+  if (CHART_REGISTRY.cWTI && wti > 0) {
+    setLast(CHART_REGISTRY.cWTI.cfg.data, wti);
+    CHART_REGISTRY.cWTI.repaint();
+  }
+
+  // cCan — Canasta vs salario (primer punto = salario mínimo en USD live)
+  if (CHART_REGISTRY.cCan && bcv > 0) {
+    const salUsd = parseFloat((130 / bcv).toFixed(3));
+    CHART_REGISTRY.cCan.cfg.data[0] = salUsd;
+    CHART_REGISTRY.cCan.repaint();
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -3254,7 +3319,7 @@ window.addEventListener('load', function() {
   setInterval(()=>{
     if(STATE.apiStatus.pyd!=='on')fetchPydolar().then(()=>applyRates({bcv:STATE.bcv,usdt:STATE.usdt,eur:STATE.eur},true,STATE.lastFetch.pyd));
     if(STATE.apiStatus.er!=='on')fetchOpenER();
-    if(STATE.apiStatus.yh!=='on')fetchWTI().then(()=>{setText('kv-wti',fmtN(STATE.wti));updateWTIPanel();});
+    if(STATE.apiStatus.yh!=='on')fetchWTI().then(()=>{setText('kv-wti',fmtN(STATE.wti));updateWTIPanel();updateChartsLive();});
   },30000);
   // Oscilación UI cada 3s
   setInterval(tickUI, TICK_INTERVAL);
