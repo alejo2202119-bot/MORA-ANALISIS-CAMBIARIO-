@@ -1956,8 +1956,8 @@ async function fetchYahooPrice(symbol) {
 
 async function fetchWTI(){
   const t0 = Date.now();
-  // Petróleo: WTI (CL=F) + Brent (BZ=F) + Gas Natural (NG=F)
-  // Índices:  S&P500 (^GSPC) + DXY (DX=F)
+  // Petróleo: WTI (CL=F) + Brent (BZ=F)
+  // Índices:  S&P500 (^GSPC) + DXY — intenta DX=F, luego DX-Y.NYB
   const symbols = {wti:'CL=F', brent:'BZ=F', sp500:'^GSPC', dxy:'DX=F'};
   const reqs = Object.entries(symbols).map(([k,sym]) =>
     fetchYahooPrice(sym).then(p => ({k, p}))
@@ -1973,6 +1973,31 @@ async function fetchWTI(){
       if (k==='dxy'   && p>50)   { STATE.dxy=p; }
       logAPI('yahoo-'+k,'ok',Date.now()-t0,{[k]:p});
     }
+  }
+  // DXY fallback: probar símbolo alternativo DX-Y.NYB si DX=F falló
+  if (!STATE.dxy || STATE.dxy <= 0) {
+    try {
+      const p2 = await fetchYahooPrice('DX-Y.NYB');
+      if (p2 && p2 > 50) { STATE.dxy = p2; logAPI('yahoo-dxy-alt','ok',Date.now()-t0,{dxy:p2}); }
+    } catch(e){}
+  }
+  // DXY segundo fallback: usar open.er-api para calcular aproximación
+  if (!STATE.dxy || STATE.dxy <= 0) {
+    try {
+      const res = await fetchTimed('https://open.er-api.com/v6/latest/USD', 5000);
+      if (res.ok) {
+        const j = await res.json();
+        // DXY ≈ suma ponderada EUR(57.6%) JPY(13.6%) GBP(11.9%) CAD(9.1%) SEK(4.2%) CHF(3.6%)
+        if (j.rates && j.rates.EUR && j.rates.JPY) {
+          const eur = j.rates.EUR, jpy = j.rates.JPY, gbp = j.rates.GBP||0.79;
+          const cad = j.rates.CAD||1.36, sek = j.rates.SEK||10.5, chf = j.rates.CHF||0.9;
+          const dxy = 50.14348112 * Math.pow(1/eur,0.576) * Math.pow(jpy,0.136) *
+                      Math.pow(1/gbp,0.119) * Math.pow(cad,0.091) *
+                      Math.pow(sek,0.042) * Math.pow(1/chf,0.036);
+          if (dxy > 50) { STATE.dxy = parseFloat(dxy.toFixed(2)); logAPI('dxy-calc','ok',0,{dxy:STATE.dxy}); }
+        }
+      }
+    } catch(e){}
   }
   if (ok) { STATE.lastFetch.yh=Date.now(); setDots('yh','on'); return true; }
   setDots('yh','warn'); return false;
@@ -3431,7 +3456,9 @@ window.addEventListener('load', function() {
   setInterval(()=>{
     if(STATE.apiStatus.pyd!=='on')fetchPydolar().then(()=>applyRates({bcv:STATE.bcv,usdt:STATE.usdt,eur:STATE.eur},true,STATE.lastFetch.pyd));
     if(STATE.apiStatus.er!=='on')fetchOpenER();
-    if(STATE.apiStatus.yh!=='on')fetchWTI().then(()=>{setText('kv-wti',fmtN(STATE.wti));updateWTIPanel();updateChartsLive();});
+    if(STATE.apiStatus.yh!=='on')fetchWTI().then(()=>{setText('kv-wti',fmtN(STATE.wti));updateWTIPanel();updateChartsLive();applyExtras();});
+    // Reintentar DXY específicamente si sigue vacío
+    if(STATE.dxy<=0)fetchWTI().then(()=>applyExtras());
   },30000);
   // Oscilación UI cada 3s
   setInterval(tickUI, TICK_INTERVAL);
