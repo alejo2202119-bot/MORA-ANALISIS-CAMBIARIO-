@@ -1670,7 +1670,7 @@ const hhmm   = d=>`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes
 
 function fetchTimed(url,ms=FETCH_TIMEOUT){
   return Promise.race([
-    fetch(url),
+    fetch(url, {cache:'no-store'}),
     new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))
   ]);
 }
@@ -1731,9 +1731,13 @@ function loadCache() {
     const c = JSON.parse(raw);
     const age = Date.now() - (c.t || 0);
     if (age > 3600000) return; // ignorar caché >1h
-    if (c.bcv  > 100)  STATE.bcv  = c.bcv;
-    if (c.usdt > 100)  STATE.usdt = c.usdt;
-    if (c.eur  > 100)  STATE.eur  = c.eur;
+    // Si el caché es de un día anterior, ignorar tasas BCV/USDT/EUR
+    const cacheDay = new Date(c.t||0).toDateString();
+    const today    = new Date().toDateString();
+    const sameDay  = (cacheDay === today);
+    if (c.bcv  > 100)  STATE.bcv  = sameDay ? c.bcv  : STATE.bcv;
+    if (c.usdt > 100)  STATE.usdt = sameDay ? c.usdt : STATE.usdt;
+    if (c.eur  > 100)  STATE.eur  = sameDay ? c.eur  : STATE.eur;
     if (c.cop  > 1000) STATE.cop  = c.cop;
     if (c.wti  > 0)    STATE.wti  = c.wti;
     if (c.brent > 0)   STATE.brent = c.brent;
