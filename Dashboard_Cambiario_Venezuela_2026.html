@@ -9,8 +9,6 @@
 <title>Dashboard Cambiario · Venezuela 2026 | FUNDESTA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
 <style>
 :root{
   --blue:#003893;--blue-m:#1d4ed8;--blue-l:#dbeafe;--blue-ll:#eff6ff;
@@ -3471,114 +3469,80 @@ window.addEventListener('load', function() {
 });
 
 // ═══════════════════════════════════════════════════════════
-//  DESCARGA PDF — html2canvas + jsPDF (auto-descarga sin diálogo)
+//  DESCARGA PDF — clona DOM, captura canvas y abre ventana de impresión
+//  No depende de librerías externas; funciona dentro de iframes/proxies.
 // ═══════════════════════════════════════════════════════════
-async function downloadPDF() {
-  const fab    = document.getElementById('pdf-fab');
-  const barBtn = document.getElementById('pdf-bar-btn');
-
+function downloadPDF() {
+  var fab    = document.getElementById('pdf-fab');
+  var barBtn = document.getElementById('pdf-bar-btn');
   function setLoading(on) {
-    if (fab)    { fab.textContent = on ? '⏳' : '📄'; fab.style.pointerEvents = on ? 'none' : ''; }
-    if (barBtn) { barBtn.innerHTML = on ? '<span class="pdf-ic">⏳</span>Generando PDF…' : '<span class="pdf-ic">📄</span>PDF'; barBtn.disabled = on; }
+    if(fab)    { fab.textContent = on?'⏳':'📄'; fab.style.pointerEvents = on?'none':''; }
+    if(barBtn) { barBtn.innerHTML = on?'<span class="pdf-ic">⏳</span>Preparando…':'<span class="pdf-ic">📄</span>PDF'; barBtn.disabled = on; }
   }
+  setLoading(true);
 
-  // Si las librerías no cargaron, usar print como respaldo
-  if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
-    const now2 = new Date();
-    const fs = now2.toLocaleDateString('es-VE',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) + '  ' + now2.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
-    const wr = document.getElementById('mainWrap'); if(wr) wr.setAttribute('data-fecha',fs);
-    setLoading(true);
-    setTimeout(function(){ window.print(); setLoading(false); }, 350);
+  // 1. Capturar canvas como imágenes antes de clonar el DOM
+  var cvData = {};
+  document.querySelectorAll('canvas').forEach(function(cv){
+    try{ cvData[cv.id||cv.className] = {
+      src: cv.toDataURL('image/png'),
+      w: cv.style.width  || cv.offsetWidth  + 'px',
+      h: cv.style.height || cv.offsetHeight + 'px'
+    };}catch(e){}
+  });
+
+  // 2. Fecha de generación
+  var now = new Date();
+  var fechaStr = now.toLocaleDateString('es-VE',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+               + '  ·  ' + now.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+
+  // 3. Clonar el DOM completo
+  var clone = document.documentElement.cloneNode(true);
+
+  // 4. Reemplazar cada canvas por un <img> con el snapshot
+  clone.querySelectorAll('canvas').forEach(function(cv){
+    var key = cv.id || cv.className;
+    var d = cvData[key];
+    if(d && d.src){
+      var img = document.createElement('img');
+      img.src = d.src; img.style.width = d.w; img.style.height = d.h; img.style.maxWidth='100%';
+      cv.parentNode && cv.parentNode.replaceChild(img, cv);
+    }
+  });
+
+  // 5. Eliminar elementos innecesarios del clon
+  clone.querySelectorAll([
+    'script','#pwOverlay','#pdf-fab','#pdf-bar-btn',
+    '#topbar','#ticker','#refreshBar','.btn-refresh','#chartTooltip'
+  ].join(',')).forEach(function(el){ el.remove(); });
+
+  // 6. Mostrar todas las secciones (no solo la activa)
+  clone.querySelectorAll('.page-view').forEach(function(v){ v.style.display='block'; });
+
+  // 7. Inyectar fecha en el header de impresión
+  var wr = clone.querySelector('#mainWrap') || clone.querySelector('.wrap');
+  if(wr) wr.setAttribute('data-fecha', fechaStr);
+
+  // 8. Construir el HTML final
+  var printHTML = '<!DOCTYPE html>' + clone.outerHTML;
+
+  // 9. Abrir ventana nueva SINCRÓNICO (conserva el gesto del usuario → no bloqueado)
+  var pw = window.open('', '_blank', 'width=1100,height=850,scrollbars=yes,resizable=yes');
+  if(!pw){
+    setLoading(false);
+    alert('Activa las ventanas emergentes en tu navegador para generar el PDF,\no presiona Ctrl+P (⌘+P en Mac) para imprimir/guardar como PDF.');
     return;
   }
 
-  setLoading(true);
+  pw.document.open();
+  pw.document.write(printHTML);
+  pw.document.close();
 
-  try {
-    const now = new Date();
-    const fechaStr = now.toLocaleDateString('es-VE',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
-                   + '  ·  ' + now.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
-
-    // Capturar la vista activa completa (scroll height)
-    const target = document.querySelector('.page-view.active') || document.getElementById('mainWrap');
-
-    const canvas = await html2canvas(target, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#f0f4f8',
-      logging: false,
-      scrollX: 0,
-      scrollY: 0,
-      width:  target.scrollWidth,
-      height: target.scrollHeight,
-      windowWidth:  target.scrollWidth,
-      windowHeight: target.scrollHeight
-    });
-
-    const { jsPDF } = window.jspdf;
-    const pdf      = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-    const pageW    = pdf.internal.pageSize.getWidth();
-    const pageH    = pdf.internal.pageSize.getHeight();
-    const margin   = 10;
-    const HDR      = 18;   // alto del header azul
-    const FTR      = 8;    // alto del pie de página
-    const contentH = pageH - HDR - FTR - margin; // espacio útil de imagen por página
-
-    function drawHeader() {
-      pdf.setFillColor(0,56,147);
-      pdf.rect(0,0,pageW,HDR,'F');
-      pdf.setTextColor(255,255,255);
-      pdf.setFontSize(9); pdf.setFont('helvetica','bold');
-      pdf.text('Dashboard Cambiario · Venezuela 2026 · FUNDESTA', margin, 12);
-      pdf.setFontSize(7); pdf.setFont('helvetica','normal');
-      pdf.text(fechaStr, pageW - margin, 12, {align:'right'});
-    }
-
-    const imgData = canvas.toDataURL('image/jpeg', 0.93);
-    const imgW    = pageW - 2*margin;
-    const imgH    = (canvas.height / canvas.width) * imgW;
-
-    // Dibujar primera página
-    drawHeader();
-    pdf.addImage(imgData, 'JPEG', margin, HDR + 2, imgW, imgH);
-
-    // Agregar páginas adicionales si la imagen es más alta que una página
-    let heightLeft = imgH - contentH;
-    let pageNum    = 1;
-    while (heightLeft > 0) {
-      pageNum++;
-      pdf.addPage();
-      drawHeader();
-      // Desplazamos la imagen hacia arriba para mostrar la siguiente sección
-      const yOffset = HDR + 2 - (imgH - heightLeft);
-      pdf.addImage(imgData, 'JPEG', margin, yOffset, imgW, imgH);
-      heightLeft -= contentH;
-    }
-
-    // Pie de página en todas las páginas
-    const totalPages = pdf.internal.getNumberOfPages();
-    for (let i = 1; i <= totalPages; i++) {
-      pdf.setPage(i);
-      pdf.setFontSize(7);
-      pdf.setTextColor(148,163,184);
-      pdf.text(
-        'Dashboard Cambiario Venezuela 2026  ·  Pág. ' + i + ' / ' + totalPages,
-        pageW / 2, pageH - 3, { align:'center' }
-      );
-    }
-
-    // Nombre de archivo con fecha
-    const fname = 'Dashboard_Cambiario_VE_' + now.toISOString().slice(0,10) + '.pdf';
-    pdf.save(fname);
-
-  } catch(err) {
-    console.error('[PDF Error]', err);
-    // Respaldo: diálogo de impresión del navegador
-    window.print();
-  } finally {
+  // 10. Disparar impresión cuando la ventana cargue
+  setTimeout(function(){
+    try{ pw.focus(); pw.print(); }catch(e){}
     setLoading(false);
-  }
+  }, 1400);
 }
 
 // ═══════════════════════════════════════════════════════════
