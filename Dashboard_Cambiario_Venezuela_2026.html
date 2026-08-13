@@ -9,6 +9,8 @@
 <title>Dashboard Cambiario · Venezuela 2026 | FUNDESTA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
 <style>
 :root{
   --blue:#003893;--blue-m:#1d4ed8;--blue-l:#dbeafe;--blue-ll:#eff6ff;
@@ -3469,24 +3471,114 @@ window.addEventListener('load', function() {
 });
 
 // ═══════════════════════════════════════════════════════════
-//  DESCARGA PDF — usa window.print() con @media print CSS
+//  DESCARGA PDF — html2canvas + jsPDF (auto-descarga sin diálogo)
 // ═══════════════════════════════════════════════════════════
-function downloadPDF() {
-  const fab = document.getElementById('pdf-fab');
+async function downloadPDF() {
+  const fab    = document.getElementById('pdf-fab');
   const barBtn = document.getElementById('pdf-bar-btn');
-  // Inyecta fecha de generación en el wrap para el header de impresión
-  const wrap = document.getElementById('mainWrap');
-  const now = new Date();
-  const fechaStr = now.toLocaleDateString('es-VE',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
-                 + '  ' + now.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
-  if(wrap) wrap.setAttribute('data-fecha', fechaStr);
-  if(fab){ fab.textContent='⏳'; fab.style.pointerEvents='none'; }
-  if(barBtn){ barBtn.innerHTML='<span class="pdf-ic">⏳</span>Preparando…'; barBtn.disabled=true; }
-  setTimeout(function(){
+
+  function setLoading(on) {
+    if (fab)    { fab.textContent = on ? '⏳' : '📄'; fab.style.pointerEvents = on ? 'none' : ''; }
+    if (barBtn) { barBtn.innerHTML = on ? '<span class="pdf-ic">⏳</span>Generando PDF…' : '<span class="pdf-ic">📄</span>PDF'; barBtn.disabled = on; }
+  }
+
+  // Si las librerías no cargaron, usar print como respaldo
+  if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
+    const now2 = new Date();
+    const fs = now2.toLocaleDateString('es-VE',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) + '  ' + now2.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+    const wr = document.getElementById('mainWrap'); if(wr) wr.setAttribute('data-fecha',fs);
+    setLoading(true);
+    setTimeout(function(){ window.print(); setLoading(false); }, 350);
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const now = new Date();
+    const fechaStr = now.toLocaleDateString('es-VE',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+                   + '  ·  ' + now.toLocaleTimeString('es-VE',{hour:'2-digit',minute:'2-digit'});
+
+    // Capturar la vista activa completa (scroll height)
+    const target = document.querySelector('.page-view.active') || document.getElementById('mainWrap');
+
+    const canvas = await html2canvas(target, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#f0f4f8',
+      logging: false,
+      scrollX: 0,
+      scrollY: 0,
+      width:  target.scrollWidth,
+      height: target.scrollHeight,
+      windowWidth:  target.scrollWidth,
+      windowHeight: target.scrollHeight
+    });
+
+    const { jsPDF } = window.jspdf;
+    const pdf      = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+    const pageW    = pdf.internal.pageSize.getWidth();
+    const pageH    = pdf.internal.pageSize.getHeight();
+    const margin   = 10;
+    const HDR      = 18;   // alto del header azul
+    const FTR      = 8;    // alto del pie de página
+    const contentH = pageH - HDR - FTR - margin; // espacio útil de imagen por página
+
+    function drawHeader() {
+      pdf.setFillColor(0,56,147);
+      pdf.rect(0,0,pageW,HDR,'F');
+      pdf.setTextColor(255,255,255);
+      pdf.setFontSize(9); pdf.setFont('helvetica','bold');
+      pdf.text('Dashboard Cambiario · Venezuela 2026 · FUNDESTA', margin, 12);
+      pdf.setFontSize(7); pdf.setFont('helvetica','normal');
+      pdf.text(fechaStr, pageW - margin, 12, {align:'right'});
+    }
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.93);
+    const imgW    = pageW - 2*margin;
+    const imgH    = (canvas.height / canvas.width) * imgW;
+
+    // Dibujar primera página
+    drawHeader();
+    pdf.addImage(imgData, 'JPEG', margin, HDR + 2, imgW, imgH);
+
+    // Agregar páginas adicionales si la imagen es más alta que una página
+    let heightLeft = imgH - contentH;
+    let pageNum    = 1;
+    while (heightLeft > 0) {
+      pageNum++;
+      pdf.addPage();
+      drawHeader();
+      // Desplazamos la imagen hacia arriba para mostrar la siguiente sección
+      const yOffset = HDR + 2 - (imgH - heightLeft);
+      pdf.addImage(imgData, 'JPEG', margin, yOffset, imgW, imgH);
+      heightLeft -= contentH;
+    }
+
+    // Pie de página en todas las páginas
+    const totalPages = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i);
+      pdf.setFontSize(7);
+      pdf.setTextColor(148,163,184);
+      pdf.text(
+        'Dashboard Cambiario Venezuela 2026  ·  Pág. ' + i + ' / ' + totalPages,
+        pageW / 2, pageH - 3, { align:'center' }
+      );
+    }
+
+    // Nombre de archivo con fecha
+    const fname = 'Dashboard_Cambiario_VE_' + now.toISOString().slice(0,10) + '.pdf';
+    pdf.save(fname);
+
+  } catch(err) {
+    console.error('[PDF Error]', err);
+    // Respaldo: diálogo de impresión del navegador
     window.print();
-    if(fab){ fab.textContent='📄'; fab.style.pointerEvents=''; }
-    if(barBtn){ barBtn.innerHTML='<span class="pdf-ic">📄</span>PDF'; barBtn.disabled=false; }
-  }, 450);
+  } finally {
+    setLoading(false);
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
